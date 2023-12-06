@@ -1,0 +1,60 @@
+﻿<Window x:Class="UMSV.PhoneCallView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:f="clr-namespace:Folder;assembly=Folder.Common"
+        xmlns:c="clr-namespace:UMSV"
+        FlowDirection="RightToLeft"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Tahoma"
+        Title="ارسال پيام تلفنی"
+        f:DialogResultHelper.DialogResult="{Binding DialogResult}"
+        Height="460"
+        Width="816">
+    <Window.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Folder.Common;Component/Resources/DefaultTheme.xaml" />
+    </Window.Resources>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top"
+                   Margin="5,10">
+            <TextBlock DockPanel.Dock="Left"
+                       Margin="3">عنوان:</TextBlock>
+            <TextBox Margin="3"
+                     Text="{Binding Informing.Subject}" />
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Label>دفعات تلاش</Label>
+            <f:NumericUpDown Value="{Binding Informing.RetryCount}"/>
+        </StackPanel>
+        <DockPanel DockPanel.Dock="Bottom"
+                   Margin="5"
+                   Height="27">
+            <DockPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="DockPanel.Dock"
+                            Value="Right" />
+                    <Setter Property="Margin"
+                            Value="3" />
+                    <Setter Property="Width"
+                            Value="75" />
+                </Style>
+            </DockPanel.Resources>
+            <Button  Command="{Binding SaveCommand}">اعمال</Button>
+            <Button IsCancel="True">انصراف</Button>
+            <Button Command="{Binding OKCommand}"
+                    IsDefault="True">تاييد</Button>
+            <CheckBox VerticalAlignment="Center"
+                      IsChecked="{Binding Informing.Enabled}"
+                      Margin="10,5">فعال</CheckBox>
+        </DockPanel>
+        <TabControl Margin="5"
+                    x:Name="InformingTabControl"
+                    SelectedIndex="{Binding SelectedTabIndex}">
+            <TabItem Header="شماره های تماس">
+                <c:InformingRecordsGrid  Grid.Row="1" x:Name="InformingPanel"/>
+            </TabItem>
+            <TabItem Header="زمان بندی">
+                <c:SchedulePanel />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

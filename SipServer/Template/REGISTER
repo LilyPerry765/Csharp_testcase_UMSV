@@ -1,0 +1,12 @@
+REGISTER sip:[SipProxyEndPoint] SIP/2.0
+Via: SIP/2.0/UDP {2}
+Content-Length: 0
+Contact: <sip:{3}@{2};rinstance=65c15816783abd51>{5}
+Call-ID: [NewGuid]@[SipProxyAddress]
+CSeq: {0} REGISTER
+From: <sip:{3}@[SipProxyEndPoint]>
+Max-Forwards: 10
+To: <sip:{3}@[SipProxyEndPoint]>
+User-Agent: CallCenter
+Expires: {1}
+{4}

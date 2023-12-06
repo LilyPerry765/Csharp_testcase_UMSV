@@ -1,0 +1,25 @@
+INVITE sip:{1}@[SipProxyAddress] SIP/2.0
+Via: SIP/2.0/UDP [SipProxyEndPoint];branch=[NewBranch]
+Max-Forwards: 10
+Contact: <sip:{0}@[SipProxyEndPoint]>
+To: <sip:{1}@[SipProxyAddress]>
+From: "{0}"<sip:{0}@[SipProxyAddress]>;tag=[RandomNumber]
+Call-ID: {3}
+CSeq: 1 INVITE
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, REGISTER, SUBSCRIBE, INFO
+Supported: replaces
+User-Agent: CallCenter
+Content-Type: application/sdp
+Content-Length: 0
+
+v=0
+o=- 88211 88211 IN IP4 [SipProxyAddress]
+s=CallCenter
+c=IN IP4 [SipProxyAddress]
+t=0 0
+m=audio {2} RTP/AVP 8 101
+a=rtpmap:8 PCMA/8000
+a=ptime:20
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+

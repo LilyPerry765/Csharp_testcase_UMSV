@@ -1,0 +1,22 @@
+SIP/2.0 200 OK
+Via: {2}
+Content-Length: 221
+Contact: <sip:[SipAccount]@[SipProxyEndPoint]>
+Call-ID: {1}
+Content-Type: application/sdp
+CSeq: {5}
+From: {3}
+Server: PendarPajouh
+To: {4}
+{6}
+v=0
+o=- 3517046709 3517046709 IN IP4 [SipProxyAddress]
+s=Pendar Pajouh
+c=IN IP4 [SipProxyAddress]
+t=0 0
+a=direction:active
+m=audio {0} RTP/AVP 8 101
+a=rtpmap:8 PCMA/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-11,16
+

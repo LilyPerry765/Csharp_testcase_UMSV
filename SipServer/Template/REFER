@@ -1,0 +1,14 @@
+REFER sip:{0}@[SipProxyEndPoint] SIP/2.0
+To: {4}
+From: {3}
+Call-ID: {2}
+CSeq: 2 REFER
+Content-Length: 0
+Referred-By: {8}
+Refer-To: <sip:{1}@[SipProxyAddress]>{7}
+Max-Forwards: 10
+Contact: <{6}>
+User-Agent: CallCenter
+Via: SIP/2.0/UDP [SipProxyEndPoint];branch=[NewBranch];rport
+Record-Route: <sip:[SipProxyAddress];lr=on;ftag={5}>
+

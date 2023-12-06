@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="Plugin.Mailbox.MailboxMessagesForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:c="clr-namespace:Folder;assembly=Folder.Common"
+             xmlns:am="clr-namespace:Plugin.Mailbox.Assets"
+             xmlns:umsv="clr-namespace:UMSV;assembly=UMSV.Common"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma">
+    <DockPanel>
+        <Expander DockPanel.Dock="Left" Margin="5" BorderBrush="Gray" Padding="5" IsExpanded="True" Name="FilterPanel" Background="#DDE2EB">
+            <StackPanel VerticalAlignment="Top">
+                <WrapPanel>
+                    <Label Width="90" Content="نوع پیام" Margin="3" />
+                    <ComboBox Width="175" x:Name="TypeComboxBox" Margin="3" HorizontalAlignment="Left" DisplayMemberPath="Name"  SelectedValuePath="Value" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="90" Content="شماره صندوق" Margin="3" />
+                    <TextBox Width="175" x:Name="BoxNoTextbox" Margin="3" HorizontalAlignment="Left" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="90" Content="فرستنده" Margin="3" />
+                    <TextBox Width="175" x:Name="SenderTextbox" Margin="3" HorizontalAlignment="Left" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="90" Content="کد رهگیری" Margin="3" />
+                    <TextBox Width="175" x:Name="FollowupCodeTextbox" Margin="3" HorizontalAlignment="Left" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="90" Content="زمان دریافت از" Margin="3"  />
+                    <c:DateTimePicker Margin="3" Name="FromDate" Width="175" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="90" Content="زمان دریافت تا" Margin="3"  />
+                    <c:DateTimePicker Margin="3" Name="ToDate" Width="175" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="90" Content="توضیحات" Margin="3"  />
+                    <TextBox  Margin="3" Width="175" HorizontalAlignment="Left" Name="CommentTextbox" />
+                </WrapPanel>
+                <CheckBox Margin="10" Width="175" HorizontalAlignment="Left" Name="ExpiredMessage">پیامهای منقضی شده</CheckBox>
+                <Button DockPanel.Dock="Top" Width="75" Height="23" Content="مشاهده" Name="ViewButton" HorizontalAlignment="Left" Margin="10" Click="ViewButton_Click" />
+            </StackPanel>
+        </Expander>
+                <DataGrid Name="dataGrid"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ContextMenuOpening="dataGrid_ContextMenuOpening"
+                  AutoGenerateColumns="False"
+                  CanUserDeleteRows="False"
+                  CanUserAddRows="False"
+                  SelectionMode="Extended"
+                  PreviewKeyDown="dataGrid_PreviewKeyDown"
+              InitializingNewItem="dataGrid_InitializingNewItem"
+                  SelectionUnit="FullRow"
+                  ItemsSource="{Binding Messages}">
+                    <DataGrid.Columns>
+                        <c:ListDataGridComboBox EnumValuesType="{x:Type s:Byte}" IsReadOnly="True" Header="نوع پيام" SelectedValueBinding="{Binding Type}" EnumType="{x:Type umsv:MailboxMessageType}" />
+                        <DataGridTextColumn IsReadOnly="True" x:Name="boxNoColumn"
+                                    Binding="{Binding Path=BoxNo}"
+                                    Header="شماره صندوق"/>
+                        <DataGridTextColumn IsReadOnly="True" x:Name="senderColumn"
+                                    Binding="{Binding Path=Sender, TargetNullValue=-}"
+                                    Header="فرستنده" />
+                        <DataGridTextColumn IsReadOnly="True" x:Name="followupCodeColumn"
+                                    Binding="{Binding Path=FollowupCode, TargetNullValue=-}"
+                                    Header="کد رهگيری" />
+                        <DataGridTextColumn IsReadOnly="True" Binding="{Binding ReceiveTime, Converter={x:Static conv:PersianDateConverter.Instance}, ConverterParameter=yyyy/MM/dd}"
+                                    Header="تاريخ دريافت"
+                                    Width="100" />
+                        <DataGridTextColumn IsReadOnly="True" Binding="{Binding ReceiveTime, StringFormat=HH:mm}"
+                                    Header="زمان دريافت" />
+                        <DataGridTextColumn IsReadOnly="True" Binding="{Binding ExpireDate, Converter={x:Static conv:PersianDateConverter.Instance}, ConverterParameter=yyyy/MM/dd}"
+                                    Header="تاريخ انقضاء"
+                                    Width="100" />
+                        <DataGridTextColumn x:Name="commentColumn"
+                                    Binding="{Binding Path=Comment}"
+                                    Header="توضيحات"/>
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="به روزرسانی"
+                              Command="{Binding RefreshCommand}"
+                              Icon="{am:ImageSource refresh.png, Width=16}" />
+                            <MenuItem Name="ImportMenu" Header="ورود دسته ای پیام" Click="ImportMenu_Click" />
+                            <MenuItem Name="ImportAnswerMenuItem" Header="ورود دسته ای پاسخ" Click="ImportAnswerMenuItem_Click" />
+                            <MenuItem Name="AddMenu" Header="پیام جدید" Click="AddItem_Click" />
+                            <Separator></Separator>
+                            <MenuItem Name="EditMenu" Header="ویرایش پیام" Click="EditItem_Click" />
+                            <MenuItem Name="ConvertToPublic"   Header="تبدیل به پیام عمومی" Click="ConvertToPublic_Click" />
+                            <MenuItem Name="ConvertToNew"   Header="تبدیل به پیام جدید" Click="ConvertToNew_Click" />
+                            <MenuItem Name="AnswerMenu" Header="پاسخ به پرسش" Click="AnswerItem_Click" />
+                            <MenuItem Name="ArchiveMessage" Header="بایگانی" Click="ArchiveMessage_Click" />
+                            <Separator></Separator>
+                            <MenuItem Name="ExtractMessage" Header="استخراج..." Click="ExtractMessage_Click" />
+                </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+    </DockPanel>
+</UserControl>

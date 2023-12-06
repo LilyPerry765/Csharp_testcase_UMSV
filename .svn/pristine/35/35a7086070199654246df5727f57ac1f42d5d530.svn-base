@@ -1,0 +1,1593 @@
+﻿/* GENERAL
+***********************************************************************************/
+*
+{
+    font-family: Tahoma;
+    font-size: 9pt;
+    vertical-align: top;
+    list-style-type: none;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+}
+a
+{
+    color: #FFFFFF;
+}
+.gray_background
+{
+    background-color: #B9B9B9;
+}
+.right_label
+{
+    padding: 2px;
+    margin: 2px;
+    float: right;
+    width: 58px;
+}
+.hidden, .print-only
+{
+    display: none;
+    visibility: collapse;
+}
+/* LOGIN PAGE
+***********************************************************************************/
+.login_div
+{
+    border: medium solid #666666;
+    background-color: #DDDEE6;
+    vertical-align: middle;
+    width: 400px;
+    height: 200px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    -khtml-border-radius: 15px;
+    -o-border-radius: 15px;
+    -icab-border-radius: 15px;
+    text-align: center;
+    padding-top: 10px;
+    direction: rtl;
+}
+.login_button
+{
+    padding: 4px;
+    margin: 14px 0px 0px 50px;
+    width: 80px;
+    float: left;
+}
+.shadow1
+{
+    background-color: rgb(102, 102, 102);
+    -moz-box-shadow: 5px 5px 2px rgba(68,68,68,0.6);
+    -webkit-box-shadow: 5px 5px 2px rgba(68,68,68,0.6);
+    box-shadow: 5px 5px 2px rgba(68,68,68,0.6);
+    filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=,MakeShadow=true,ShadowOpacity=0.30);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=3,MakeShadow=true,ShadowOpacity=0.30)";
+    zoom: 1;
+    width: 410px;
+    height: 220px;
+    margin-left: 3px;
+    vertical-align: middle;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    margin-top: -120px;
+    right: 50%;
+    margin-right: -200px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    -khtml-border-radius: 15px;
+    -o-border-radius: 15px;
+    -icab-border-radius: 15px;
+}
+.shadow1 .shadow2
+{
+    position: relative; /* This protects the inner element from being blurred */
+    background-color: rgb(102, 102, 102);
+    width: 400px;
+    vertical-align: middle;
+    text-align: center;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    -khtml-border-radius: 15px;
+    -o-border-radius: 15px;
+    -icab-border-radius: 15px;
+}
+.right_div
+{
+    float: right;
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 10px;
+}
+.left_div
+{
+    float: left;
+    text-align: center;
+    vertical-align: middle;
+    width: 250px;
+    height: 175px;
+    margin-top: 10px;
+    margin-right: 3px;
+    margin-left: 18px;
+}
+.login_image
+{
+    margin: 20px 10px 10px 5px;
+    vertical-align: middle;
+    text-align: right;
+    width: 90px;
+    height: 100px;
+}
+.password_textbox
+{
+    width: 150px;
+}
+.login_checkbox
+{
+    margin: 8px 10px 0px 83px;
+    float: right;
+}
+.login_error_label
+{
+    color: #FF3300;
+    vertical-align: middle;
+    float: right;
+    margin-right: 12px;
+    margin-top: 5px;
+}
+
+/* MainMaster 
+***********************************************************************************/
+.message_label
+{
+    color: #FF3300;
+    vertical-align: middle;
+    margin-right: 5px;
+    padding-top: 10px;
+}
+.message_icon
+{
+    padding-top: 7px;
+}
+.logininfo_div
+{
+    vertical-align: middle;
+    text-align: right;
+    padding-top: 4px;
+    padding-right: 2px;
+    height: 27px;
+    width: 100%;
+    background-image: url('/Images/header-bg.jpg');
+    background-repeat: repeat-x;
+    margin-bottom: 10px;
+    position: fixed;
+}
+.logininfo_div input
+{
+    margin-left: 5px;
+}
+.messagestatusbar_div
+{
+    direction: rtl;
+    width: 100%;
+    height: 43px;
+    text-align: right;
+    vertical-align: bottom;
+    bottom: 0px;
+    position: fixed;
+    padding-top: 10px;
+    background-image: url('/Images/bg.png');
+    background-repeat: repeat-x;
+}
+.progressdiv
+{
+    width: 100%;
+    height: 43px;
+    vertical-align: bottom;
+    bottom: 0px;
+    text-align: right;
+    color: #0033CC;
+    position: fixed;
+    padding-top: 10px;
+    background-image: url('../Images/bg.png');
+    background-repeat: repeat-x;
+    margin-top: 10px;
+}
+.progressdiv label
+{
+    margin-top: 10px;
+    padding-top: 10px;
+    vertical-align: middle;
+}
+#ShowWidnowButton
+{
+    border: none;
+    float: right;
+    margin-right: 10px;
+}
+.createticketpic
+{
+    border: none;
+    margin: 0px;
+}
+.ticketlistbutton
+{
+    float: right;
+    margin-right: 5px;
+    margin-right: 10px;
+}
+/* TicketList 
+***********************************************************************************/
+.media_dropdownlist
+{
+    width: 120px;
+    direction: rtl;
+}
+.mediaicon
+{
+    width: 18px;
+    height: 18px;
+}
+.bulleticon
+{
+    width: 20px;
+    height: 20px;
+}
+.container
+{
+    display: inline-block;
+    min-width: 100%;
+    width: max-content;
+    margin-bottom: 30px;
+    margin-top: -10px;
+}
+
+.search-container
+{
+    direction: rtl;
+    background-image: url('../Images/banner_bg.jpg');
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 30px;
+    margin-top: 40px;
+}
+
+.search-container .expandpanel dl
+{
+    width: 330px;
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.search-container .expandpanel dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.search-container .expandpanel dd
+{
+    width: 200px;
+    float: right;
+    margin-bottom: 5px;
+    height: 20px;
+}
+.search-container .expandpanel dd select
+{
+    width: 200px;
+    height: 20px;
+}
+.search-container .expandpanel dd input[type=text]
+{
+    width: 194px;
+}
+.search-container .expandpanel dd input.calendar
+{
+    width: 173px;
+}
+
+.search-container .collapsepanel dl
+{
+    width: 275px;
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+    display: inline;
+}
+.search-container .collapsepanel dt
+{
+    width: 80px;
+    float: right;
+    margin-bottom: 5px;
+    display: inline;
+}
+.search-container .collapsepanel dd
+{
+    width: 185px;
+    float: right;
+    margin-bottom: 5px;
+    height: 20px;
+    display: inline;
+}
+.search-container .collapsepanel dd select
+{
+    width: 185px;
+    height: 20px;
+}
+.search-container .collapsepanel dd input[type=text]
+{
+    width: 179px;
+}
+.search-container .righttoleftdd
+{
+    text-align: left;
+}
+.search-container .inlinedd
+{
+    display: inline;
+}
+
+.searchresult-container
+{
+    float: right;
+    vertical-align: top;
+    width: 100%;
+    margin-bottom: 30px;
+    min-width: 400px;
+}
+.searchresult-container .searchresult_gridview
+{
+    text-align: right;
+    width: 100%;
+    min-width: 400px;
+    direction: rtl;
+}
+.searchresult-container .searchresult_gridview .EditRowStyle
+{
+    background-color: #2461BF;
+}
+.searchresult-container .searchresult_gridview .HeaderStyle
+{
+    background-color: #507CD1;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+.searchresult-container .searchresult_gridview .HeaderStyle a
+{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.searchresult-container .searchresult_gridview .FooterStyle
+{
+    background-color: #507CD1;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+.searchresult-container .searchresult_gridview .SelectedRowStyle
+{
+    background-color: #D1DDF1;
+    font-weight: bold;
+    color: #333333;
+}
+.searchresult-container .searchresult_gridview .PagerStyle
+{
+    background-color: #2461BF;
+    color: #FFFFFF;
+    direction: ltr;
+    text-align: center;
+}
+.searchresult-container .searchresult_gridview .PagerStyle td
+{
+    text-align: center;
+    padding-left: 40%;
+}
+.searchresult-container .searchresult_gridview .PagerStyle a
+{
+    text-decoration: none;
+    color: #FFFFFF;
+    margin-right: 2px;
+    margin-left: 2px;
+}
+.searchresult-container .searchresult_gridview .PagerStyle span
+{
+    color: #66CCFF;
+    font-weight: bold;
+    margin-right: 2px;
+    margin-left: 2px;
+}
+.searchresult-container .searchresult_gridview .RowStyle
+{
+    background-color: #EFF3FB;
+}
+.searchresult-container .searchresult_gridview .AlternatingRowStyle
+{
+    background-color: #FFFFFF;
+}
+.searchresult-container .searchresult_gridview .sortedascendingcellstyle
+{
+    background-color: #F5F7FB;
+}
+.searchresult-container .searchresult_gridview .sortedascendingheaderstyle
+{
+    background-color: #6D95E1;
+}
+.searchresult-container .searchresult_gridview .sortedascendingheaderstyle a
+{
+    color: #3333CC;
+}
+.searchresult-container .searchresult_gridview .sorteddescendingcellstyle
+{
+    background-color: #E9EBEF;
+}
+.searchresult-container .searchresult_gridview .sorteddescendingheaderstyle
+{
+    background-color: #4870BE;
+}
+.searchresult-container .searchresult_gridview .sorteddescendingheaderstyle a
+{
+    color: #99CCFF;
+}
+
+/*TicketForm
+***********************************************************************************/
+.ticketformcontainer
+{
+    font-family: tahoma;
+    font-size: small;
+    min-height: 400px;
+    display: inline-block;
+    min-width: 100%;
+    margin-bottom: 30px;
+    margin-top: 40px;
+}
+.ticketformcontainer dl
+{
+    float: right;
+    margin-bottom: 20px;
+}
+.ticketformcontainer dt
+{
+    float: right;
+    margin-bottom: 5px;
+}
+.ticketformcontainer dd
+{
+    float: right;
+    margin-bottom: 5px;
+    margin-right: 15px;
+}
+.ticketformcontainer .panelsheader
+{
+    padding-top: 7px;
+    background-color: #C2E3FE;
+    margin-bottom: 7px;
+    vertical-align: middle;
+    direction: rtl;
+    min-width: 200px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    -khtml-border-radius: 15px;
+    -o-border-radius: 15px;
+    -icab-border-radius: 15px;
+}
+.ticketformcontainer .panelsheader input[type=image]
+{
+    margin-top: -7px;
+}
+.ticketformcontainer .servicediv
+{
+    border: thin solid #C0C0C0;
+}
+.ticketformcontainer .commentpicpanel
+{
+    width: 35px;
+    height: 35px;
+    float: right;
+    background-image: url('../Images/CurvedCorner.png');
+}
+.ticketformcontainer #TicketDescribtionDiv
+{
+    width: 345px;
+    margin-right: 15px;
+    float: right;
+}
+.ticketformcontainer #TicketDescribtionPanel
+{
+    margin-top: 5px;
+    max-height: 242px;
+    overflow: auto;
+    margin-bottom: 10px;
+    max-width: 320px;
+    float: right;
+    margin-right: 7px;
+}
+.ticketformcontainer .listviewtable
+{
+    background-color: #EFEFEF;
+    width: 320px;
+    float: right;
+    margin: 2px;
+    margin-top: 0px;
+}
+.ticketformcontainer .listviewtable .techpic
+{
+    max-height: 50px;
+    max-width: 50px;
+    margin-top: -11px;
+}
+.ticketformcontainer .listviewtable tr
+{
+    text-align: right;
+}
+.ticketformcontainer .listviewtable tr .descriptioncell
+{
+    padding: 10px 3px 3px 3px;
+    width: 220px;
+    direction: rtl;
+}
+.ticketformcontainer .listviewtable tr .commentpicpanel
+{
+    margin-top: -3px;
+    margin-right: -3px;
+}
+.ticketformcontainer .commentlabel
+{
+    max-height: 67px;
+    width: 158px;
+    float: right;
+    background-color: #EFEFEF;
+    display: block;
+    white-space: normal;
+}
+.ticketformcontainer .listviewtable tr .infocells
+{
+    margin-right: 5px;
+}
+
+/*TechDashboard
+***********************************************************************************/
+.techdashboardcontainer
+{
+    font-family: tahoma;
+    font-size: small;
+    min-height: 400px;
+    display: inline-block;
+    min-width: 100%;
+    width: max-content;
+    margin-bottom: 30px;
+    margin-top: -10px;
+}
+.Headercontainer
+{
+    direction: rtl;
+    background-image: url('../Images/banner_bg.jpg');
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 30px;
+    margin-top: 40px;
+}
+.techdashboardcontainer .DashboardLabel
+{
+    font-size: large;
+}
+
+
+
+/*TicketDetailsUserControl
+***********************************************************************************/
+.TicketDetailsUserControl
+{
+    direction: rtl;
+}
+.TicketDetailsUserControl dl
+{
+    width: 330px;
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.TicketDetailsUserControl dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.TicketDetailsUserControl dd
+{
+    width: 200px;
+    float: right;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+.TicketDetailsUserControl dd #CreateDateTextBox
+{
+    direction: ltr;
+    text-align: right;
+}
+.TicketDetailsUserControl dd #CloseDateTextBox
+{
+    direction: ltr;
+    text-align: right;
+}
+.TicketDetailsUserControl dd #MediaDropDownList
+{
+    width: 177px;
+    height: 20px;
+}
+.TicketDetailsUserControl dd #TicketPriorityDropDownList
+{
+    width: 199px;
+    height: 20px;
+}
+.TicketDetailsUserControl dd textarea
+{
+    width: 194px;
+    height: 72px;
+}
+.TicketDetailsUserControl dd input[type=text]
+{
+    width: 194px;
+}
+.TicketDetailsUserControl .comment
+{
+    width: 200px;
+    height: 77px;
+    background-color: #EFEFEF;
+    direction: rtl;
+}
+.TicketDetailsUserControl .commentpicpanel
+{
+    width: 35px;
+    height: 35px;
+    background-image: url('../Images/CurvedCorner.png');
+    float: right;
+}
+.TicketDetailsUserControl .commentlabel
+{
+    margin: 5px 2px 2px 2px;
+    max-height: 67px;
+    width: 158px;
+    float: right;
+    background-color: #EFEFEF;
+    display: block;
+    white-space: normal;
+}
+/*ClientUserControl
+**********************************************************************************/
+.ClientUserControl
+{
+    direction: rtl;
+}
+.ClientUserControl dl
+{
+    width: 330px;
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.ClientUserControl dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.ClientUserControl dd
+{
+    width: 200px;
+    float: right;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+.ClientUserControl dd select
+{
+    width: 200px;
+    height: 20px;
+}
+.ClientUserControl dd textarea
+{
+    width: 194px;
+    min-height: 20px;
+}
+.ClientUserControl dd input[type=text]
+{
+    width: 194px;
+}
+.ClientUserControl .Heightdd
+{
+    height: 100px;
+}
+.ClientUserControl .addresstextbox
+{
+    height: 65px;
+    vertical-align: text-top;
+    white-space: normal;
+}
+/*AssetUserControl
+**********************************************************************************/
+.AssetUserControl
+{
+    direction: rtl;
+}
+.AssetUserControl dl
+{
+    width: 330px;
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.AssetUserControl dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.AssetUserControl dd
+{
+    width: 200px;
+    float: right;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+.AssetUserControl dd select
+{
+    width: 200px;
+    height: 20px;
+}
+.AssetUserControl dd c
+{
+    width: 194px;
+    min-height: 20px;
+}
+.AssetUserControl dd input[type=text]
+{
+    width: 194px;
+}
+
+/*HuaweiUserControl
+*********************************************************************************/
+.HuaweiUserControl
+{
+    direction: rtl;
+    margin-top: 10px;
+}
+.HuaweiUserControl dl
+{
+    width: 330px;
+    float: right;
+    margin-right: 10px;
+}
+.HuaweiUserControl dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.HuaweiUserControl dd
+{
+    width: 205px;
+    float: right;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+.HuaweiUserControl dd select
+{
+    width: 205px;
+    height: 20px;
+}
+.HuaweiUserControl dd textarea
+{
+    width: 199px;
+    min-height: 20px;
+}
+.HuaweiUserControl dd input[type=text]
+{
+    width: 200px;
+}
+.HuaweiUserControl .thicktextbox
+{
+    height: 25px;
+}
+.HuaweiUserControl .thickcheckbox
+{
+    padding-top: 15px;
+}
+.HuaweiUserControl #LanIp1TextBox, .HuaweiUserControl #LanIp2TextBox, .HuaweiUserControl #WanIpTextBox
+{
+    width: 70px;
+}
+.HuaweiUserControl #LanMask1TextBox, .HuaweiUserControl #LanMask2TextBox, .HuaweiUserControl #WanMaskTextBox
+{
+    width: 110px;
+}
+
+/*HuaweiPorUserControl
+*********************************************************************************/
+.HuaweiPorUserControl
+{
+    direction: rtl;
+}
+.HuaweiPorUserControl dl
+{
+    width: 340px;
+    float: right;
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+.HuaweiPorUserControl dt
+{
+    width: 100px;
+    float: right;
+}
+.HuaweiPorUserControl dd
+{
+    width: 210px;
+    float: right;
+    min-height: 20px;
+}
+.HuaweiPorUserControl dd select
+{
+    width: 205px;
+    height: 20px;
+}
+.HuaweiPorUserControl dd input[type=text]
+{
+    width: 199px;
+}
+
+/*TellabsUserControl
+***************************************************************************/
+.TellabsUserControl
+{
+    direction: rtl;
+    margin-top: 10px;
+}
+.TellabsUserControl dl
+{
+    width: 330px;
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 0px;
+}
+.TellabsUserControl dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.TellabsUserControl dd
+{
+    width: 205px;
+    float: right;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+.TellabsUserControl dd select
+{
+    width: 205px;
+    height: 20px;
+}
+.TellabsUserControl dd textarea
+{
+    width: 199px;
+    min-height: 20px;
+}
+.TellabsUserControl dd input[type=text]
+{
+    width: 200px;
+}
+.TellabsUserControl .thicktextbox
+{
+    height: 25px;
+}
+.TellabsUserControl .thickcheckbox
+{
+    padding-top: 15px;
+}
+.TellabsUserControl #LanIpTextBox, .TellabsUserControl #WanIpTextBox
+{
+    width: 70px;
+}
+.TellabsUserControl #LanMaskTextBox, .TellabsUserControl #WanMaskTextBox
+{
+    width: 110px;
+}
+
+/*TellabsPortUserControl
+***************************************************************************/
+.TellabsPortUserControl
+{
+    direction: rtl;
+}
+.TellabsPortUserControl dl
+{
+    width: 340px;
+    float: right;
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+.TellabsPortUserControl dt
+{
+    width: 100px;
+    float: right;
+}
+.TellabsPortUserControl dd
+{
+    width: 210px;
+    float: right;
+    min-height: 20px;
+}
+.TellabsPortUserControl dd select
+{
+    width: 205px;
+    height: 20px;
+}
+.TellabsPortUserControl dd input[type=text]
+{
+    width: 199px;
+}
+/*IpSwitchUserControl
+**************************************************************************/
+.IpSwitchUserControl
+{
+    direction: rtl;
+    margin-top: 10px;
+}
+.IpSwitchUserControl dl
+{
+    width: 330px;
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 0px;
+}
+.IpSwitchUserControl dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.IpSwitchUserControl dd
+{
+    width: 205px;
+    float: right;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+.IpSwitchUserControl dd select
+{
+    width: 205px;
+    height: 20px;
+}
+.IpSwitchUserControl dd textarea
+{
+    width: 199px;
+    min-height: 20px;
+}
+.IpSwitchUserControl dd input[type=text]
+{
+    width: 200px;
+}
+.IpSwitchUserControl .thicktextbox
+{
+    height: 25px;
+}
+.IpSwitchUserControl .thickcheckbox
+{
+    padding-top: 15px;
+}
+.IpSwitchUserControl #LanIp1TextBox, .IpSwitchUserControl #LanIp2TextBox, .IpSwitchUserControl #WanIpTextBox
+{
+    width: 70px;
+}
+.IpSwitchUserControl #LanMask1TextBox, .IpSwitchUserControl #LanMask2TextBox, .IpSwitchUserControl #WanMaskTextBox
+{
+    width: 110px;
+}
+.IpSwitchUserControl #ServiceProviderRouterDropDownList
+{
+    width: 74px;
+}
+.IpSwitchUserControl #ServiceProviderRouterLocationDropDownList
+{
+    width: 127px;
+}
+
+/*SwitchPortUserControl
+*************************************************************************/
+.SwitchPortUserControl
+{
+    direction: rtl;
+}
+.SwitchPortUserControl #SwitchPortUnitDropDownList
+{
+    width: 72px;
+    height: 20px;
+}
+.SwitchPortUserControl #SwitchPortValueTextbox
+{
+    width: 123px;
+}
+
+/*AlcatelUserControl
+*************************************************************************/
+.AlcatelUserControl
+{
+    direction: rtl;
+    margin-top: 10px;
+}
+.AlcatelUserControl dl
+{
+    width: 330px;
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 0px;
+}
+.AlcatelUserControl dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.AlcatelUserControl dd
+{
+    width: 205px;
+    float: right;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+.AlcatelUserControl dd select
+{
+    width: 205px;
+    height: 20px;
+}
+.AlcatelUserControl dd textarea
+{
+    width: 199px;
+    min-height: 20px;
+}
+.AlcatelUserControl dd input[type=text]
+{
+    width: 200px;
+}
+.AlcatelUserControl .thicktextbox
+{
+    height: 25px;
+}
+.AlcatelUserControl .thickcheckbox
+{
+    padding-top: 15px;
+}
+.AlcatelUserControl #LanIpTextBox, .AlcatelUserControl #WanIpTextBox
+{
+    width: 70px;
+}
+.AlcatelUserControl #LanMaskTextBox, .AlcatelUserControl #WanMaskTextBox
+{
+    width: 110px;
+}
+
+/*BandWidthUserControl
+*********************************************************************************/
+.BandWidthUserControl
+{
+    direction: rtl;
+}
+.BandWidthUserControl dl
+{
+    width: 340px;
+    float: right;
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+.BandWidthUserControl dt
+{
+    width: 100px;
+    float: right;
+}
+.BandWidthUserControl dd
+{
+    width: 208px;
+    float: right;
+    min-height: 20px;
+}
+.BandWidthUserControl dd select
+{
+    width: 72px;
+    height: 20px;
+}
+.BandWidthUserControl dd input[type=text]
+{
+    width: 124px;
+}
+
+/*RegionRouterUserControl
+********************************************************************************/
+.RegionRouterUserControl
+{
+    direction: rtl;
+}
+.RegionRouterUserControl dl
+{
+    width: 330px;
+    float: right;
+    margin-top: 10px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+.RegionRouterUserControl dt
+{
+    width: 100px;
+    float: right;
+}
+.RegionRouterUserControl dd
+{
+    width: 205px;
+    float: right;
+    min-height: 20px;
+}
+.RegionRouterUserControl dd select
+{
+    width: 205px;
+    height: 20px;
+}
+.RegionRouterUserControl dd #RouterAccordingToManufacturerDropDownList
+{
+    width: 91px;
+    height: 20px;
+}
+.RegionRouterUserControl dd #RegionRouterDropDownList
+{
+    width: 110px;
+    height: 20px;
+}
+
+/*CountryRouterUserControl
+*****************************************************************************/
+.CountryRouterUserControl
+{
+    direction: rtl;
+    padding-top: 10px;
+}
+.CountryRouterUserControl dl
+{
+    width: 340px;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-right: 0px;
+}
+.CountryRouterUserControl dt
+{
+    width: 100px;
+    float: right;
+    margin-bottom: 5px;
+}
+.CountryRouterUserControl dd
+{
+    width: 210px;
+    float: right;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+.CountryRouterUserControl dd select
+{
+    width: 65px;
+    height: 20px;
+}
+.CountryRouterUserControl dd input[type=text]
+{
+    width: 90px;
+}
+.CountryRouterUserControl dd #CivilRouterRegionDropDownList
+{
+    width: 135px;
+    height: 20px;
+    margin-left: 3px;
+}
+.CountryRouterUserControl dd #CountryVlanTextBox
+{
+    width: 199px;
+}
+.CountryRouterUserControl dd #UplinkTextBox
+{
+    width: 130px;
+}
+.CountryRouterUserControl .masklabel
+{
+    height: 25px;
+}
+
+/*ActionUserControl
+****************************************************************************/
+.ActionUserControl
+{
+    float: left;
+    margin-left: 10px;
+    margin-top: 7px;
+}
+.ActionUserControl .actionButton
+{
+    margin: 3px 0px 3px 0px;
+    height: 23px;
+    vertical-align: middle;
+}
+.ActionUserControl .iconImage
+{
+    width: 16px;
+    height: 16px;
+    margin: 0px 0px 5px 0px;
+}
+.ActionUserControl select
+{
+    max-width: 150px;
+}
+.ActionUserControl input[type=text]
+{
+    width: 150px;
+}
+.ActionUserControl dl
+{
+    display: inline-block;
+}
+.ActionUserControl dt
+{
+    display: inline-block;
+    float: left;
+}
+.ActionUserControl dl .buttondl
+{
+    float: left;
+}
+.ActionUserControl dd
+{
+    display: inline-block;
+    float: left;
+}
+
+/*Calendar
+***************************************************************************/
+#MDS_DateTimePicker
+{
+    background: url('../images/shadow.png') no-repeat bottom right;
+    padding: 0 8px 9px 0;
+    -moz-border-radius-bottomleft: 17px;
+    -moz-border-radius-topright: 17px;
+    -webkit-border-top-right-radius: 17px;
+    -webkit-border-bottom-left-radius: 17px;
+}
+#CalendarTable
+{
+    color: #000099;
+    text-align: center;
+    width: 200px;
+    height: 100px;
+    margin: 0px auto;
+    direction: rtl;
+    background: #D5EAFF;
+}
+#CalendarTable td
+{
+    border: 0px solid #808080;
+}
+#CalendarTable td:hover
+{
+}
+#today_td
+{
+    background: #8DC4FA;
+}
+#calendar_header
+{
+    background: #97A6CA;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+#calendar_footer
+{
+    background: #97A6CA;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+.previousMonth
+{
+    color: #003399;
+}
+#WeekDayNames
+{
+    font: 12px Tahoma;
+    background: #D8DDF3;
+    font-weight: normal;
+    color: #000099;
+}
+#CalendarTable input[type=button]
+{
+    font: 12px Tahoma, Geneva, sans-serif;
+    background: #647BB0;
+    border: thin solid #FFF;
+    border-radius: 2px;
+    color: #FFFFFF;
+}
+#PreviousMonthButton, #NextMonthButton
+{
+    width: 100%;
+    height: 100%;
+}
+#today_button, #close_button
+{
+}
+
+/*DialogWindow
+**************************************************************************/
+.dialogwindow
+{
+    border: medium solid #5E86C4;
+    display: none;
+    position: absolute;
+    background: white;
+    width: 300px;
+    height: 230px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    -khtml-border-radius: 15px;
+    -o-border-radius: 15px;
+    -icab-border-radius: 15px;
+}
+.dialogwindow .header
+{
+    height: 30px;
+    background-image: url('../Images/header-bg.jpg');
+    text-align: right;
+    background-repeat: repeat-x;
+    padding-right: 10px;
+    -moz-border-top-left-radius: 15px;
+    -webkit-border-top-left-radius: 15px;
+    border-top-left-radius: 15px;
+    -khtml-border-top-left-radius: 15px;
+    -o-border-top-left-radius: 15px;
+    -icab-border-top-left-radius: 15px;
+    -moz-border-top-right-radius: 15px;
+    -webkit-border-top-right-radius: 15px;
+    border-top-right-radius: 15px;
+    -khtml-border-top-right-radius: 15px;
+    -o-border-top-right-radius: 15px;
+    -icab-border-top-right-radius: 15px;
+    padding-top: 5px;
+}
+.dialogwindow .content
+{
+    direction: rtl;
+    margin: 15px;
+}
+.dialogwindow .content textarea
+{
+    width: 208px;
+    height: 120px;
+}
+.dialogwindow .buttons
+{
+    float: left;
+    margin-left: 22px;
+}
+
+
+
+/*ManagmentDailyDashboard
+*************************************************************************/
+
+.ManagmentDailyDashboard
+{
+    font-family: tahoma;
+    font-size: small;
+    min-height: 400px;
+    display: inline-block;
+    min-width: 100%;
+    margin-bottom: 30px;
+    margin-top: 40px;
+}
+.ManagmentDailyDashboard dl
+{
+    float: right;
+    margin-bottom: 20px;
+}
+.ManagmentDailyDashboard dt
+{
+    float: right;
+    margin-bottom: 5px;
+}
+.ManagmentDailyDashboard dd
+{
+    float: right;
+    margin-bottom: 5px;
+    margin-right: 15px;
+}
+.ManagmentDailyDashboard .panelsheader
+{
+    padding-top: 7px;
+    background-color: #C2E3FE;
+    margin-bottom: 7px;
+    vertical-align: middle;
+    direction: rtl;
+    min-width: 200px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    -khtml-border-radius: 15px;
+    -o-border-radius: 15px;
+    -icab-border-radius: 15px;
+}
+.ManagmentDailyDashboard h4
+{
+    text-align: right;
+    margin-top: 20px;
+}
+
+.ManagmentDailyDashboard .dashboardheader
+{
+    border: 3px solid #507CD1;
+    float: right;
+    margin-right: 15px;
+    direction: rtl;
+    padding: 10px;
+    margin-bottom: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -khtml-border-radius: 10px;
+    -o-border-radius: 10px;
+    -icab-border-radius: 10px;
+}
+.ManagmentDailyDashboard .dashboardheader input[type=text]
+{
+    width: 70px;
+}
+.ManagmentDailyDashboard .dashboardheader .timerlabel
+{
+    margin-right: 20px;
+}
+.ManagmentDailyDashboard .dashboardheader .sliderrail
+{
+}
+.ManagmentDailyDashboard .dashboardheader .sliderhanle
+{
+}
+.ManagmentDailyDashboard .dashboardheader #SliderTextBox
+{
+    height: 15px;
+    width: 50px;
+}
+
+
+.ManagmentDailyDashboard table
+{
+    text-align: right;
+    width: 100%;
+    min-width: 300px;
+    direction: rtl;
+}
+.ManagmentDailyDashboard table .EditRowStyle
+{
+    background-color: #2461BF;
+}
+.ManagmentDailyDashboard table .HeaderStyle
+{
+    background-color: #507CD1;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+.ManagmentDailyDashboard table .HeaderStyle a
+{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.ManagmentDailyDashboard table .FooterStyle
+{
+    background-color: #507CD1;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+.ManagmentDailyDashboard table .SelectedRowStyle
+{
+    background-color: #D1DDF1;
+    font-weight: bold;
+    color: #333333;
+}
+.ManagmentDailyDashboard table .RowStyle
+{
+    background-color: #EFF3FB;
+}
+.ManagmentDailyDashboard table .AlternatingRowStyle
+{
+    background-color: #FFFFFF;
+}
+
+.ManagmentDailyDashboard #MostTickeStatusDiv
+{
+    width: 365px;
+    float: right;
+    margin-top: -20px;
+}
+.ManagmentDailyDashboard #MostClosedTicketDiv
+{
+    width: 365px;
+    margin-top: -20px;
+}
+.ManagmentDailyDashboard #TechsDashboard
+{
+    width: 770px;
+    float: right;
+}
+.ManagmentDailyDashboard #TicketsDashboard
+{
+    width: 770px;
+    float: right;
+    margin-left: 5px;
+}
+.ManagmentDailyDashboard #TechDashboardContentPanel
+{
+    width: 770px;
+}
+.ManagmentDailyDashboard #TicketsDashboardContentPanel
+{
+    width: 770px;
+}
+.ManagmentDailyDashboard #TechDashboardContentPanel div
+{
+    width: 365px;
+    float: right;
+    height: 182px;
+    margin-top: -2px;
+}
+.ManagmentDailyDashboard #TechDashboardContentPanel .leftdivs
+{
+    margin-right: 40px;
+}
+.ManagmentDailyDashboard #TicketsDashboardContentPanel div #MostWaitingDiv
+{
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+.ManagmentDailyDashboard #ChartsPanel
+{
+    direction: rtl;
+}
+.ManagmentDailyDashboard #CountPerTicketStatusDL
+{
+    float: left;
+    margin-top: 30px;
+    width: 150px;
+}
+.ManagmentDailyDashboard #CountPerTicketStatusDL dd
+{
+    float: left;
+    height: 30px;
+    margin-bottom: 10px;
+}
+.ManagmentDailyDashboard #CountPerTicketStatusDL dt
+{
+    height: 30px;
+    margin-bottom: 10px;
+}
+.ManagmentDailyDashboard #CountPerTicketStatusDL input[type=text]
+{
+    width: 30px;
+}
+.ManagmentDailyDashboard .ExpanderButton
+{
+    margin-top: -5px;
+}
+
+
+
+
+
+
+
+
+
+
+

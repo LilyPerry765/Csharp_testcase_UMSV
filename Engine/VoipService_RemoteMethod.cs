@@ -1,0 +1,419 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder.EMQ;
+using UMSV.Schema;
+using Enterprise;
+using System.IO;
+using System.Reflection;
+using System.Xml.Linq;
+
+namespace UMSV.Engine
+{
+    [ServiceModule("UMSV", ServiceModuleSide.Server)]
+    public partial class VoipService : ServiceModuleServer
+    {
+        [RemoteMethod]
+        public void RequestDialogs(CallInfo callInfo)
+        {
+            Call(callInfo.SourceClientID, "ResponseDialogs", SipServer.Dialogs.Select(d => new
+            {
+                d.CallerID,
+                d.CalleeID,
+                d.DialogID,
+                d.Status,
+                d.CallTime
+            }).ToList());
+        }
+
+        [RemoteMethod]
+        public void RequestAccounts(CallInfo callInfo)
+        {
+            Call(callInfo.SourceClientID, "ResponseAccounts", new object[] { SipServer.Accounts.ToList() });
+        }
+
+        [RemoteMethod]
+        public void RequestAccountsAndDialogs(CallInfo callInfo)
+        {
+            Call(callInfo.SourceClientID, "ResponseAccountsAndDialogs", DateTime.Now, SipServer.Accounts.ToList(), SipServer.Dialogs.Where(d => d.Status != DialogStatus.Disconnected).Select(d => new
+            {
+                d.DivertTargetTeam,
+                d.DialogType,
+                d.CallerID,
+                d.CalleeID,
+                d.DialogID,
+                d.Status,
+                d.CallTime,
+                DivertTime = d.QueueEnterTime
+            }).ToList());
+        }
+
+        [RemoteMethod]
+        public void StartScheduledOutcall(CallInfo callInfo)
+        {
+            //InformingManagement.Instance.Start();
+        }
+
+        [RemoteMethod]
+        public void StopScheduledOutcall(CallInfo callInfo)
+        {
+            //InformingManagement.Instance.Stop();
+        }
+
+        [RemoteMethod]
+        public void ReloadGatewayConfig(CallInfo callInfo)
+        {
+            Logger.WriteImportant("ReloadGatewayConfig ...");
+            SipServer.ReloadGateways();
+        }
+
+        [RemoteMethod]
+        public void ReloadUmsvConfig(CallInfo callInfo)
+        {
+            Logger.WriteImportant("ReloadUmsvConfig");
+            Config.Load();
+        }
+
+        [RemoteMethod]
+        public void ReloadGraphAssembly(CallInfo callInfo, Guid graphID)
+        {
+            Logger.WriteInfo("Server: ReloadGraphAssembly, Graph: {0}", graphID);
+            try
+            {
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    var graph = dc.Graphs.First(g => g.ID == graphID);
+                    Assembly assembly = Assembly.Load(graph.Assembly.ToArray());
+
+                    Type addinType = assembly.GetTypes().FirstOrDefault(t => typeof(IGraphAddin).IsAssignableFrom(t));
+                    if (addinType != null)
+                    {
+                        GraphAddins[graphID] = addinType;
+                        Logger.WriteInfo("Addins {0} Loaded Version is {1}", assembly.GetName().Name, assembly.GetName().Version);
+                    }
+                    else
+                        Logger.WriteError("Error loading addins type for graph: {0}", graph.Name);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        [RemoteMethod]
+        public void Hold(CallInfo callInfo, string dialogID)
+        {
+            SipServer.Hold(dialogID);
+        }
+
+        [RemoteMethod]
+        public void UnHold(CallInfo callInfo, string dialogID)
+        {
+            SipServer.UnHold(dialogID);
+        }
+
+        [RemoteMethod]
+        public void SetAccountEavesdropper(CallInfo callInfo, string eavesdropperId, string targetId)
+        {
+            SipAccount eavesdropperAccount = SipServer.Accounts.FirstOrDefault(t => t.UserID == eavesdropperId);
+            SipAccount targetAccount = SipServer.Accounts.FirstOrDefault(t => t.UserID == targetId);
+
+            Logger.WriteInfo("Going to set the eavesdropper account....");
+
+            if (eavesdropperAccount != null && targetAccount != null)
+            {
+                Logger.WriteInfo("Target: {0}, Eavesdropper: {1}", targetAccount.FolderUser.Username, eavesdropperAccount.FolderUser.Username);
+                targetAccount.EavesdropperUserId = eavesdropperAccount.FolderUser.Username;
+            }
+        }
+
+        [RemoteMethod]
+        public void FlushEavesdropper(CallInfo callInfo, string eavesdropperId)
+        {
+            List<SipAccount> accounts = SipServer.Accounts.Where(t => t.EavesdropperUserId == eavesdropperId).ToList();
+
+            if (accounts == null)
+                return;
+
+            foreach (var account in accounts)
+            {
+                account.EavesdropperUserId = null;
+            }
+        }
+
+        [RemoteMethod]
+        public void DisconnectEavesdroppingCall(CallInfo callInfo, string eavesdropperId)
+        {
+            SipDialog dialog = SipServer.Dialogs.FirstOrDefault(t =>
+                (t.FromAccount != null && t.FromAccount.EavesdropperUserId == eavesdropperId) ||
+                (t.ToAccount != null && t.ToAccount.EavesdropperUserId == eavesdropperId)
+                );
+
+            if (dialog == null)
+                return;
+
+            SipServer.DisconnectEavesdropperDialog(dialog);
+        }
+
+        [RemoteMethod]
+        public void ReleaseEavesdropper(CallInfo callInfo, string accountUserId)
+        {
+            SipAccount account = SipServer.Accounts.SingleOrDefault(t => t.UserID == accountUserId);
+
+            if (account == null)
+                return;
+
+            account.EavesdropperUserId = null;
+        }
+
+        //[RemoteMethod]
+        //public void DisconnectEavesdropperDialog(CallInfo callInfo, string eavesdropperId)
+        //{
+        //    SipDialog eavesdroppingDialog = SipServer.Dialogs.SingleOrDefault(t => t.Extension == "ed" && t.ToAccount.UserID == eavesdropperId);
+
+        //    if (eavesdroppingDialog == null)
+        //        return;
+
+        //    eavesdroppingDialog.Disconnected(DisconnectCause.EavesdroppingDisconnected);
+        //}
+
+        [RemoteMethod]
+        public void SetDialogExtension(CallInfo callInfo, string dialogID, string extension)
+        {
+            try
+            {
+                var dialog = SipServer.Dialogs.FirstOrDefault(d => d.DialogID == dialogID);
+                if (dialog == null)
+                {
+                    Logger.WriteInfo("dialog '{0}' for SetDialogExtension not found.", dialogID);
+                    return;
+                }
+                dialog.Extension = extension;
+                Call(callInfo.SourceClientID, "SetDialogExtensionConfirm");
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex, "SetDialogExtension");
+            }
+        }
+
+        [RemoteMethod]
+        public void SetDialogDivertPartnerExtension(CallInfo callInfo, string dialogID, string extension)
+        {
+            try
+            {
+                var dialog = SipServer.Dialogs.FirstOrDefault(d => d.DialogID == dialogID);
+                dialog.DivertPartner.Extension = extension;
+                Call(callInfo.SourceClientID, "SetDialogDivertPartnerExtensionConfirm");
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex, "SetDialogDivertPartnerExtension");
+            }
+        }
+
+        [RemoteMethod]
+        public void RequestVoiceByUser(CallInfo callInfo, string voiceName, Guid userID)
+        {
+            try
+            {
+                Logger.WriteDebug("RequestVoiceByUser '{0}'", voiceName);
+                string directoryName;
+
+                Call call;
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    call = dc.Calls.FirstOrDefault(p => p.ID.ToString() == voiceName);
+                    directoryName = call.CallTime.ToString("yyyy-MM-dd");
+                    Folder.UserLog.AddWithRecordID(call.ID, (int)UMSV.UmsLogSubject.HearVoice, "Voice", voiceName);
+                }
+
+                using (Folder.FolderDataContext dc = new Folder.FolderDataContext())
+                {
+                    var content = new XElement("Row");
+                    content.Add(new XAttribute("شناسه", call.DialogID));
+
+                    dc.Logs.InsertOnSubmit(new Folder.Log()
+                    {
+                        RecordID = call.ID,
+                        Subject = (int)UMSV.UmsLogSubject.HearVoice,
+                        Type = (int)LogType.Info,
+                        Content = content,
+                        UserID = userID,
+                    });
+                    dc.SubmitChanges();
+                }
+
+                voiceName += ".raw";
+                string[] paths = new string[]{
+                    Config.Default.VoiceDirectory,
+                    directoryName,
+                    voiceName
+                };
+
+                var path = Path.Combine(paths);
+
+                if (System.IO.File.Exists(path))
+                {
+                    byte[] voice = System.IO.File.ReadAllBytes(path);
+                    Logger.WriteDebug("RequestVoice: {0}, size: {1}", voiceName, voice.Length);
+                    Call(callInfo.SourceClientID, "ResponseVoice", voiceName, voice);
+                }
+                else
+                {
+                    Logger.WriteWarning("RequestVoice: {0}, but not exists.", voiceName);
+                    Call(callInfo.SourceClientID, "ResponseVoice", voiceName, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        [RemoteMethod]
+        public void RequestVoice(CallInfo callInfo, string voiceName)
+        {
+            try
+            {
+                Logger.WriteDebug("RequestVoice '{0}'", voiceName);
+                string directoryName;
+
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    var call = dc.Calls.FirstOrDefault(p => p.ID.ToString() == voiceName);
+                    directoryName = call.CallTime.ToString("yyyy-MM-dd");
+                }
+                voiceName += ".raw";
+                string[] paths = new string[]{
+                    Config.Default.VoiceDirectory,
+                    directoryName,
+                    voiceName
+                };
+
+                var path = Path.Combine(paths);
+
+                if (System.IO.File.Exists(path))
+                {
+                    byte[] voice = System.IO.File.ReadAllBytes(path);
+                    Logger.WriteDebug("RequestVoice: {0}, size: {1}", voiceName, voice.Length);
+                    Call(callInfo.SourceClientID, "ResponseVoice", voiceName, voice);
+                }
+                else
+                {
+                    Logger.WriteWarning("RequestVoice: {0}, but not exists.", voiceName);
+                    Call(callInfo.SourceClientID, "ResponseVoice", voiceName, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        [RemoteMethod]
+        public void ShutdownCiscoLink(CallInfo callInfo, Guid deviceID, string ciscoAddress, string ciscoPassword, string ciscoEnablePassword, int slot, int port, bool shutdown)
+        {
+            try
+            {
+                Logger.WriteInfo("ShutdownCiscoLink ciscoAddress:{0}", ciscoAddress);
+
+                Telnet.Terminal terminal = ConnectToCisco(ciscoAddress, ciscoPassword, ciscoEnablePassword);
+                if (terminal == null)
+                    return;
+                terminal.SendResponse("conf terminal", true);
+                string result = terminal.WaitForString("(config)#", false, 120);
+                terminal.SendResponse("controller E1 " + slot + "/" + port, true);
+                result = terminal.WaitForString("(config-controller)#", false, 120);
+
+                string command = shutdown ? "shutdown" : "no shutdown";
+                terminal.SendResponse(command, true);
+                terminal.WaitForString("(config-controller)#", false, 120);
+
+                Logger.WriteDebug("ShutdownCiscoLink done: {0}", terminal.VirtualScreen);
+                terminal.Wait(1);
+                terminal.Close();
+
+                InquiryCiscoLinkState(callInfo, deviceID, ciscoAddress, ciscoPassword, ciscoEnablePassword, slot, port);
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        private Telnet.Terminal ConnectToCisco(string ciscoAddress, string ciscoPassword, string ciscoEnablePassword)
+        {
+            try
+            {
+                Telnet.Terminal terminal = new Telnet.Terminal(ciscoAddress);
+                if (!terminal.Connect())
+                {
+                    Logger.WriteError("Error connecting to CISCO!");
+                    return null;
+                }
+
+                var result = terminal.WaitForString("Password:", false, 120);
+                if (string.IsNullOrEmpty(result))
+                {
+                    Logger.WriteError("Not connected to switch, no Password phrase.");
+                    terminal.Close();
+                    return null;
+                }
+                Logger.WriteDebug("Connected to switch, Got 'Password' phrase!");
+                terminal.SendResponse(ciscoPassword, true);
+
+                result = terminal.WaitForString(">", false, 120);
+                if (string.IsNullOrEmpty(result))
+                {
+                    Logger.WriteError("Invalid password");
+                    terminal.Close();
+                    return null;
+                }
+
+                terminal.SendResponse("enable", true);
+                result = terminal.WaitForString("Password:", false, 120);
+                terminal.SendResponse(ciscoEnablePassword, true);
+
+                result = terminal.WaitForString("#", false, 120);
+                if (string.IsNullOrEmpty(result))
+                {
+                    Logger.WriteError("Invlaid enable password!");
+                    terminal.Close();
+                    return null;
+                }
+                return terminal;
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return null;
+            }
+        }
+
+        [RemoteMethod]
+        public void InquiryCiscoLinkState(CallInfo callInfo, Guid deviceID, string ciscoAddress, string ciscoPassword, string ciscoEnablePassword, int slot, int port)
+        {
+            try
+            {
+                Logger.WriteInfo("InquiryCiscoLinkState ciscoAddress:{0}", ciscoAddress);
+
+                Telnet.Terminal terminal = ConnectToCisco(ciscoAddress, ciscoPassword, ciscoEnablePassword);
+                if (terminal == null)
+                    return;
+                terminal.SendResponse("show controllers E1 " + slot + "/" + port + " brief", true);
+                string result = terminal.WaitForRegEx(@".+\.", 120);
+                terminal.Wait(1);
+                terminal.Close();
+
+                Call(callInfo.SourceClientID, "ResponseInquiryCiscoLinkState", deviceID, slot, port, result);
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+    }
+}

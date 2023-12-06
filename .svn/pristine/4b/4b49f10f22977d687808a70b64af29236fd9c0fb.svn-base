@@ -1,0 +1,49 @@
+﻿<Window x:Class="Plugin.Mailbox.AnswerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:f="clr-namespace:Folder.Audio;assembly=Folder.Audio"
+        FontFamily="Tahoma"
+        FlowDirection="RightToLeft"
+        Title="پاسخ به پرسش"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" SizeToContent="WidthAndHeight"
+        Topmost="True" ShowInTaskbar="False" Loaded="Window_Loaded">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom"
+                    Height="40"
+                    Background="#FFF5F5F5"
+                    FlowDirection="LeftToRight"
+                    Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Width"
+                            Value="70" />
+                    <Setter Property="Height"
+                            Value="21" />
+                    <Setter Property="Margin"
+                            Value="5,0,0,0" />
+                </Style>
+            </StackPanel.Resources>
+            <Button IsCancel="True">انصراف</Button>
+            <Button x:Name="okButton"
+                    IsDefault="True"
+                    Click="okButton_Click">تاييد</Button>
+        </StackPanel>
+        <StackPanel>
+            <WrapPanel Margin="5">
+                <Label>شماره رهگیری پرسش:</Label>
+                <TextBox Name="FolloupCode" IsReadOnly="True" Width="100"></TextBox>
+            </WrapPanel>
+            <WrapPanel Margin="5">
+                <Label>پیغام صوتی:</Label>
+                <f:SoundControl HorizontalAlignment="Left"
+                            x:Name="soundControl" />
+            </WrapPanel>
+            <CheckBox  Margin="5" IsChecked="True" Name="RemoveAsk">حذف پرسش</CheckBox>
+            <WrapPanel Margin="5">
+                <Label>زمان اعتبار پیام (دقیقه)</Label>
+                <TextBox Name="Expire" Width="100"></TextBox>
+            </WrapPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

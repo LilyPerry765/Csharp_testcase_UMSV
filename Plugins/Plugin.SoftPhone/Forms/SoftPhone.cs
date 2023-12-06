@@ -1,0 +1,477 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Runtime.InteropServices;
+using Folder;
+using Enterprise;
+using UMSV.Schema;
+using Folder.Audio;
+using System.IO;
+using System.Net;
+using System.Media;
+
+namespace UMSV
+{
+    public abstract class SoftPhone
+    {
+        #region Events
+        public event EventHandler CallDisconnected;
+        public event EventHandler CallAnswered;
+        public event EventHandler Registered;
+        public event EventHandler<UnRegisteredEventArgs> UnRegistered;
+        public event EventHandler CallRejected;
+        public event EventHandler TransferFailed;
+        public event EventHandler<IncommingCallEventArgs> IncommingCall;
+        public event EventHandler<MessageArrivedEventArgs> MessageArrived;
+        #endregion
+
+        #region Properties
+
+        private string CurrentDialogID { get; set; }
+        public  int? HoldEventRecord { get; set; }
+        private int? DndEventRecord { get; set; }
+
+        protected SoundPlayer IncommingCallPlayer { get; set; }
+        protected int CallFailureCounter { get; set; }
+        protected int OperatorUserIDAnnounceTime { get; set; }
+        protected IPEndPoint LocalAddress { get; set; }
+        protected bool IsAutoAnswer
+        {
+            get
+            {
+                return User.Current.GetProfileValue<bool>(Constants.UserProfileKey_AutoAnswer, false);
+            }
+        }
+
+        public bool IsHolded { get; set; }
+        public string CallerID { get; set; }
+        public string DialogID { get; set; }
+        public bool DoNotDisturb = false;
+        public ushort _PlaybackVolume;
+        public ushort PlaybackVolume
+        {
+            get
+            {
+                return _PlaybackVolume;
+            }
+            set
+            {
+                _PlaybackVolume = value;
+                var mixer = new Mixer(MixerType.Playback);
+                foreach (MixerLine line in mixer.Lines)
+                {
+                    line.Mute = false;
+                    line.Volume = value;
+                }
+            }
+        }
+        public SipAccountStatus _AccountStatus;
+        public SipAccountStatus AccountStatus
+        {
+            get
+            {
+                return _AccountStatus;
+            }
+            set
+            {
+                if (_AccountStatus != value)
+                {
+                    Logger.WriteView("AccountStatus: '{0}' -> '{1}'", AccountStatus, value);
+                    _AccountStatus = value;
+                }
+            }
+        }
+
+        #endregion
+
+        #region static members
+
+        public static event EventHandler InstanceCreated;
+
+        public static SoftPhone CreateInstance()
+        {
+            SoftPhone instance;
+            bool umsvSoftPhone = User.Current.GetProfileValue<bool>(Constants.UserProfileKey_UseUmsvSoftPhone, false);
+            if (umsvSoftPhone)
+                instance = new UmsvSoftPhone();
+            else
+                instance = new PortSipSoftPhone();
+
+            if (InstanceCreated != null)
+                InstanceCreated(instance, EventArgs.Empty);
+
+            return instance;
+
+        }
+
+        [DllImport("kernel32.dll")]
+        protected static extern bool Beep(int freq, int dur);
+        #endregion
+
+        #region Constructors
+        public SoftPhone()
+        {
+            IncommingCallPlayer = new SoundPlayer();
+            CallFailureCounter = 0;
+            OperatorUserIDAnnounceTime = 5000;
+            _AccountStatus = SipAccountStatus.Offline;
+            IsHolded = false;
+        }
+        #endregion
+
+        #region Private methods
+        public  void SaveUnHold()
+        {
+            if (HoldEventRecord.HasValue)
+            {
+                var serverTime = new FolderDataContext().GetDate().Value;
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    var record = dc.Sessions.FirstOrDefault(c => c.ID == HoldEventRecord);
+                    if (record == null)
+                        return;
+                    record.EndTime = serverTime;
+                    record.ExplicitEnd = true;
+                    dc.SubmitChanges();
+                    Logger.WriteInfo("UnHold record saved: {0}", HoldEventRecord);
+                    HoldEventRecord = null;
+                }
+            }
+        }
+
+        private void SaveDnd()
+        {
+            if (DndEventRecord.HasValue)
+            {
+                var serverTime = new FolderDataContext().GetDate().Value;
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    var record = dc.Sessions.FirstOrDefault(c => c.ID == DndEventRecord.Value);
+                    if (record == null)
+                        return;
+                    record.EndTime = serverTime;
+                    Folder.Console.ShowStatusMessage("DND End, Duration: {0} (minutes)", (int)record.EndTime.Subtract(record.StartTime).TotalMinutes);
+                    record.ExplicitEnd = true;
+                    dc.SubmitChanges();
+                    Logger.WriteInfo("DND record saved: {0}", DndEventRecord.Value);
+                    DndEventRecord = null;
+                }
+            }
+        }
+        #endregion
+
+        #region Protected Methods
+        protected void CheckCallFailureCounter()
+        {
+            if (CallFailureCounter > UMSV.Schema.Config.Default.OperatorMaxAllowedNoAnswerCalls)
+            {
+                Logger.WriteWarning("OperatorMaxAllowedNoAnswerCalls reached!");
+                Stop();
+            }
+            else
+            {
+                //Folder.Console.ShowStatusMessage("{0} تماس بدون پاسخ متوالی", CallFailureCounter);
+            }
+        }
+
+        protected void OnCallDisconnected()
+        {
+            if (CallDisconnected != null)
+                CallDisconnected(this, EventArgs.Empty);
+        }
+
+        protected void OnTransferFailed()
+        {
+            if (TransferFailed != null)
+                TransferFailed(this, EventArgs.Empty);
+        }
+
+        protected void OnCallAnswered()
+        {
+            if (CallAnswered != null)
+                CallAnswered(this, EventArgs.Empty);
+        }
+
+        protected void OnRegistered()
+        {
+            if (Registered != null)
+                Registered(this, EventArgs.Empty);
+        }
+
+        protected void OnUnRegistered()
+        {
+            if (UnRegistered != null)
+                UnRegistered(this, new UnRegisteredEventArgs() { });
+        }
+
+        protected void OnCallRejected()
+        {
+        }
+
+        protected void OnMessageArrived(string message)
+        {
+            if (MessageArrived != null)
+                MessageArrived(this, new MessageArrivedEventArgs(message));
+        }
+
+        protected void OnIncommingCall(IncommingCallEventArgs e)
+        {
+            CurrentDialogID = e.Dialog.Call.DialogID;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(User.Current[Constants.UserProfileKey_IncommingCallAnnounce]))
+                {
+                    IncommingCallPlayer.Stream = this.GetType().Assembly.GetManifestResourceStream(this.GetType().Namespace + ".Sound." + User.Current[Constants.UserProfileKey_IncommingCallAnnounce]);
+                    IncommingCallPlayer.Play();
+                }
+
+                bool playBeep = User.Current.GetProfileValue<bool>(Constants.UserProfileKey_IncommingCallBeep, false);
+                if (playBeep)
+                    Beep(3000, 1500);
+
+                if (IsAutoAnswer)
+                {
+                    AnswerCall();
+                    //System.Threading.ThreadPool.QueueUserWorkItem(delegate
+                    //{
+                    //    try
+                    //    {
+                    //        System.Threading.Thread.Sleep(Math.Max(OperatorUserIDAnnounceTime, 3000));
+                    //        CallAlertWindow.HideCallAlert();
+                    //        IncommingCallPlayer.Stop();
+                    //    }
+                    //    catch
+                    //    {
+                    //    }
+                    //});
+                    System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(delegate
+                    {
+                        try
+                        {
+                            System.Threading.Thread.Sleep(Math.Max(OperatorUserIDAnnounceTime, 3000));
+                            CallAlertWindow.HideCallAlert();
+                            IncommingCallPlayer.Stop();
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Write(ex);
+                            Logger.WriteImportant("An exception occured in automatic call answering...");
+                        }
+                    }));
+                    thread.Start();
+                }
+
+                if (IncommingCall != null)
+                    IncommingCall(this, e);
+
+                Folder.Console.ShowStatusMessage("تماس جدید");
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+        #endregion
+
+        #region abstracted methods
+
+        public abstract void SendDtmf(char key);
+        public abstract bool Call(string target);
+        public abstract void AnswerCall();
+        public abstract void RejectCall();
+        public abstract void UnRegister();
+        public abstract void DisconnectCall();
+        public abstract void Transfer(string target);
+        protected abstract void CreateOperatorUserIDAnnounceOnAnswer(string userID);
+
+        #endregion
+
+        #region Public Methods
+        public virtual void Stop()
+        {
+            CallAlertWindow.Accepted -= CallAlertWindow_Accepted;
+            CallAlertWindow.Rejected -= CallAlertWindow_Rejected;
+            ClearCall();
+            UnRegister();
+        }
+
+        public virtual bool Start(string username, string password)
+        {
+            CallAlertWindow.Accepted += CallAlertWindow_Accepted;
+            CallAlertWindow.Rejected += CallAlertWindow_Rejected;
+
+            CreateOperatorUserIDAnnounceOnAnswer(username);
+
+            string localIP = string.Empty;
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily.ToString() == "InterNetwork")
+                {
+                    localIP = ip.ToString();
+                    break;
+                }
+            };
+
+            int localPort = new Random().Next(Config.Default.SoftPhoneLocalPortFrom, Config.Default.SoftPhoneLocalPortTo);
+            LocalAddress = new IPEndPoint(IPAddress.Parse(localIP), localPort);
+
+            return true;
+        }
+
+        public virtual void DndStart()
+        {
+            Folder.Console.ShowStatusMessage("DND Start: {0}", DateTime.Now.ToShortTimeString());
+
+            #region Save DND client event at server
+            var serverTime = new FolderDataContext().GetDate().Value;
+            using (UmsDataContext dc = new UmsDataContext())
+            {
+                var record = new Session()
+                {
+                    StartTime = serverTime,
+                    EndTime = serverTime,
+                    UserID = User.Current.ID,
+                    SipID = User.Current.Username,
+                    MachineAddress = BitConverter.ToInt32(LocalAddress.Address.GetAddressBytes(), 0),
+                    Type = (int)ClientEventType.Dnd,
+                };
+                dc.Sessions.InsertOnSubmit(record);
+                dc.SubmitChanges();
+                DndEventRecord = record.ID;
+                DoNotDisturb = true;
+                Logger.WriteInfo("DND record saved: {0}", record.ID);
+            }
+            #endregion
+        }
+
+        public virtual void DndEnd()
+        {
+            DoNotDisturb = false;
+            SaveDnd();
+        }
+
+        public void CallAlertWindow_Accepted(object sender, EventArgs e)
+        {
+            IncommingCallPlayer.Stop();
+            AnswerCall();
+        }
+
+        public void CallAlertWindow_Rejected(object sender, EventArgs e)
+        {
+            Logger.WriteInfo("Call rejected");
+            if (CallRejected != null)
+                CallRejected(this, EventArgs.Empty);
+
+            IncommingCallPlayer.Stop();
+            CallFailureCounter++;
+            RejectCall();
+            CheckCallFailureCounter();
+        }
+
+        public void MuteMicrophone(bool mute)
+        {
+            var RecMixer = new Mixer(MixerType.Recording);
+            string microphoneMixerName = User.Current.GetProfileValue<string>(Constants.UserProfileKey_MicrophoneMixerName);
+            if (!string.IsNullOrEmpty(microphoneMixerName))
+            {
+                foreach (MixerLine line in RecMixer.Lines)
+                {
+                    if (line.Name == microphoneMixerName)
+                    {
+                        line.Mute = mute;
+                        line.Selected = !mute;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void MutePlayback(bool mute)
+        {
+            var mixer = new Mixer(MixerType.Playback);
+            string playbackMixerName = User.Current.GetProfileValue<string>(Constants.UserProfileKey_PlaybackMixerName);
+            if (!string.IsNullOrEmpty(playbackMixerName))
+            {
+                foreach (MixerLine line in mixer.Lines)
+                {
+                    if (line.Name == playbackMixerName)
+                    {
+                        line.Mute = mute;
+                        line.Selected = !mute;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void ClearCall()
+        {
+            SaveUnHold();
+            SaveDnd();
+        }
+
+        public virtual void Hold()
+        {
+            //if (IsHolded)
+            //    return;
+
+            //IsHolded = true;
+            ////VoipServiceClient.Default.Hold(CurrentDialogID);
+
+            //Folder.Console.ShowStatusMessage("تماس در حالت Hold");
+
+            //#region Save Hold client event at server
+            //var serverTime = new FolderDataContext().GetDate().Value;
+            //using (UmsDataContext dc = new UmsDataContext())
+            //{
+            //    var record = new Session()
+            //    {
+            //        StartTime = serverTime,
+            //        EndTime = serverTime,
+            //        UserID = User.Current.ID,
+            //        SipID = User.Current.Username,
+            //        MachineAddress = BitConverter.ToInt32(LocalAddress.Address.GetAddressBytes(), 0),
+            //        Type = (int)ClientEventType.Hold,
+            //    };
+            //    dc.Sessions.InsertOnSubmit(record);
+            //    dc.SubmitChanges();
+            //    HoldEventRecord = record.ID;
+            //    Logger.WriteInfo("Hold record saved: {0}", HoldEventRecord);
+            //}
+
+            //Logger.WriteInfo("Start 5");
+
+            //#endregion
+
+        }
+
+        public void ChangeHold()
+        {
+            if (IsHolded)
+                UnHold();
+            else
+                Hold();
+        }
+
+        public virtual void UnHold()
+        {
+            //if (!IsHolded)
+            //    return;
+
+            //IsHolded = false;
+            ////VoipServiceClient.Default.UnHold(CurrentDialogID);
+            //Folder.Console.ShowStatusMessage("برقراری مکالمه ...");
+
+            //if (HoldEventRecord.HasValue)
+            //    SaveUnHold();
+            //else
+            //    Logger.WriteException("Hold record not set before on unhold!");
+        }
+
+        #endregion
+    }
+}

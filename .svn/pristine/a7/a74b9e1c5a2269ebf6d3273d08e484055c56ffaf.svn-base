@@ -1,0 +1,9 @@
+ACK {0} SIP/2.0
+Via: SIP/2.0/UDP [SipProxyAddress];branch={1}
+From: {2}
+Call-ID: {3}
+To: {4}
+CSeq: 1 ACK
+User-Agent: CallCenter
+Content-Length: 0
+

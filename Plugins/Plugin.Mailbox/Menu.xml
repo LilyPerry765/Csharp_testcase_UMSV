@@ -1,0 +1,5 @@
+﻿<Menu xmlns="http://tempuri.org/Menu.xsd">
+  <MenuItem Header="ایجاد دسته ای صندوق" Tab="UMSV" Group="صندوق صوتی" Icon="Images/mailboxAdd.png" Class="Plugin.Mailbox.Views.MailboxBatchView" ViewModelClass="Plugin.Mailbox.ViewModels.MailboxBatchViewModel"/>
+  <MenuItem Header="پیامها"  Tab="UMSV" Group="صندوق صوتی" Icon="Images/voiceMail.png" Class="Plugin.Mailbox.MailboxMessagesForm" />
+  <MenuItem Header="صندوقهای صوتی"       Tab="UMSV" Group="صندوق صوتی" Icon="Images/MailBox.png" Class="Plugin.Mailbox.Views.MailBoxView"  ViewModelClass="Plugin.Mailbox.ViewModels.MailBoxViewModel" />
+</Menu>

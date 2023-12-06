@@ -1,0 +1,255 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Enterprise;
+using System.Linq.Expressions;
+using Folder;
+using Folder.Audio;
+using System.IO;
+using Microsoft.Win32;
+
+namespace UMSV
+{
+    public partial class TalkDetailForm : UserControl, IDataGridForm, IFolderForm
+    {
+        UmsDataContext dc = new UmsDataContext();
+        Guid AllGroups = Guid.NewGuid();
+
+        public TalkDetailForm()
+        {
+            InitializeComponent();
+        }
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            UserCallerIDColumn.ItemsSource = UserColumn.ItemsSource = User.Current.SubUsers.OrderBy(u => u.Fullname).Select(u => new NameValue()
+            {
+                Value = u.Username,
+                Name = u.Fullname
+            });
+
+            var causeList = Utility.CreateEnumDataSource(typeof(DisconnectCause), typeof(int));
+            causeList.Insert(0, new NameValue()
+            {
+                Name = "",
+                Value = null
+            });
+
+            CauseColumnFilter.ItemsSource = causeList;
+
+            FillGroupList();
+            FillOperatorsList();
+
+            FromDate.SelectedDate = DateTime.Today;
+            using (UmsDataContext dc = new UmsDataContext())
+            {
+                var graphs = dc.Graphs.ToList();
+                graphs.Insert(0, new Graph()
+                {
+                    ID = Guid.Empty,
+                    Name = "",
+                });
+                ServiceColumn.ItemsSource = ServiceColumnFilter.ItemsSource = graphs;
+            }
+
+            VoIPServiceClient_Plugin_UMSV.Default.OnResponseVoice += Default_OnResponseVoice;
+            helper.Closing += delegate
+            {
+                VoIPServiceClient_Plugin_UMSV.Default.OnResponseVoice -= Default_OnResponseVoice;
+            };
+        }
+
+        private void FillGroupList()
+        {
+            var groups = User.Current.AllRoles.Where(r => r.ParentID == Constants.TeamsRole).OrderBy(g => g.Name).ToList();
+
+            groups.Insert(0, new Role()
+            {
+                Name = "[همه تیم ها]",
+                ID = AllGroups,
+            });
+
+            GroupComboxBox.ItemsSource = groups;
+            GroupComboxBox.SelectedIndex = 0;
+
+        }
+
+        void ViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                dc = new UmsDataContext();
+
+                Folder.Console.ShowProgress();
+                DateTime? from = FromDate.SelectedDate;
+                DateTime? to = ToDate.SelectedDate;
+                Guid selectedService = ServiceColumnFilter.SelectedValue == null ? Guid.Empty : (Guid)(Guid?)ServiceColumnFilter.SelectedValue;
+
+                List<string> operators;
+
+                if (OperatorComboxBox.SelectedIndex != 0)
+                {
+                    operators = new List<string>();
+                    operators.Add(((NameValue)OperatorComboxBox.SelectedItem).Value.ToString());
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(CalleeIDTextbox.Text))
+                        operators = ((List<NameValue>)OperatorComboxBox.ItemsSource).Select(n => n.Value.ToString()).ToList();
+                    else
+                    {
+                        operators = new List<string>();
+                        operators.Add(CalleeIDTextbox.Text);
+                    }
+
+                }
+
+                var value = dc.Calls.Where(c =>
+                        (CallerIDTextbox.Text == string.Empty || CallerIDTextbox.Text == c.CallerID) &&
+                        (tokenTextbox.Text == string.Empty || c.DialogID.Contains(tokenTextbox.Text) || c.Extension.Contains(tokenTextbox.Text)) &&
+                        (CauseColumnFilter.SelectedValue == null || (int?)CauseColumnFilter.SelectedValue == c.DisconnectCause) &&
+                        (selectedService == Guid.Empty || (c.GraphID.HasValue && selectedService == (Guid)c.GraphID)) &&
+                        (
+                            (TypeIncomingComboxBox.IsChecked == true && c.Type == (int)DialogType.ClientIncomming && operators.Contains(c.CalleeID)) ||
+                            (TypeOutgoingComboxBox.IsChecked == true && c.Type == (int)DialogType.ClientOutgoing && operators.Contains(c.CallerID))
+                        ) &&
+                        (from == null || c.CallTime >= from) &&
+                        (to == null || c.CallTime < to));
+
+                var items = value.OrderBy(c => c.CallTime);
+                dataGrid.ItemsSource = items;
+                Folder.Console.ShowStatusMessage("تعداد رکوردها: '{0}'", items.Count());
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+            finally
+            {
+                Folder.Console.HideProgress();
+            }
+        }
+
+        #region IDataGridForm Members
+
+        public DataGrid DataGrid
+        {
+            get
+            {
+                return dataGrid;
+            }
+        }
+
+        #endregion
+
+        private void ShowCallID_Checked(object sender, RoutedEventArgs e)
+        {
+            DialogIDColumn.Visibility = CallIDColumn.Visibility = ShowCallID.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void dataGrid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+
+        }
+
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!Folder.EMQ.ClientTransport.Default.IsConnected)
+            {
+                Folder.EMQ.ClientTransport.Default.Start();
+                Folder.EMQ.ClientTransport.Default.ConnectToServer();
+                System.Threading.Thread.Sleep(2000);
+            }
+
+            if (!Folder.EMQ.ClientTransport.Default.IsConnected)
+            {
+                Folder.MessageBox.ShowError("ارتباط با سرور جهت دانلود فایل صدا برقرار نشد، لطفا دوباره سعی کنید!");
+                return;
+            }
+
+            Guid callID = (Guid)((sender as Image).Tag);
+            VoIPServiceClient_Plugin_UMSV.Default.RequestVoiceByUser(callID.ToString(), User.Current.ID);
+            Folder.Console.ShowStatusMessage("در حال ارتباط با سرور جهت دانلود فایل صدا، لطفا صبر کنید ...");
+            Folder.Console.ShowProgress();
+        }
+
+        void Default_OnResponseVoice(string voiceName, byte[] voice)
+        {
+            Folder.Console.HideProgress();
+            Dispatcher.Invoke((Action)(() =>
+            {
+                if (voice == null)
+                {
+                    Logger.WriteError("Voice file '{0}' not found in server.", voiceName);
+                    Folder.MessageBox.ShowError("فایل صوتی مورد نظر در سرور وجود ندارد.");
+                    return;
+                }
+
+                var dialog = new SaveFileDialog()
+                {
+                    DefaultExt = "wav",
+                    Filter = "*.wav|*.wav|All files|*.*",
+                    FileName = "Voice.wav"
+                };
+                if (dialog.ShowDialog() == true)
+                {
+                    Folder.Audio.AudioUtility.SaveAsAlawWaveFile(dialog.FileName, voice);
+                    System.Diagnostics.Process.Start(dialog.FileName);
+                }
+            }));
+        }
+
+        private void GroupComboxBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FillOperatorsList();
+        }
+
+        private void FillOperatorsList()
+        {
+            Role group = (Role)GroupComboxBox.SelectedItem;
+
+            List<NameValue> operators;
+            if (GroupComboxBox.SelectedIndex == 0 || group == null)
+                operators = User.Current.SubUsers.OrderBy(u => u.Fullname).Select(u => new NameValue()
+                {
+                    Value = u.Username,
+                    Name = u.Fullname
+                }).OrderBy(o => o.Name).ToList();
+            else
+                operators = User.Current.SubUsers.OrderBy(u => u.Fullname).Where(s => s.RoleNames.Split(new string[] { "، " }, StringSplitOptions.RemoveEmptyEntries).Contains(group.Name)).Select(u => new NameValue()
+                {
+                    Value = u.Username,
+                    Name = u.Fullname
+                }).OrderBy(o => o.Name).ToList();
+
+            operators.Insert(0, new NameValue()
+            {
+                Name = "[همه کاربران]",
+                Value = 0
+            });
+
+            OperatorComboxBox.ItemsSource = operators;
+            OperatorComboxBox.SelectedIndex = 0;
+
+        }
+
+        private void HearHistory_Click(object sender, RoutedEventArgs e)
+        {
+            if ((dataGrid.SelectedItem as Call) == null)
+                return;
+            CallHearHistoryForm form = new CallHearHistoryForm();
+            form.VoiceID = (dataGrid.SelectedItem as Call).ID;
+            Folder.Console.Navigate(form, "سوابق شنود مکالمه");
+        }
+    }
+}

@@ -1,0 +1,15 @@
+﻿<Window x:Class="UMSV.TransferForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ترانسفر" Height="175" Width="300" FlowDirection="RightToLeft" FontFamily="Tahoma" Loaded="Window_Loaded" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" Topmost="True">
+    <DockPanel>
+        <WrapPanel HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="10">
+            <Button Content="ترانسفر" Height="23" Name="TransferButton" Width="75" Margin="3" IsDefault="True" Click="TransferButton_Click" />
+            <Button Content="انصراف" Height="23" Width="75" Margin="3" IsCancel="True" />
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label Content="شماره تلفن مقصد:" Height="28" VerticalAlignment="Center" />
+            <TextBox Height="23" Name="PhoneNumberTextbox" VerticalAlignment="Center" Width="120" AcceptsReturn="False" />
+        </WrapPanel>
+    </DockPanel>
+</Window>

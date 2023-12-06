@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="UMSV.InformingRecordsGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="489">
+    <UserControl.Resources>
+        <conv:PersianDateConverter x:Key="PersianDateConverter" />
+    </UserControl.Resources>
+    <DockPanel>
+        <Label DockPanel.Dock="Bottom"
+               Content="{Binding CounterStatus}"
+               Foreground="Gray">
+            <Label.Effect>
+                <DropShadowEffect ShadowDepth="1"
+                                  Opacity=".3" />
+            </Label.Effect>
+        </Label>
+        <DataGrid 
+                  x:Name="ItemsDataGrid"
+                  AutoGenerateColumns="False"
+                  SelectionUnit="FullRow"
+                  EnableRowVirtualization="True"                  
+                  CanUserAddRows="True"
+                  CanUserSortColumns="False"
+                  ItemsSource="{Binding InformingRecords}"
+                  RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=Phone}"
+                                    Header="شماره تلفن"
+                                    MinWidth="100"
+                                    Width="*" />
+                <DataGridTextColumn Binding="{Binding Path=CallCount,UpdateSourceTrigger=PropertyChanged}"
+                                    Header="تعداد تماس"
+                                    IsReadOnly="True"
+                                    Width="*" />
+                <DataGridTextColumn Binding="{Binding Path=LastCallTime, Converter={StaticResource PersianDateConverter}, StringFormat=yyyy/MM/dd HH:MM}"
+                                    Header="تاریخ آخرین تلاش"
+                                    IsReadOnly="True"
+                                    Width="*" />
+                <DataGridTextColumn Binding="{Binding Path=LastCallTime, StringFormat=HH:mm:ss }"
+                                    Header="زمان آخرين تلاش"
+                                    IsReadOnly="True"
+                                    Width="*" />
+                <DataGridTextColumn Binding="{Binding Path=LastDisconnectedTime, StringFormat=HH:mm:ss}"
+                                    Header="زمان آخرین قطع"
+                                    IsReadOnly="True"
+                                    Width="*" />
+                <DataGridTextColumn Binding="{Binding Path=Status, Converter={x:Static conv:InformingStatusConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" 
+                                    xmlns:conv="clr-namespace:Pendar.Ums.Model.Converters;assembly=UMSV.Common"
+                                    Header="وضعيت"
+                                    IsReadOnly="True"
+                                    Width="*" />
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu x:Name="contextMenu">
+                    <MenuItem Header="جديد"
+                              x:Name="NewMenuItem"
+                              Command="{Binding AddRecordCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="\Images\new.png"
+                                   Width="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="تازه سازی"
+                              Command="{Binding RefreshCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="\Images\refresh.png"
+                                   Width="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="بازسازی وضعیت ها"
+                              Command="{Binding RebuildCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="\Images\refresh.png"
+                                   Width="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="دريافت از فايل"
+                              Command="{Binding ImportRecordsCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="\Images\import.png"
+                                   Width="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="استخراج ليست آيتم ها"
+                              Command="{Binding ExportCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="\Images\csv.png"
+                                   Width="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="استخراج ليست آيتم های مرتب شده"
+                              Command="{Binding SortedExportCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="\Images\csv.png"
+                                   Width="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="ريست کردن وضعيت ها"
+                              Command="{Binding ResetStatusCommand}" />
+                    <MenuItem Header="حذف"
+                              Command="Delete">
+                        <MenuItem.Icon>
+                            <Image Source="\Images\delete16.png"
+                                   Width="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="حذف همه رکوردها"
+                              Command="{Binding DeleteAllCommand}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

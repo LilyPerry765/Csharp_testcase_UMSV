@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Config"
+    targetNamespace="http://tempuri.org/Config.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/Config.xsd"
+    xmlns:mstns="http://tempuri.org/Config.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="Config">
+    <xs:complexType>
+      <xs:attribute name="NormalResultCount" type="xs:int" use="optional" default="200" />
+      <xs:attribute name="MaxTalkTime" type="xs:int" use="optional" default="180" />
+      <xs:attribute name="AdvancedResultCount" type="xs:int" use="optional" default="1000" />
+      <xs:attribute name="DefaultCityCode" type="xs:string" use="optional" />
+      <xs:attribute name="DefaultCityID" type="xs:int" use="optional" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

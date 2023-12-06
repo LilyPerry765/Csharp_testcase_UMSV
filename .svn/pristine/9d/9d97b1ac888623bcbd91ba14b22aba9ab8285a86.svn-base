@@ -1,0 +1,5 @@
+﻿<Menu xmlns="http://tempuri.org/Menu.xsd">
+  <MenuItem Header="گزارشات آماری" Tab="UMSV" Group="گزارشات" Icon="Images\Summary.png" Class="UMSV.ReportsList" />
+  <MenuItem Header="تماسها" Tab="UMSV" Group="گزارشات" Icon="Images\Calls.png" Class="UMSV.CallDetailForm" />
+  <MenuItem Header="مکالمات" Tab="UMSV" Group="گزارشات" Icon="Images\Calls.png" Class="UMSV.TalkDetailForm" />
+</Menu>

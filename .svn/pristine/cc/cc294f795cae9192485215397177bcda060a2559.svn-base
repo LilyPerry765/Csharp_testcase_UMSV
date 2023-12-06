@@ -1,0 +1,89 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.Security;
+using System.Web.Services;
+using System.Web.Script.Services;
+using System.Xml.Linq;
+
+
+namespace UMS.Informing.WebInterface.MasterPages
+{
+    public partial class MainMaster : System.Web.UI.MasterPage
+    {
+        #region Events
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                // UserNameLabel.Text = Context.User.Identity.Name;
+                if (Folder.User.Current == null || Folder.User.Current.Username == null)
+                    Response.Redirect("LoginForm.aspx");
+                else
+                    UserNameLabel.Text = Folder.User.Current.Username;
+            }
+            catch { }
+        }
+
+        protected void ExitButton_Click(object sender, EventArgs e)
+        {
+            FormsAuthentication.SignOut();
+            Response.Cookies.Clear();
+            Response.Cookies.Remove("Username");
+            Response.Cookies["Username"].Expires = DateTime.Now.AddDays(-1);
+            Folder.User.Current = null;
+
+            //StopEMQ();
+
+            Response.Redirect("LoginForm.aspx");
+        }
+
+
+        //private void StopEMQ()
+        //{
+        //    Folder.EMQ.ClientTransport.Default.Stop();
+        //}
+
+        protected void SaveButton_Click(object sender, EventArgs e)
+        {
+            //TicketDB.SaveHelpDeskTicket(-1, new List<string>(), DescriptionTextBox.Text.Trim(), string.Empty, null, null, null, null, null, null, null);
+            DescriptionTextBox.Text = string.Empty;
+        }
+
+        protected void TicketListButton_Click(object sender, EventArgs e)
+        {
+            if (TicketListButton.Text == "لیست تیکت")
+                Response.Redirect("TicketList.aspx");
+            else if (TicketListButton.Text == "داشبورد مدیریتی")
+                Response.Redirect("Dashboard.aspx");
+        }
+
+        #endregion
+
+        #region Methods
+
+        private string GetExternalIPAddress()
+        {
+            string ipList = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            if (!string.IsNullOrEmpty(ipList))
+                return ipList.Split(',')[0];
+            return Request.ServerVariables["REMOTE_ADDR"];
+        }
+        private string GetLocalIPAddress()
+        {
+            string localIP = string.Empty;
+            foreach (System.Net.IPAddress ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    localIP = ip.ToString();
+            }
+            return localIP;
+        }
+
+        #endregion
+    }
+}

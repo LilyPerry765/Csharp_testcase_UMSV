@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="UMSV.OperatorStatusControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             Height="85" Cursor="Hand">
+    <StackPanel Margin="3">
+        <Grid Width="70" Height="70">
+            <Image Source="..\Images\Accounts.png" />
+            <Image Name="TalkingExternalImage" Visibility="Collapsed" Source="..\Images\TalkingExternal.png" HorizontalAlignment="Center" Width="24" VerticalAlignment="Bottom" Margin="0,0,0,7" />
+            <Image Name="TalkingImage" Source="..\Images\Talking.png" Visibility="Collapsed" HorizontalAlignment="Center" Width="24" VerticalAlignment="Bottom" Margin="0,0,0,7" />
+            <Image Name="TalkingRingingImage" Visibility="Collapsed" Source="..\Images\TalkingRinging.png" HorizontalAlignment="Center" Width="26" VerticalAlignment="Bottom" Margin="0,0,0,6" />
+            <Image Name="DndImage" Visibility="Collapsed" Source="..\Images\DND.png" HorizontalAlignment="Center" Width="26" VerticalAlignment="Bottom" Margin="0,0,0,6" />
+            <Image Name="HoldImage" Source="..\Images\pause2.png" Visibility="Collapsed" HorizontalAlignment="Center" Width="24" VerticalAlignment="Bottom" Margin="0,0,0,8" />
+            <Image Name="EavesdroppingYellowImage" Source="..\Images\speaker1.png" Visibility="Collapsed"  HorizontalAlignment="Center" Width="20" VerticalAlignment="Top" Margin="11.6,9.5,0,0" >
+                <Image.RenderTransform>
+                    <RotateTransform Angle="30" />
+                </Image.RenderTransform>
+            </Image>
+            <Image Name="EavesdroppingRedImage" Source="..\Images\speaker2.png" Visibility="Collapsed"  HorizontalAlignment="Center" Width="20" VerticalAlignment="Top" Margin="11.6,9.5,0,0" >
+                <Image.RenderTransform>
+                    <RotateTransform Angle="30" />
+                </Image.RenderTransform>
+            </Image>
+
+            <Grid.ContextMenu>
+                <ContextMenu Visibility="Collapsed" x:Name="OperatorContrlContextMenu" IsOpen="False">
+                    <MenuItem Header="شنود"
+                              x:Name="EavesdroppingItem" Click="EavesdroppingItem_Click">
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\voice.ico"
+                                   Width="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Grid.ContextMenu>
+        </Grid>
+        <TextBlock TextWrapping="NoWrap" FontWeight="Normal" FlowDirection="LeftToRight" Name="TitleBlock" HorizontalAlignment="Center" Margin="0,-10,0,0" />
+    </StackPanel>
+</UserControl>

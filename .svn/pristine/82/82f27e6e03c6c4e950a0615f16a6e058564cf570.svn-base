@@ -1,0 +1,972 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{26C970B1-398E-4BF9-A4BA-4AF19A31D412}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UMSV</RootNamespace>
+    <AssemblyName>Plugin.Umsv</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>D:\Folder\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MINA|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\..\Folder\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\..\..\Folder\Plugin.Umsv.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Charting, Version=3.5.40128.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Charting.dll</HintPath>
+    </Reference>
+    <Reference Include="Folder.Audio, Version=3.7.17.21823, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Folder.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="Folder.Common, Version=3.7.10.26150, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Folder.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Folder.EMQ, Version=6.1.16.26151, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Folder.EMQ.dll</HintPath>
+    </Reference>
+    <Reference Include="Logger, Version=5.7.1.25916, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Base, Version=2010.1.700.0, Culture=neutral, PublicKeyToken=ebe6666cba19647a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Stimulsoft.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Report, Version=2010.1.700.0, Culture=neutral, PublicKeyToken=ebe6666cba19647a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Stimulsoft.Report.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Report.Wpf, Version=2010.1.700.0, Culture=neutral, PublicKeyToken=ebe6666cba19647a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Stimulsoft.Report.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Report.WpfDesign, Version=2010.1.700.0, Culture=neutral, PublicKeyToken=ebe6666cba19647a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Folder\Stimulsoft.Report.WpfDesign.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activities" />
+    <Reference Include="System.Speech" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Converters\NullStateConverter.cs" />
+    <Compile Include="Forms\ConfigForm.xaml.cs">
+      <DependentUpon>ConfigForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OperatorTeamsMonitoringForm.xaml.cs">
+      <DependentUpon>OperatorTeamsMonitoringForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DashboardPanel.xaml.cs">
+      <DependentUpon>DashboardPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DashboardPanelModel.cs" />
+    <Compile Include="Forms\OperatorStatusControl.xaml.cs">
+      <DependentUpon>OperatorStatusControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OperatorsMonitoringForm.xaml.cs">
+      <DependentUpon>OperatorsMonitoringForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TotalCallReport.xaml.cs">
+      <DependentUpon>TotalCallReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\GatewayConfigForm.xaml.cs">
+      <DependentUpon>GatewayConfigForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Global.cs" />
+    <Compile Include="Graph\BasicNodes\MatchDateView.xaml.cs">
+      <DependentUpon>MatchDateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\MatchDateNode.xaml.cs">
+      <DependentUpon>MatchDateNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\TransferNode.xaml.cs">
+      <DependentUpon>TransferNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\TemplateManager.xaml.cs">
+      <DependentUpon>TemplateManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\WebMethodNode.xaml.cs">
+      <DependentUpon>WebMethodNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\FaxReceiveNode.xaml.cs">
+      <DependentUpon>FaxReceiveNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\SelectGraphView.xaml.cs">
+      <DependentUpon>SelectGraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\SelectGraphViewModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Misc\Constants.cs" />
+    <Compile Include="Misc\IValidatable.cs" />
+    <Compile Include="Misc\MenuItemTagExtension.cs" />
+    <Compile Include="Misc\OperatorSipStatus.cs" />
+    <Compile Include="Misc\VoipServiceClient.cs" />
+    <Compile Include="Graph\CompositeNodes\AskNode.xaml.cs">
+      <DependentUpon>AskNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\CodeStatusNode.xaml.cs">
+      <DependentUpon>CodeStatusNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\DivertNode.xaml.cs">
+      <DependentUpon>DivertNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\FollowUpNode.xaml.cs">
+      <DependentUpon>FollowUpNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\GetKeyNode.xaml.cs">
+      <DependentUpon>GetKeyNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\Helper\ImageSourceExtension.cs" />
+    <Compile Include="Graph\CompositeNodes\InfoTableNode.xaml.cs">
+      <DependentUpon>InfoTableNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\InvokeNode.xaml.cs">
+      <DependentUpon>InvokeNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\JumpGraphNode.xaml.cs">
+      <DependentUpon>JumpGraphNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\JumpNode.xaml.cs">
+      <DependentUpon>JumpNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\MatchCallerIDNode.xaml.cs">
+      <DependentUpon>MatchCallerIDNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\MatchTimeNode.xaml.cs">
+      <DependentUpon>MatchTimeNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\PlayFromMailboxNode.xaml.cs">
+      <DependentUpon>PlayFromMailboxNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\PlayNode.xaml.cs">
+      <DependentUpon>PlayNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\PlayTextToSpeechNode.xaml.cs">
+      <DependentUpon>PlayTextToSpeechNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\RecordNode.xaml.cs">
+      <DependentUpon>RecordNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\RecordToMailBoxNode.xaml.cs">
+      <DependentUpon>RecordToMailBoxNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\CodeStatusDialog.xaml.cs">
+      <DependentUpon>CodeStatusDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\CodeStatusSelector.xaml.cs">
+      <DependentUpon>CodeStatusSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\CodeStatusVoiceDialog.xaml.cs">
+      <DependentUpon>CodeStatusVoiceDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\CommonArea.xaml.cs">
+      <DependentUpon>CommonArea.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\InfoTableDialog.xaml.cs">
+      <DependentUpon>InfoTableDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\InfoTableSelector.xaml.cs">
+      <DependentUpon>InfoTableSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\MailBoxInputBox.xaml.cs">
+      <DependentUpon>MailBoxInputBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\PasswordBox.xaml.cs">
+      <DependentUpon>PasswordBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\SelectorGraph.xaml.cs">
+      <DependentUpon>SelectorGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\TargetSelector.xaml.cs">
+      <DependentUpon>TargetSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\VoiceDialog.xaml.cs">
+      <DependentUpon>VoiceDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\VoiceList.xaml.cs">
+      <DependentUpon>VoiceList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserControls\VoiceSelector.xaml.cs">
+      <DependentUpon>VoiceSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodes\UserDataNode.xaml.cs">
+      <DependentUpon>UserDataNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HorizontalRule.xaml.cs">
+      <DependentUpon>HorizontalRule.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InformingRecordsPanel.xaml.cs">
+      <DependentUpon>InformingRecordsPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SchedulePanel.xaml.cs">
+      <DependentUpon>SchedulePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TreeNode.cs" />
+    <Compile Include="Converters\DebugConverter.cs" />
+    <Compile Include="Converters\GraphTooltipConverter.cs" />
+    <Compile Include="Forms\AccountUserControl.xaml.cs">
+      <DependentUpon>AccountUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\BlackListForm.xaml.cs">
+      <DependentUpon>BlackListForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DialogUserControl.xaml.cs">
+      <DependentUpon>DialogUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MonitorSipAccountsForm.xaml.cs">
+      <DependentUpon>MonitorSipAccountsForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MonitorSipDialogsForm.xaml.cs">
+      <DependentUpon>MonitorSipDialogsForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Graph\Base\DataDrivenViewModel.cs" />
+    <Compile Include="Graph\Base\ViewModelBase.cs" />
+    <Compile Include="Graph\BasicNodes\GetKeyNodeResultView.xaml.cs">
+      <DependentUpon>GetKeyNodeResultView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\BasicNodes\InvokeNodeResultView.xaml.cs">
+      <DependentUpon>InvokeNodeResultView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\BasicNodes\MatchCallerIDView.xaml.cs">
+      <DependentUpon>MatchCallerIDView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\BasicNodes\MatchTimeView.xaml.cs">
+      <DependentUpon>MatchTimeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\CompositeNodeViewModel.cs" />
+    <Compile Include="Graph\GraphsListView.xaml.cs">
+      <DependentUpon>GraphsListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\GraphsListViewModel.cs" />
+    <Compile Include="Graph\GraphView.xaml.cs">
+      <DependentUpon>GraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\GraphViewModel.cs" />
+    <Compile Include="Graph\InformingViewModel.cs" />
+    <Compile Include="Graph\NewGraphView.xaml.cs">
+      <DependentUpon>NewGraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\PhoneCallsListView.xaml.cs">
+      <DependentUpon>PhoneCallsListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\PhoneCallsListViewModel.cs" />
+    <Compile Include="Graph\PhoneCallView.xaml.cs">
+      <DependentUpon>PhoneCallView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\PhoneCallViewModel.cs" />
+    <Compile Include="Graph\TreeNodeHeader.xaml.cs">
+      <DependentUpon>TreeNodeHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UmsVoicesForm.xaml.cs">
+      <DependentUpon>UmsVoicesForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TeamsDashboardForm.xaml.cs">
+      <DependentUpon>TeamsDashboardForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TeamsDashboardItem.xaml.cs">
+      <DependentUpon>TeamsDashboardItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Stimul\Viewer\SaveTemplateForm.xaml.cs">
+      <DependentUpon>SaveTemplateForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Stimul\Viewer\TemplateDesignerForm.xaml.cs">
+      <DependentUpon>TemplateDesignerForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Stimul\Viewer\TemplateViewerForm.xaml.cs">
+      <DependentUpon>TemplateViewerForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UserDataList.xaml.cs">
+      <DependentUpon>UserDataList.xaml</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AcceptCall.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallAccount.png" />
+    <Resource Include="Images\Voice.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Accounts.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Answer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\BlackList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Calls.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Dialogs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\DialTest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Login.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Monitoring.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Reject.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\RejectCall.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Softphone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\UserLogin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\VoiceList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\calendar16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\codeStatus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\connect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\csv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\delete16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\dial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\divert.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\driverConfig.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\follow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\gear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\goto.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\hangup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\infoTable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\invoke.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\mailBoxPlay.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\mailBoxRecord.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Money.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\monitor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\off.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ok.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\phone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\phone16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PhoneB.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\play16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\record.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\service.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\sms.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\speaker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\stop16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Forms\ConfigForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\OperatorTeamsMonitoringForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\DashboardPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\OperatorStatusControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\OperatorsMonitoringForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\TotalCallReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Graph\BasicNodes\MatchDateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Graph\CompositeNodes\AskNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\CodeStatusNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\MatchDateNode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Graph\CompositeNodes\TransferNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\TemplateManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Graph\CompositeNodes\WebMethodNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\FaxReceiveNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\DivertNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\FollowUpNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\GetKeyNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\InfoTableNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\InvokeNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\JumpGraphNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\JumpNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\MatchCallerIDNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\MatchTimeNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\PlayFromMailboxNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\PlayNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\PlayTextToSpeechNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\RecordNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\RecordToMailBoxNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\CodeStatusDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\CodeStatusSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\CodeStatusVoiceDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\CommonArea.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\InfoTableDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\InfoTableSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\MailBoxInputBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\PasswordBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\SelectorGraph.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\TargetSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\VoiceDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\VoiceList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserControls\VoiceSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\CompositeNodes\UserDataNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\HorizontalRule.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InformingRecordsPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SchedulePanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\AccountUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\BlackListForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\DialogUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\MonitorSipAccountsForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\MonitorSipDialogsForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\SelectGraphView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Images\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\BasicNodes\GetKeyNodeResultView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\BasicNodes\InvokeNodeResultView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\BasicNodes\MatchCallerIDView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\BasicNodes\MatchTimeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\GraphsListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\GraphView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\NewGraphView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\PhoneCallsListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\PhoneCallView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\TreeNodeHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\UmsVoicesForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\GatewayConfigForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\TeamsDashboardForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\TeamsDashboardItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Stimul\Viewer\SaveTemplateForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Stimul\Viewer\TemplateDesignerForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Stimul\Viewer\TemplateViewerForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\UserDataList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\systemConfig.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\terminalConfig.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\tick16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\time.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\transparent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\tree.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\tree16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TTS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\userData.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Menu.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{59C84D10-FC24-4FD3-8D47-4091DDE4CA38}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\IGraphAddin\IGraphAddin.csproj">
+      <Project>{7B73AE74-B22A-4DBA-BAB5-1BDD2DEAAE19}</Project>
+      <Name>IGraphAddin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SipServer\SipServer.csproj">
+      <Project>{B92D3025-C749-4AC4-A8A2-ED9D858F4273}</Project>
+      <Name>SipServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plugin.SoftPhone\Plugin.SoftPhone.csproj">
+      <Project>{2fb79e09-f934-4431-b9fc-60f9f231cfcc}</Project>
+      <Name>Plugin.SoftPhone</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\OperatorStatus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Summary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Config.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Call.png" />
+    <Resource Include="Images\Dashboard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\WebMethod.png" />
+    <Resource Include="Images\Fax.png" />
+    <Resource Include="Images\DND.png" />
+    <Resource Include="Images\TalkingExternal.png" />
+    <Resource Include="Images\TalkingRinging.png" />
+    <Resource Include="Images\Teams.png" />
+    <Resource Include="Images\Gateway.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Talking.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\calendar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bluegear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\view.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\fax1.png" />
+    <Resource Include="Images\fax2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\pause2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\lamp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\speaker1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\speaker2.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

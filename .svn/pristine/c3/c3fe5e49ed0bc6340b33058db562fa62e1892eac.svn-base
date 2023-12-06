@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="UMSV.SoftPhoneForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:c="clr-namespace:Folder;assembly=Folder.Common"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:my="clr-namespace:UMSV" FlowDirection="LeftToRight" Padding="10">
+    <Grid Name="mainPanel">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <c:JellyButton 
+                       Grid.Column="1"
+                       Name="UserLoginButton"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Width="150"
+                       Height="150" Icon="pack://application:,,,/Plugin.UMSV;Component/Images/UserLogin.png"
+                       Click="LoginButton_Click" />
+
+        <Viewbox Grid.Column="0">
+            <WrapPanel x:Name="QueuePanel" Visibility="Collapsed">
+
+            </WrapPanel>
+        </Viewbox>
+        <Viewbox Grid.Column="1">
+            <DockPanel Name="PhonePanel" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                <Grid x:Name="DashboardGrid" Grid.Column="1" DockPanel.Dock="Top" FlowDirection="RightToLeft" Margin="0,0,0,5" c:UIElementExtension.VisibilityAccess="FE8CDD32-915F-4A1A-8E8F-D24233272D0B">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Image Grid.Row="0" Source="pack://application:,,,/Plugin.SoftPhone;Component/Images/onlineUsers1.png" Width="32" Margin="3,0,3,0" ToolTip="کاربران آنلاین"/>
+                    <Image Grid.Row="0" Grid.Column="2" Source="pack://application:,,,/Plugin.SoftPhone;Component/Images/DND3.png" Width="33" Margin="8,0,3,0" ToolTip="DND کاربران"/>
+                    <Image Grid.Row="0" Grid.Column="4" Source="pack://application:,,,/Plugin.SoftPhone;Component/Images/currentCalls2.png" Height="33" Margin="10,0,3,0" ToolTip="تماس های جاری"/>
+                    <Image Grid.Row="0" Grid.Column="6" Source="pack://application:,,,/Plugin.SoftPhone;Component/Images/Queue1.png" Height="33" Margin="10,0,3,0" ToolTip="تماس های در صف"/>
+
+                    <Border Grid.Column="1" HorizontalAlignment="Left" Background="LightGray" Padding="1.5" BorderBrush="Black" BorderThickness="1" Width="60">
+                        <c:SevenSegment ToolTip="کاربران آنلاین" Name="SevenSegmentOnlineUsers" BorderBrush="Gray" BorderThickness="1" DigitsCount="3" OnColor="#FF3030" OffColor="#650000" Background="#300000" />
+                    </Border>
+
+                    <Border Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Background="LightGray" Padding="1.5" BorderBrush="Black" BorderThickness="1" Width="60">
+                        <c:SevenSegment ToolTip="کاربران DND" Name="SevenSegmentDNDUsers" BorderBrush="Gray" BorderThickness="1" DigitsCount="3" OnColor="#FF3030" OffColor="#650000" Background="#300000" />
+                    </Border>
+
+                    <Border Grid.Row="0" Grid.Column="5" HorizontalAlignment="Left" Background="LightGray" Padding="1.5" BorderBrush="Black" BorderThickness="1" Width="60">
+                        <c:SevenSegment ToolTip="تماس های جاری" Name="SevenSegmentCalls" BorderBrush="Gray" BorderThickness="1" DigitsCount="3" OnColor="#FF3030" OffColor="#650000" Background="#300000" />
+                    </Border>
+
+                    <Border Grid.Row="0" Grid.Column="7"  HorizontalAlignment="Left" Background="LightGray" Padding="1.5" BorderBrush="Black" BorderThickness="1" Width="60">
+                        <c:SevenSegment ToolTip="تماس های در صف" Name="SevenSegmentQueue" BorderBrush="Gray" BorderThickness="1" DigitsCount="3" OnColor="#FF3030" OffColor="#650000" Background="#300000" />
+                    </Border>
+
+                </Grid>
+                <Border Name="DisplayPanel" Padding="5" DockPanel.Dock="Top" Height="60" CornerRadius="10" BorderThickness="2" BorderBrush="WhiteSmoke" Background="Black">
+                    <StackPanel VerticalAlignment="Center">
+                        <Label Name="ActionLabel" Foreground="White" />
+                        <TextBox Name="KeysTextbox" BorderThickness="0" Background="Transparent" FontSize="30" Margin="0,-7,0,0" FontWeight="Bold" FontFamily="Arial" Foreground="White" KeyUp="KeysTextbox_KeyUp" />
+                    </StackPanel>
+                </Border>
+                <Border Name="KeyPad" CornerRadius="20" BorderThickness="2" BorderBrush="Gray" Background="White">
+                    <UniformGrid Columns="3" Width="240" Height="400">
+                        <c:JellyButton c:UIElementExtension.EditAccess="07898813-C0EF-41AD-A8EE-E91927E42620" Icon="pack://application:,,,/Plugin.UMSV;Component/Images/AcceptCall.ico" 
+                                   Click="CallButton_Click" />
+                        <c:JellyButton Name="NullButton" IsEnabled="False" DisableColor="WhiteSmoke" />
+                        <c:JellyButton Icon="pack://application:,,,/Plugin.UMSV;Component/Images/RejectCall.ico" Click="CancelButton_Click" />
+                        <c:JellyButton Text="7" Click="Key_Click" />
+                        <c:JellyButton Text="8" Click="Key_Click" />
+                        <c:JellyButton Text="9" Click="Key_Click" />
+                        <c:JellyButton Text="4" Click="Key_Click" />
+                        <c:JellyButton Text="5" Click="Key_Click" />
+                        <c:JellyButton Text="6" Click="Key_Click" />
+                        <c:JellyButton Text="1" Click="Key_Click" />
+                        <c:JellyButton Text="2" Click="Key_Click" />
+                        <c:JellyButton Text="3" Click="Key_Click" />
+                        <c:JellyButton Text="*" Click="Key_Click" />
+                        <c:JellyButton Text="0" Click="Key_Click" />
+                        <c:JellyButton Text="#" Click="Key_Click" />
+                    </UniformGrid>
+                </Border>
+                <StackPanel DockPanel.Dock="Right">
+
+                    <my:BlackButton x:Name="LoginButton"
+                                Text="Logoff"
+                                Click="LogoffButton_Click" />
+                    <my:BlackCheckBox x:Name="HoldButton" Text="HOLD" Changed="HoldButton_Changed" />
+                    <my:BlackButton x:Name="TransferButton" Text="Transfer" Click="TransferButton_Click" />
+                    <my:BlackButton x:Name="RedialButton" Text="Redial" Click="RedialButton_Click" />
+                    <my:BlackButton x:Name="AddToBlackListButton" Text="+ Black List" Click="AddToBlackListButton_Click" c:UIElementExtension.VisibilityAccess="5BE612DF-F546-445F-8484-5E131150BAB8" />
+                    <my:BlackCheckBox x:Name="DndButton" Text="DND" Changed="DndButton_Changed" c:UIElementExtension.VisibilityAccess="F08317E2-895A-4363-93A5-D0ABF03F4BB6" />
+
+
+                </StackPanel>
+            </DockPanel>
+        </Viewbox>
+    </Grid>
+</UserControl>

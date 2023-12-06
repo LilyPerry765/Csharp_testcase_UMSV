@@ -1,0 +1,10 @@
+ACK sip:{1}@[SipProxyEndPoint] SIP/2.0
+Via: SIP/2.0/UDP [SipProxyEndPoint];branch={3}
+Max-Forwards: 10
+To: {5}
+From: "{0}"<sip:{0}@[SipProxyAddress]>;tag={4}
+Call-ID: {2}
+CSeq: 1 ACK
+User-Agent: CallCenter
+Content-Length: 0
+

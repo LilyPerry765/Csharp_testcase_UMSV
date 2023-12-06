@@ -1,0 +1,11 @@
+D:\Develop\UMSV\SipServer\obj\Debug\SipServer.csprojResolveAssemblyReference.cache
+D:\Folder\UMSV.SipServer.dll
+D:\Folder\UMSV.SipServer.pdb
+D:\Develop\UMSV\SipServer\obj\Debug\UMSV.SipServer.dll
+D:\Develop\UMSV\SipServer\obj\Debug\UMSV.SipServer.pdb
+E:\UMSV\SipServer\obj\Debug\SipServer.csprojResolveAssemblyReference.cache
+E:\UMSV\SipServer\obj\Debug\UMSV.SipServer.dll
+E:\UMSV\SipServer\obj\Debug\UMSV.SipServer.pdb
+E:\Project\Final Project\UMSV\SipServer\obj\Debug\SipServer.csprojResolveAssemblyReference.cache
+E:\Project\Final Project\UMSV\SipServer\obj\Debug\UMSV.SipServer.dll
+E:\Project\Final Project\UMSV\SipServer\obj\Debug\UMSV.SipServer.pdb

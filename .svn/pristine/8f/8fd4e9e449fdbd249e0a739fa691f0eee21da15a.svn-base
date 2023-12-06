@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Pendar._118
+{
+    public class OrderBy
+    {
+        public const string OrderBy_Name = "Name";
+        public const string OrderBy_Address = "Address";
+        public const string OrderBy_Tel = "PhoneNumber";
+    }
+}

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ReportSchema"
+    targetNamespace="http://tempuri.org/ReportSchema.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/ReportSchema.xsd"
+    xmlns:mstns="http://tempuri.org/ReportSchema.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="ReportSchema">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Report" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Column" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="Title" type="xs:string" use="required" />
+                  <xs:attribute name="PropertyName" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="ID" type="xs:int" use="required" />
+            <xs:attribute name="Title" type="xs:string" use="required" />
+            <xs:attribute name="Help" type="xs:string" use="optional" />
+            <xs:attribute name="Type" type="ReportType" use="optional" default="Global" />
+            <xs:attribute name="IsChart" type="xs:boolean" use="optional" default="false" />
+            <xs:attribute name="CallerIDVisible" type="xs:boolean" use="optional" default="false" />
+            <xs:attribute name="OperatorVisible" type="xs:boolean" use="optional" default="true" />
+            <xs:attribute name="ChartType" type="ChartType" use="optional" default="Bar" />
+            <xs:attribute name="xProperty" type="xs:string" use="optional" default="X" />
+            <xs:attribute name="yProperty" type="xs:string" use="optional" default="Y" />
+            <xs:attribute name="ToTimeState" type="PredefinedTime" use="optional" default="Null" />
+            <xs:attribute name="FromTimeState" type="PredefinedTime" use="optional" default="Null" />
+            <xs:attribute name="CallType" type="CallType" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="ReportType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Global" />
+      <xs:enumeration value="DailyActivity" />
+      <xs:enumeration value="OperatorsActivityCompare" />
+      <xs:enumeration value="TalkSummaryReport" />
+      <xs:enumeration value="OperatorAvailability" />
+      <xs:enumeration value="TrafficOveral" />
+      <xs:enumeration value="TalksInHour" />
+      <xs:enumeration value="OperatorTalksInHour" />
+      <xs:enumeration value="OperatorsCountInHour" />
+      <xs:enumeration value="CallsFromPrefix" />
+      <xs:enumeration value="ChannelsDailyTraffic" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ChartType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Line" />
+      <xs:enumeration value="Column" />
+      <xs:enumeration value="Bar" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CallType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unspecified" />
+      <xs:enumeration value="FromClient" />
+      <xs:enumeration value="FromGateway" />
+      <xs:enumeration value="ToClient" />
+      <xs:enumeration value="ToGateway" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="PredefinedTime">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Null" />
+      <xs:enumeration value="Hidden" />
+      <xs:enumeration value="Yesterday" />
+      <xs:enumeration value="OneWeekAgo" />
+      <xs:enumeration value="Today" />
+      <xs:enumeration value="Now" />
+      <xs:enumeration value="FirstDayOfMonth" />
+      <xs:enumeration value="FirstDayOfLastMonth" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

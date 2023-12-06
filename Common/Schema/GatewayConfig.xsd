@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="MediaGatewayConfig"
+    targetNamespace="http://tempuri.org/MediaGatewayConfig.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/MediaGatewayConfig.xsd"
+    xmlns:mstns="http://tempuri.org/MediaGatewayConfig.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="MediaGatewayConfig">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Cisco" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="DeviceID" type="xs:token" use="optional" default="NewID()" />
+            <xs:attribute name="UserID" type="xs:string" use="optional" />
+            <xs:attribute name="DisplayName" type="xs:string" use="optional" />
+            <xs:attribute name="MatchRule" type="xs:string" use="optional" />
+            <xs:attribute name="Address" type="xs:string" use="optional" />
+            <xs:attribute name="Password" type="xs:string" use="optional" />
+            <xs:attribute name="EnablePassword" type="xs:string" use="optional" />
+            <xs:attribute name="Description" type="xs:string" use="optional" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Link" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="DeviceID" type="xs:token" use="required" />
+            <xs:attribute name="Slot" type="xs:int" use="optional" default="3" />
+            <xs:attribute name="Port" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="Title" type="xs:string" use="optional" />
+            <xs:attribute name="IsEnabled" type="xs:boolean" use="optional" default="true" />
+            <xs:attribute name="CurrentState" type="xs:string" use="optional" />
+            <xs:attribute name="Description" type="xs:string" use="optional" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

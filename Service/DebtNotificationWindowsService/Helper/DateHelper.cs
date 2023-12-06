@@ -1,0 +1,434 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+
+namespace DebtNotificationWindowsService
+{
+    public partial class Date
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int Day { get; set; }
+        public string MonthName { get; set; }
+        public string DayOfWeek { get; set; }
+    }
+
+    public partial class Date
+    {
+
+        public enum DateStringType
+        {
+            ShortTwoDigitsYear, Short, Long, Compelete, Year, MonthName, Month, Day, YearMonth, FirstDayOfMonth, NoSlash
+        }
+        public enum PersianDateStringType
+        {
+            Short, Long, Compelete, TwoDigitsYear, DateTime, Year, Time, ShortWithTwoDigits
+        }
+        #region Persian and Qamari Settings
+
+        private static string[] PersianMonths = { "", "فروردين", "ارديبهشت", "خرداد", "تير", "مرداد", "شهريور", "مهر", "آبان", "آذر", "دي", "بهمن", "اسفند" };
+        private static string[] QamariMonths = { "", "محرم", "صفر", "ربيع الاول", "ربيع الثاني", "جمادي الاولي", "جمادي الثانية", "رجب", "شعبان", "رمضان", "شوال", "ذيقعده", "ذيحجه" };
+
+        private static string PersianDayOfWeek(DayOfWeek day)
+        {
+            string persianDayOfWeek = string.Empty;
+            switch (day)
+            {
+                case System.DayOfWeek.Saturday:
+                    persianDayOfWeek = "شنبه";
+                    break;
+
+                case System.DayOfWeek.Sunday:
+                    persianDayOfWeek = "يکشنبه";
+                    break;
+
+                case System.DayOfWeek.Monday:
+                    persianDayOfWeek = "دوشنبه";
+                    break;
+
+                case System.DayOfWeek.Tuesday:
+                    persianDayOfWeek = "سه‌شنبه";
+                    break;
+
+                case System.DayOfWeek.Wednesday:
+                    persianDayOfWeek = "چهارشنبه";
+                    break;
+
+                case System.DayOfWeek.Thursday:
+                    persianDayOfWeek = "پنج‌شنبه";
+                    break;
+
+                case System.DayOfWeek.Friday:
+                    persianDayOfWeek = "جمعه";
+                    break;
+
+                default:
+                    break;
+            }
+
+            return persianDayOfWeek;
+        }
+
+        private static string QamariDayOfWeek(DayOfWeek day)
+        {
+            string persianDayOfWeek = string.Empty;
+            switch (day)
+            {
+                case System.DayOfWeek.Saturday:
+                    persianDayOfWeek = "السبت";
+                    break;
+
+                case System.DayOfWeek.Sunday:
+                    persianDayOfWeek = "الأحد";
+                    break;
+
+                case System.DayOfWeek.Monday:
+                    persianDayOfWeek = "الاثنين";
+                    break;
+
+                case System.DayOfWeek.Tuesday:
+                    persianDayOfWeek = "الثلاثاء";
+                    break;
+
+                case System.DayOfWeek.Wednesday:
+                    persianDayOfWeek = "الأربعاء";
+                    break;
+
+                case System.DayOfWeek.Thursday:
+                    persianDayOfWeek = "الخميس";
+                    break;
+
+                case System.DayOfWeek.Friday:
+                    persianDayOfWeek = "الجمعه";
+                    break;
+
+                default:
+                    break;
+            }
+
+            return persianDayOfWeek;
+        }
+
+        #endregion
+
+        #region Persian
+        public static Date GetPersianDate(DateTime date)
+        {
+            PersianCalendar persianCalendar = new PersianCalendar();
+            Date result = new Date();
+
+            result.Year = persianCalendar.GetYear(date);
+            result.Month = persianCalendar.GetMonth(date);
+            result.Day = persianCalendar.GetDayOfMonth(date);
+            result.MonthName = PersianMonths[persianCalendar.GetMonth(date)];
+            result.DayOfWeek = persianCalendar.GetDayOfWeek(date).ToString();
+
+            return result;
+        }
+        public static string GetPersianDate()
+        {
+            return GetPersianDate(DateTime.Now, PersianDateStringType.Short);
+        }
+
+        public static string GetPersianDate(PersianDateStringType dateStringType)
+        {
+            return GetPersianDate(DateTime.Now, dateStringType);
+        }
+
+        public static string GetPersianDate(DateTime? date, PersianDateStringType type)
+        {
+            if (date.HasValue)
+
+                return GetPersianDate(date.Value, type);
+
+            else
+                return string.Empty;
+        }
+
+        public static string GetPersianDate(DateTime date, PersianDateStringType type)
+        {
+            DateTime minDate = new DateTime(1000, 1, 1);
+            DateTime maxDate = new DateTime(9999, 1, 1);
+
+            if (date < minDate || date > maxDate) return string.Empty;
+
+            PersianCalendar persianCalendar = new PersianCalendar();
+            string result = string.Empty;
+
+            DayOfWeek dayOfWeek = persianCalendar.GetDayOfWeek(date);
+            int dayOfMonth = persianCalendar.GetDayOfMonth(date);
+            int monthNumber = persianCalendar.GetMonth(date);
+            int year = persianCalendar.GetYear(date);
+
+            switch (type)
+            {
+                case PersianDateStringType.Short:
+                    result = string.Format("{0}/{1}/{2}", year.ToString(), monthNumber.ToString(), dayOfMonth.ToString());
+                    break;
+
+                case PersianDateStringType.ShortWithTwoDigits:
+                    result = string.Format("{0}/{1}/{2}", year.ToString(), (monthNumber < 10) ? "0" + monthNumber.ToString() : monthNumber.ToString(), (dayOfMonth < 10) ? "0" + dayOfMonth.ToString() : dayOfMonth.ToString());
+                    break;
+
+                case PersianDateStringType.Long:
+                    result = string.Format("{0} {1} {2}", dayOfMonth.ToString(), PersianMonths[monthNumber], year.ToString());
+                    break;
+
+                case PersianDateStringType.Compelete:
+                    result = string.Format("{0}، {1} {2} {3}", PersianDayOfWeek(dayOfWeek), dayOfMonth.ToString(), PersianMonths[monthNumber], year.ToString());
+                    break;
+
+                case PersianDateStringType.TwoDigitsYear:
+                    result = string.Format("{0}/{1}/{2}", (year - 1300).ToString(), monthNumber.ToString(), dayOfMonth.ToString());
+                    break;
+
+                case PersianDateStringType.DateTime:
+                    result = string.Format("{0:HH:mm} {1}/{2}/{3}", date, (year).ToString(), (monthNumber < 10) ? "0" + monthNumber.ToString() : monthNumber.ToString(), (dayOfMonth < 10) ? "0" + dayOfMonth.ToString() : dayOfMonth.ToString());
+                    break;
+
+                case PersianDateStringType.Time:
+                    result = string.Format("{0:HH:mm}", date);
+                    break;
+
+                case PersianDateStringType.Year:
+                    result = year.ToString();
+                    break;
+
+                default:
+                    break;
+            }
+            return result;
+        }
+        public static string ChangeShortPersianFormat(string persianShortDate, DateStringType type)
+        {
+            string[] tokens = persianShortDate.Split('/');
+            if (tokens[0].Length == 2)
+                tokens[0] = "13" + tokens[0];
+            int year = Int32.Parse(tokens[0]);
+            int month = Int32.Parse(tokens[1]);
+            int day = Int32.Parse(tokens[2]);
+
+            PersianCalendar persianCalendar = new PersianCalendar();
+
+            string result = string.Empty;
+
+            switch (type)
+            {
+                case DateStringType.Short:
+                    result = string.Format("{0}/{1}/{2}", year.ToString(), Converter.SingleToDoubleDigit(month.ToString()), Converter.SingleToDoubleDigit(day.ToString()));
+                    break;
+
+                case DateStringType.FirstDayOfMonth:
+                    result = string.Format("{0}/{1}/1", year.ToString(), Converter.SingleToDoubleDigit(month.ToString()));
+                    break;
+
+                case DateStringType.ShortTwoDigitsYear:
+                    result = string.Format("{0}/{1}/{2}", (year - 1300).ToString(), month.ToString(), day.ToString());
+                    break;
+
+                case DateStringType.Long:
+                    result = string.Format("{0} {1} {2}", day.ToString(), PersianMonths[month], year.ToString());
+
+                    break;
+
+                case DateStringType.Compelete:
+                    result = string.Format("{0}، {1} {2} {3}", PersianDayOfWeek(PersianToGregorian(persianShortDate).DayOfWeek), day.ToString(), PersianMonths[month], year.ToString());
+                    break;
+
+                case DateStringType.YearMonth:
+                    result = string.Format("{0} ماه {1}", PersianMonths[month], year.ToString());
+                    break;
+
+                case DateStringType.Year:
+                    result = year.ToString();
+                    break;
+
+                case DateStringType.Month:
+                    result = month.ToString();
+                    break;
+
+                case DateStringType.MonthName:
+                    result = PersianMonths[month];
+                    break;
+
+                case DateStringType.Day:
+                    result = day.ToString();
+                    break;
+
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        public static string ValidatePersianDate(string shortPersianDate)
+        {
+            return ChangeShortPersianFormat(shortPersianDate, DateStringType.Short);
+        }
+
+        public static string GregorianToPersian(DateTime? gregorianDate, DateStringType type)
+        {
+            if (gregorianDate == null) return string.Empty;
+
+            DateTime date = gregorianDate ?? new DateTime();
+
+            PersianCalendar persianCalendar = new PersianCalendar();
+            string result = string.Empty;
+
+            DayOfWeek dayOfWeek = persianCalendar.GetDayOfWeek(date);
+            int dayOfMonth = persianCalendar.GetDayOfMonth(date);
+            int monthNumber = persianCalendar.GetMonth(date);
+            int year = persianCalendar.GetYear(date);
+
+            switch (type)
+            {
+                case DateStringType.Short:
+                    result = string.Format("{0}/{1}/{2}", year.ToString(), Converter.SingleToDoubleDigit(monthNumber.ToString()), Converter.SingleToDoubleDigit(dayOfMonth.ToString()));
+                    break;
+
+                case DateStringType.FirstDayOfMonth:
+                    result = string.Format("{0}/{1}/1", year.ToString(), Converter.SingleToDoubleDigit(monthNumber.ToString()));
+                    break;
+
+                case DateStringType.ShortTwoDigitsYear:
+                    result = string.Format("{0}/{1}/{2}", (year - 1300).ToString(), monthNumber.ToString(), dayOfMonth.ToString());
+                    break;
+
+                case DateStringType.Long:
+                    result = string.Format("{0} {1} {2}", dayOfMonth.ToString(), PersianMonths[monthNumber], year.ToString());
+                    break;
+
+                case DateStringType.Compelete:
+                    result = string.Format("{0}، {1} {2} {3}", PersianDayOfWeek(dayOfWeek), dayOfMonth.ToString(), PersianMonths[monthNumber], year.ToString());
+                    break;
+
+                case DateStringType.YearMonth:
+                    result = string.Format("{0} ماه {1}", PersianMonths[monthNumber], year.ToString());
+                    break;
+
+                case DateStringType.Year:
+                    result = year.ToString();
+                    break;
+
+                case DateStringType.NoSlash:
+                    result = string.Format("{0}{1}{2}", year.ToString(), Converter.SingleToDoubleDigit(monthNumber.ToString()), Converter.SingleToDoubleDigit(dayOfMonth.ToString()));
+                    break;
+
+                case DateStringType.Month:
+                    result = monthNumber.ToString();
+                    break;
+
+                case DateStringType.MonthName:
+                    result = PersianMonths[monthNumber];
+                    break;
+
+                case DateStringType.Day:
+                    result = dayOfMonth.ToString();
+                    break;
+                default:
+                    break;
+            }
+            return result;
+        }
+        #endregion
+
+        #region Gregorian To Qamari
+        public static string GregorianToQamari(DateTime date, DateStringType type)
+        {
+            return GregorianToQamari(date, type, 0);
+        }
+
+        public static string GregorianToQamari(DateTime date, DateStringType type, int correction)
+        {
+            DateTime correctedDate = date.AddDays(correction);
+            HijriCalendar qamariCalendar = new HijriCalendar();
+            string result = string.Empty;
+
+            DayOfWeek dayOfWeek = qamariCalendar.GetDayOfWeek(date);
+            int dayOfMonth = qamariCalendar.GetDayOfMonth(correctedDate);
+            int monthNumber = qamariCalendar.GetMonth(correctedDate);
+            int year = qamariCalendar.GetYear(correctedDate);
+            int yearBase = year / 100 * 100;
+
+            switch (type)
+            {
+                case DateStringType.Short:
+                    result = string.Format("{0}/{1}/{2}", year.ToString(), monthNumber.ToString(), dayOfMonth.ToString());
+                    break;
+
+                case DateStringType.ShortTwoDigitsYear:
+                    result = string.Format("{0}/{1}/{2}", (year - yearBase).ToString(), monthNumber.ToString(), dayOfMonth.ToString());
+                    break;
+
+                case DateStringType.Long:
+                    result = string.Format("{0} {1} {2}", dayOfMonth.ToString(), QamariMonths[monthNumber], year.ToString());
+                    break;
+
+                case DateStringType.Compelete:
+                    result = string.Format("{0}، {1} {2} {3}", QamariDayOfWeek(dayOfWeek), dayOfMonth.ToString(), QamariMonths[monthNumber], year.ToString());
+                    break;
+
+                case DateStringType.YearMonth:
+                    result = string.Format("{0} {1}", QamariMonths[monthNumber], year.ToString());
+                    break;
+
+                case DateStringType.Year:
+                    result = year.ToString();
+                    break;
+
+                case DateStringType.Month:
+                    result = monthNumber.ToString();
+                    break;
+
+                case DateStringType.MonthName:
+                    result = QamariMonths[monthNumber];
+                    break;
+
+                case DateStringType.Day:
+                    result = dayOfMonth.ToString();
+                    break;
+                default:
+                    break;
+            }
+            return result;
+        }
+        #endregion
+
+        #region Persian To Gregorian
+        public static DateTime PersianToGregorian(Date persianDate)
+        {
+            PersianCalendar persianCalendar = new PersianCalendar();
+            return persianCalendar.ToDateTime(persianDate.Year, persianDate.Month, persianDate.Day, 0, 0, 0, 0);
+        }
+
+        public static DateTime PersianToGregorian(int year, int month, int day)
+        {
+            PersianCalendar persianCalendar = new PersianCalendar();
+            return persianCalendar.ToDateTime(year, month, day, 0, 0, 0, 0);
+        }
+
+        public static DateTime PersianToGregorian(string year, string month, string day)
+        {
+            PersianCalendar persianCalendar = new PersianCalendar();
+            return persianCalendar.ToDateTime(System.Convert.ToInt32(year), System.Convert.ToInt32(month), System.Convert.ToInt32(day), 0, 0, 0, 0);
+        }
+
+        public static DateTime PersianToGregorian(string persianDate)
+        {
+            PersianCalendar persianCalendar = new PersianCalendar();
+            string[] tokens = persianDate.Split('/');
+
+            if (tokens[0].Length == 2)
+                tokens[0] = "13" + tokens[0];
+            int year = Int32.Parse(tokens[0]);
+            int month = Int32.Parse(tokens[1]);
+            int day = Int32.Parse(tokens[2]);
+            return persianCalendar.ToDateTime(year, month, day, 0, 0, 0, 0);
+        }
+        #endregion
+
+    }
+}

@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.MatchTime"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls">
+    <UserControl.Resources>
+
+        <XmlDataProvider  x:Key="Group"
+                          IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup Description="انتخاب مبتنی بر زمان"
+                           xmlns="http://tempuri.org/VoiceGraph.xsd"
+                           StartNode="SelectNodes[0]"
+                           Tag="TimeMatch">
+                    <SelectNode ID="0"
+                                ClearDigits="true">
+                        <MatchTime TargetNode="DisconnectCall" />
+                    </SelectNode>
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+    </UserControl.Resources>
+    <StackPanel>
+        <uc:CommonArea />
+        <Label>گره پيشفرض:</Label>
+        <uc:TargetSelector SelectedTarget="{Binding  NodeData.SelectNodes[0].MatchTime[0].TargetNode}" />
+    </StackPanel>
+</UserControl>

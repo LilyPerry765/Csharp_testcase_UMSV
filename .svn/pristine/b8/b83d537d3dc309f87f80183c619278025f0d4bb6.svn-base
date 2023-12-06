@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Folder;
+
+namespace Pendar._118
+{
+    /// <summary>
+    /// Interaction logic for PhonesEditForm.xaml
+    /// </summary>
+    public partial class PhonesEditForm : UserControl, IDataGridForm
+    {
+        public PhonesEditForm()
+        {
+            InitializeComponent();
+        }
+
+        #region IDataGridForm Members
+
+        public DataGrid DataGrid
+        {
+            get
+            {
+                return this.dataGrid;
+            }
+        }
+
+        #endregion
+
+        private void dataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            e.Cancel = !(this.DataContext as PhonesEditFormViewModel).OnEditEnded((Phone)e.Row.Item);
+//            dataGrid.CurrentCell = new DataGridCellInfo(e.Row.Item, PhoneColumn);
+        }
+
+        private void dataGrid_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
+        {
+            (this.DataContext as PhonesEditFormViewModel).OnNewItemInsert((Phone)e.NewItem);
+        }
+
+        private void dataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                foreach (Phone phone in dataGrid.SelectedItems)
+                {
+                    (this.DataContext as PhonesEditFormViewModel).OnDeleteItem(phone);
+                }
+            }
+        }
+    }
+}

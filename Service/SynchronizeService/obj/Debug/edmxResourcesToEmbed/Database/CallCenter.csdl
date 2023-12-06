@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CallCenterModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityContainer Name="myCallCenter2" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="ChangeLogs" EntityType="CallCenterModel.ChangeLog" />
+    <EntitySet Name="ChangeTypes" EntityType="CallCenterModel.ChangeType" />
+  </EntityContainer>
+  <EntityType Name="ChangeLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ChangeTypeID" Type="Int32" Nullable="false" />
+    <Property Name="WebServiceID" Type="Int64" Nullable="false" />
+    <Property Name="CenterID" Type="Int32" Nullable="false" />
+    <Property Name="PhoneNo" Type="String" Nullable="false" MaxLength="12" Unicode="false" FixedLength="false" />
+    <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="SetupDate" Type="DateTime" Precision="7" />
+    <Property Name="SubscriberTypeID" Type="Int32" />
+    <Property Name="PostCode" Type="String" MaxLength="10" Unicode="false" FixedLength="true" />
+    <Property Name="Address" Type="String" MaxLength="511" Unicode="true" FixedLength="false" />
+    <Property Name="LastName" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+    <Property Name="FirstName" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+    <Property Name="LocalCounter" Type="Double" />
+    <Property Name="DomecticCounter" Type="Int32" />
+    <Property Name="InternationalCounter" Type="Int32" />
+    <Property Name="OldPhoneNo" Type="String" MaxLength="12" Unicode="false" FixedLength="false" />
+    <Property Name="OldLocalCounter" Type="Int32" />
+    <Property Name="OldDomecticCounter" Type="Int32" />
+    <Property Name="OldInternationalCounter" Type="Int32" />
+    <Property Name="Trust" Type="Int64" />
+    <Property Name="ModifyDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="IsConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="IsApplied" Type="Boolean" Nullable="false" />
+    <Property Name="IsAutomaticLog" Type="Boolean" Nullable="false" />
+    <Property Name="IsFoxProExport" Type="Boolean" Nullable="false" />
+    <Property Name="Elka_FI_CODE" Type="String" MaxLength="15" Unicode="false" FixedLength="false" />
+    <Property Name="IsAppied118" Type="Boolean" />
+    <Property Name="ViewIn118" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="ChangeType">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="CostTypeID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="127" Unicode="true" FixedLength="false" />
+    <Property Name="CostTypeID" Type="Int32" Nullable="false" />
+    <Property Name="ElkaTable" Type="String" MaxLength="127" Unicode="false" FixedLength="false" />
+  </EntityType>
+</Schema>

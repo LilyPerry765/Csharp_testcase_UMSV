@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
+using Folder;
+using Enterprise;
+
+namespace UMSV.Model
+{
+    public partial class Config
+    {
+        public static Config Default;
+        private const string ConfigFileName = "MailboxConfig.xml";
+        static Config()
+        {
+            try
+            {
+                var content = Folder.File.ReadAsUnicodeText(ConfigFileName);
+                if (!string.IsNullOrEmpty(content))
+                    Default = MyXmlSerializer.Deserialize<Config>(content);
+                else
+                {
+                    Default = new Config();
+                    Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                Default = new Config();
+            }
+        }
+        public static Guid GetPluginGuid(Assembly assembly)
+        {
+            Guid assemblyGuid;
+            object[] objects = assembly.GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false);
+            assemblyGuid = new Guid(((System.Runtime.InteropServices.GuidAttribute)objects[0]).Value);
+            return assemblyGuid;
+        }
+
+        public static bool Save()
+        {
+            try
+            {
+                Folder.File.Write(ConfigFileName, System.Text.Encoding.Unicode.GetBytes(MyXmlSerializer.Serialize(Config.Default)));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ConfigFileName + " file not found or error serializing it", ex);
+            }
+        }
+
+    }
+}

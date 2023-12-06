@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.JumpGraphNode"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             mc:Ignorable="d"
+             d:DesignHeight="239"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider  x:Key="Group"
+                          IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup Description="انتقال به سرویس"
+                           Tag="JumpGraph"
+                           xmlns="http://tempuri.org/VoiceGraph.xsd"
+                           StartNode="JumpNodes[0]"
+                           LastNode="JumpNodes[0]">
+                    <JumpNode ID="0"
+                              ClearDigits="true" />
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+    </UserControl.Resources>
+    <DockPanel Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}">
+        <uc:CommonArea DockPanel.Dock="Top" />
+        <GroupBox Header="سرويس">
+            <DockPanel>
+                <ComboBox x:Name="servicesComboBox"
+                          Margin="0,5"
+                          DockPanel.Dock="Top"
+                          SelectedValuePath="ID"
+                          DisplayMemberPath="Name"
+                          DataContext="{Binding NodeData.JumpNodes[0]}"
+                          SelectedValue="{Binding TargetGraph, Converter={conv:GuidConverter}}" />
+                <uc:SelectorGraph  SelectedNodeID="{Binding  NodeData.JumpNodes[0].TargetNode}"
+                                   GraphID="{Binding  SelectedValue, ElementName=servicesComboBox}" />
+            </DockPanel>
+        </GroupBox>
+    </DockPanel>
+</UserControl>

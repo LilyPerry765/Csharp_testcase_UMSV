@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Pendar._118
+{
+    public class TokenForSearch
+    {
+        public Job Job { get; set; }
+        
+        public string JobAbbreviation { get; set; }
+        public string JobAbbreviationPrepared { get; set; }
+
+        public string Title { get; set; }
+        public string TitlePrepared { get; set; }
+        public string Address { get; set; }
+        public string AddressPrepared { get; set; }
+        public int? City { get; set; }
+    }
+}

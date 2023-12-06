@@ -1,0 +1,90 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Enterprise;
+
+namespace UMSV
+{
+    public class Addin : IGraphAddin
+    {
+        #region Properties and Fields
+
+        const int phoneNumberLength = 8;
+        const string prefix = "34";
+
+
+        public long? PaymentAmount { get; set; }
+        public string PaymentAmountString { get; set; }
+
+        public string CalleeId
+        {
+            get
+            {
+                return Dialog.Extension.Substring(Dialog.Extension.Length - phoneNumberLength, phoneNumberLength);
+            }
+        }
+
+        //Property of IGraphAddin
+        public ISipDialog Dialog
+        {
+            get;
+            set;
+        }
+
+        #endregion
+
+        #region Methods
+
+        public void GetBillInfo()
+        {
+            Logger.WriteImportant("ext: {0}", CalleeId);
+            //BillService sv = null;
+            //try
+            //{
+            //    sv = new BillService();
+
+            //    int CycleId;
+            //    bool cycleIdSpecified;
+            //    sv.GetLastCycleID(out CycleId, out cycleIdSpecified);
+
+            //    Logger.WriteInfo("Debt Notification: PhoneNumber: {0}, Last CycleId: {1}", CalleeId, CycleId);
+
+            //    BillInfo result = sv.GetBillByCycleID(prefix + CalleeId, CycleId, true);
+            //    if (result != null)
+            //    {
+            //        PaymentAmount = result.PaymentAmount;
+
+            //        switch (PaymentAmount)
+            //        {
+            //            case null:
+            //                PaymentAmountString = "0";
+            //                break;
+
+            //            case 0:
+            //                PaymentAmountString = "0";
+            //                break;
+
+            //            default:
+            //                break;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Logger.WriteWarning("Debt Notification: No bill info found. PhoneNumber: {0}", CalleeId);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.WriteError("Debt Notification({0}): Getting bill info failed.", CalleeId);
+            //    Logger.Write(ex);
+            //}
+            //finally
+            //{
+            //    sv.Dispose();
+            //}
+        }
+
+        #endregion
+    }
+}

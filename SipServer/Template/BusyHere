@@ -1,0 +1,9 @@
+SIP/2.0 486 Busy Here
+Via: {0}
+To: {1}
+From: {2}
+Call-ID: {3}
+CSeq: 1 INVITE
+User-Agent: CallCenter
+Content-Length: 0
+

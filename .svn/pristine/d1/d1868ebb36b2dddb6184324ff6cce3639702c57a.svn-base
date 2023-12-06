@@ -1,0 +1,157 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using UMSV;
+using System.Text;
+using System.IO;
+using System.Configuration;
+using Folder;
+using System.Net;
+
+namespace UMS.Informing.WebInterface.WebForms
+{
+    public partial class InformingReport : System.Web.UI.Page
+    {
+        #region Properties and Fields
+
+        Classes.StatusBarMessage _StatusBarMessageClass = new Classes.StatusBarMessage();
+
+        #endregion
+
+        #region Events
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+                LoadData();
+
+            System.Web.UI.Page page = HttpContext.Current.Handler as System.Web.UI.Page;
+        }
+
+        #endregion
+
+        #region Details ListView
+        private void PopulateListView1()
+        {
+            DetailsListView1.DataSource = GetInformings();
+            DetailsListView1.DataBind();
+        }
+
+        protected void DetailsListView1_ItemCommand(object sender, ListViewCommandEventArgs e)
+        {
+            switch (e.CommandName)
+            {
+                case "Export":
+                    int Id = (int)DetailsListView1.DataKeys[e.Item.DataItemIndex].Value;
+                    using (UmsDataContext context = new UmsDataContext())
+                    {
+                        UMSV.Informing informing = context.Informings.Where(t => t.ID == Id).SingleOrDefault();
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("شماره تلفن\tوضعیت\tتاریخ آخرین تماس\tزمان آخرین تماس\tزمان آخرین قطع\tتعداد دفعات تماس");
+                        foreach (var ir in informing.InformingRecords)
+                        {
+                            string date = ir.LastCallTime.HasValue ? new PersianDateTime(ir.LastCallTime.Value).ToString("yyyy/MM/dd") : "-";
+                            string callTime = ir.LastCallTime.HasValue ? ir.LastCallTime.Value.ToString("HH:mm:ss") : "-";
+                            string disconnectTime = ir.LastDisconnectedTime.HasValue ? ir.LastDisconnectedTime.Value.ToString("HH:mm:ss") : "-";
+                            sb.AppendFormat("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}\r\n", "\t", ir.Phone, Folder.Utility.GetEnumDescription((InformingStatus)ir.Status), date, callTime, disconnectTime, ir.CallCount);
+                        }
+
+                        try
+                        {
+                            using (StreamWriter wr = new StreamWriter(ConfigurationManager.AppSettings["Root"] + "Export.csv", false, Encoding.Unicode))
+                            {
+                                wr.Write(sb);
+                            }
+                        }
+                        catch (IOException)
+                        {
+
+                        }
+
+                        string strURL = ConfigurationManager.AppSettings["Root"] + "Export.csv";
+                        WebClient req = new WebClient();
+                        HttpResponse response = HttpContext.Current.Response;
+                        response.Clear();
+                        response.ClearContent();
+                        response.ClearHeaders();
+                        response.Buffer = true;
+                        response.AddHeader("Content-Disposition", "attachment;filename=\"" + strURL + "\"");
+                        byte[] data = req.DownloadData(strURL);
+                        response.BinaryWrite(data);
+                        response.End();
+                    }
+                    break;
+            }
+        }
+        #endregion
+
+        #region Methods
+
+        private void LoadData()
+        {
+            PopulateListView1();
+        }
+
+        public List<Classes.CustomInforming> GetInformings()
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                var graphs = this.GetGraphs();
+                return context.Informings.Where(i => i.Type == (byte)InformingType.Graph)
+                                         .ToList()
+                                         .Where(t => graphs.Select(g => g.ID).Contains(t.Graph ?? new Guid()))
+                                         .Select(t => new Classes.CustomInforming()
+                                         {
+                                             Enabled = t.Enabled,
+                                             GraphId = t.Graph,
+                                             GraphName = context.Graphs.Any(s => s.ID == (t.Graph ?? new Guid())) ? context.Graphs.SingleOrDefault(s => s.ID == (t.Graph ?? new Guid())).Name : string.Empty,
+                                             RetryCount = t.RetryCount,
+                                             Subject = t.Subject,
+                                             CallDate = Classes.Date.GetPersianDate(UMSV.Schema.ScheduleUtility.DeserializeInforming<UMSV.Schema.Schedule>(t.CallTime.ToString()).Times.First().Date.Value.Date, Classes.Date.PersianDateStringType.Short),
+                                             CallFromTime = UMSV.Schema.ScheduleUtility.DeserializeInforming<UMSV.Schema.Schedule>(t.CallTime.ToString()).Times.First().Start.ToString(),
+                                             CallToTime = UMSV.Schema.ScheduleUtility.DeserializeInforming<UMSV.Schema.Schedule>(t.CallTime.ToString()).Times.First().Finish.ToString(),
+                                             Id = t.ID
+                                         })
+                                         .ToList();
+            }
+        }
+
+        public List<UMSV.Graph> GetGraphs()
+        {
+            if (Folder.User.Current == null)
+                Response.Redirect("LoginForm.aspx");
+
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.Graphs.ToList().Where(g => Folder.User.IsInRole(g.ID)).OrderBy(g => g.Name).ToList();
+            }
+        }
+
+        public int GetInformingsCount()
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                var graphs = this.GetGraphs();
+                return context.Informings.Where(i => i.Type == (byte)InformingType.Graph)
+                                         .ToList()
+                                         .Where(t => graphs.Select(g => g.ID).Contains(t.Graph ?? new Guid()))
+                                         .Count();
+            }
+        }
+
+        private UMSV.Informing GetInformingById(int Id)
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.Informings
+                              .Where(t => t.ID == Id)
+                              .SingleOrDefault();
+            }
+        }
+        #endregion
+    }
+}

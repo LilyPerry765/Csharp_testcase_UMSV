@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.FaxReceiveNode"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+             xmlns:e="clr-namespace:Folder;assembly=Folder.Common"
+             DataContextChanged="UserControl_DataContextChanged"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             mc:Ignorable="d"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider  x:Key="Group"
+                          IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup Description="ارسال فکس"
+                           StartNode="FaxNodes[0]"
+                           LastNode="FaxNodes[0]"
+                           xmlns="http://tempuri.org/VoiceGraph.xsd"
+                           Tag="FaxReceive">
+                    <FaxNode ID="0"></FaxNode>
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
+    </UserControl.Resources>
+    <StackPanel>
+        <uc:CommonArea />
+        
+        <uc:TemplateManager TemplateName="{Binding NodeData.FaxNodes[0].TemplateName, UpdateSourceTrigger=PropertyChanged}"
+                            TemplateID="{Binding NodeData.FaxNodes[0].TemplateID, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <CheckBox Content="خواندن از فایل" HorizontalAlignment="Left" IsChecked="{Binding NodeData.FaxNodes[0].ReadFromFile}"/>
+
+        <CheckBox Margin="0,3"
+                  x:Name="keyCheckBox"
+                  Checked="keyCheckBox_Checked"
+                  Unchecked="keyCheckBox_Unchecked">گرفتن پارامتر قبل از ارسال فکس</CheckBox>
+        
+        <StackPanel x:Name="keyStackPanel"
+                    DataContext="{Binding NodeData.GetKeyNodes[0]}"
+                    Visibility="{Binding ElementName=keyCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter1}}">
+
+            <DataGrid ItemsSource="{Binding DataContext.NodeData.FaxNodes[0].Arg, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                  Height="70"
+                  CanUserResizeRows="False"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  VerticalGridLinesBrush="LightGray"
+                  HorizontalGridLinesBrush="LightGray"
+                  CanUserSortColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Name}"
+                                    Header="نام پارامترها"
+                                    Width="*" />
+                    <!--<DataGridTextColumn Binding="{Binding Value}"
+                                    Header="مقدار"
+                                    Width="*" />-->
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <Label>حداقل تعداد ارقام:</Label>
+            <e:NumericUpDown HorizontalAlignment="Left"
+                             Value="{Binding MinDigits}"
+                             Width="100" />
+            <Label>حداکثر تعداد ارقام:</Label>
+            <e:NumericUpDown  HorizontalAlignment="Left"
+                              Value="{Binding MaxDigits}"
+                              Width="100" />
+            <Label>حداکثر زمان انتظار:</Label>
+            <e:NumericUpDown  HorizontalAlignment="Left"
+                              Value="{Binding Timeout}"
+                              Width="100" />
+            <Label>کليد پايان:</Label>
+            <ComboBox HorizontalAlignment="Left"
+                      Width="100"
+                      SelectedValuePath="Content"
+                      SelectedValue="{Binding EndKey}">
+                <ComboBoxItem>#</ComboBoxItem>
+                <ComboBoxItem>*</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

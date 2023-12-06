@@ -1,0 +1,109 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Enterprise;
+using System.Linq.Expressions;
+using Folder;
+using Folder.Audio;
+using System.IO;
+
+namespace UMSV
+{
+    public partial class CallDetailForm : UserControl, IDataGridForm, IFolderForm
+    {
+        UmsDataContext dc = new UmsDataContext();
+        Guid AllGroups = Guid.NewGuid();
+
+        public CallDetailForm()
+        {
+            InitializeComponent();
+        }
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            FromDate.SelectedDate = DateTime.Today;
+
+            var causeList = Utility.CreateEnumDataSource(typeof(DisconnectCause), typeof(int));
+            causeList.Insert(0, new NameValue() {
+                Name = "",
+                Value = null
+            });
+
+            CauseColumnFilter.ItemsSource = causeList;
+
+            using (UmsDataContext dc = new UmsDataContext())
+            {
+                var graphs = dc.Graphs.ToList();
+                graphs.Insert(0, new Graph() {
+                    ID = Guid.Empty,
+                    Name = "",
+                });
+                ServiceColumn.ItemsSource = ServiceColumnFilter.ItemsSource = graphs;
+            }
+        }
+
+        void ViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                dc = new UmsDataContext();
+
+                Folder.Console.ShowProgress();
+                DateTime? from = FromDate.SelectedDate;
+                DateTime? to = ToDate.SelectedDate;
+                Guid selectedService = ServiceColumnFilter.SelectedValue == null ? Guid.Empty : (Guid)(Guid?)ServiceColumnFilter.SelectedValue;
+
+                var value = dc.Calls.Where(c =>
+                        (CallerIDTextbox.Text == string.Empty || CallerIDTextbox.Text == c.CallerID) &&
+                        (tokenTextbox.Text == string.Empty || c.DialogID.Contains(tokenTextbox.Text) || c.Extension.Contains(tokenTextbox.Text)) &&
+                        (CauseColumnFilter.SelectedValue == null || (int?)CauseColumnFilter.SelectedValue == c.DisconnectCause) &&
+                        (selectedService == Guid.Empty || (c.GraphID.HasValue && selectedService == (Guid)c.GraphID)) &&
+                        (
+                            (TypeIncommingComboxBox.IsChecked == true && c.Type == (int)DialogType.FromClient) ||
+                            (TypeOutgoingComboxBox.IsChecked == true && c.Type == (int)DialogType.FromGateway)
+                        ) &&
+                        (String.IsNullOrEmpty(CalleeIDTextbox.Text) || CalleeIDTextbox.Text == c.CalleeID) &&
+                        (from == null || c.CallTime >= from) &&
+                        (to == null || c.CallTime < to));
+
+                dataGrid.ItemsSource = value.OrderBy(c => c.CallTime);
+                Folder.Console.ShowStatusMessage("تعداد رکوردها: '{0}'", value.Count());
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+            finally
+            {
+                Folder.Console.HideProgress();
+            }
+        }
+
+        #region IDataGridForm Members
+
+        public DataGrid DataGrid
+        {
+            get
+            {
+                return dataGrid;
+            }
+        }
+
+        #endregion
+
+        private void ShowCallID_Checked(object sender, RoutedEventArgs e)
+        {
+            DialogIDColumn.Visibility = CallIDColumn.Visibility = ShowCallID.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
+}

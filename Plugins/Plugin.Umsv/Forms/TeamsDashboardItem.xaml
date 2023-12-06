@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="UMSV.TeamsDashboardItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" FlowDirection="RightToLeft" 
+             xmlns:c="clr-namespace:Folder;assembly=Folder.Common" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Folder.Common;component/#Yekan" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Heavy" />
+            <Setter Property="Width" Value="150" />
+        </Style>
+    </UserControl.Resources>
+    <GroupBox Name="Panel">
+        <StackPanel Orientation="Vertical">
+            <DockPanel Margin="10">
+                <TextBlock Text="کاربران آنلاین" HorizontalAlignment="Left" />
+                <Border Background="LightGray" Padding="5" BorderBrush="Black" BorderThickness="1" Width="120" Height="60">
+                    <c:SevenSegment Padding="3" Name="OnlineUsers" BorderBrush="Gray" BorderThickness="1" DigitsCount="3" OnColor="#30FF30" OffColor="#006500" Background="#005000" />
+                </Border>
+            </DockPanel>
+            <DockPanel Margin="10">
+                <TextBlock Text="تماسهای در صف" HorizontalAlignment="Left" />
+                <Border Background="LightGray" Padding="5" BorderBrush="Black" BorderThickness="1" Width="120" Height="60">
+                    <c:SevenSegment Padding="3" Name="QueuedCalls" BorderBrush="Gray" BorderThickness="1" DigitsCount="3" OnColor="#FF3030" OffColor="#650000" Background="#500000" />
+                </Border>
+            </DockPanel>
+            <DockPanel Margin="10">
+                <TextBlock Text="مکالمات" HorizontalAlignment="Left" />
+                <Border Background="LightGray" Padding="5" BorderBrush="Black" BorderThickness="1" Width="120" Height="60">
+                    <c:SevenSegment Padding="3" Name="TotalDialogs" BorderBrush="Gray" BorderThickness="1" DigitsCount="3" OnColor="#30FF30" OffColor="#006500" Background="#005000" />
+                </Border>
+            </DockPanel>
+            <DockPanel Margin="10">
+                <TextBlock Text="کاربران DND" HorizontalAlignment="Left" />
+                <Border Background="LightGray" Padding="5" BorderBrush="Black" BorderThickness="1" Width="120" Height="60">
+                    <c:SevenSegment Padding="3" Name="DndUsers" BorderBrush="Gray" BorderThickness="1" DigitsCount="3" OnColor="#FF3030" OffColor="#650000" Background="#500000" />
+                </Border>
+            </DockPanel>
+        </StackPanel>
+    </GroupBox>
+</UserControl>

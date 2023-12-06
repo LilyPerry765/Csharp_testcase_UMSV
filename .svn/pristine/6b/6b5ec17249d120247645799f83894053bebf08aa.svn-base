@@ -1,0 +1,22 @@
+﻿<Menu xmlns="http://tempuri.org/Menu.xsd">
+  <MenuItem Header="درختواره ها" Tab="UMSV" Group="سیستم" Icon="Images/tree.png" Class="UMSV.GraphsListView"  ViewModelClass="UMSV.ViewModels.GraphsListViewModel">
+    <MenuItem Header="درختواره جدید" Method="NewGraph" Group="سیستم" Icon="Images/tree.png" />
+  </MenuItem>
+  <MenuItem Header="ارسال پیام تلفنی" Tab="UMSV" Group="سیستم" Icon="Images/Call.png" Class="UMSV.PhoneCallsListView"  ViewModelClass="UMSV.ViewModels.PhoneCallsListViewModel" />
+  <!--<MenuItem Header="داشبورد ارسال پیام" Tab="UMSV" Group="سیستم" Icon="Images\Dashboard.png" Class="UMSV.InformingsDashboardForm"/>-->
+  <MenuItem Header="اصوات سیستم" Tab="UMSV" Group="مدیریت" Icon="Images/VoiceList.png" Class="UMSV.UmsVoicesForm" />
+  <MenuItem Header="تماسها" Tab="UMSV" Group="نظارت" Icon="Images\Monitoring.png" Class="UMSV.MonitorSipDialogsForm" />
+  <MenuItem Header="اکانتها" Tab="UMSV" Group="نظارت" Icon="Images\SmallAccount.png" Class="UMSV.MonitorSipAccountsForm" />
+  <MenuItem Header="اپراتورها" Tab="UMSV" Group="نظارت" Icon="Images\OperatorStatus.png" Class="UMSV.OperatorsMonitoringForm" />
+  <MenuItem Header="تیم های اپراتوری" Tab="UMSV" Group="نظارت" Icon="Images\Teams.png" Class="UMSV.OperatorTeamsMonitoringForm" />
+  <MenuItem Header="لیست سیاه" Tab="UMSV" Group="مدیریت" Icon="Images\BlackList.png" Class="UMSV.BlackListForm" />
+  <MenuItem Header="پیکربندی" Tab="UMSV" Group="مدیریت" Icon="Images\Config.png" Class="UMSV.Forms.ConfigForm" />
+  <MenuItem Header="داشبورد" Tab="UMSV" Group="نظارت" Icon="Images\Dashboard.png" Class="UMSV.Forms.DashboardPanel" ViewModelClass="UMSV.DashboardPanelModel" />
+  <MenuItem Header="داشبورد تیمهای تماس" Tab="UMSV" Group="نظارت" Icon="Images\Dashboard.png" Class="UMSV.TeamsDashboardForm" />
+  
+  <MenuItem Header="Gateway" Tab="UMSV" Group="مدیریت" Icon="Images\Gateway.png" Class="UMSV.GatewayConfigForm" />
+
+
+  <MenuItem Header="اطلاعات وارد شده کاربران" Tab="UMSV" Group="لیست" Icon="Images\polllist.png.png" Class="UMSV.UserDataList" />
+
+</Menu>

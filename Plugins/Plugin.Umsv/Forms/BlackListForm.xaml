@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="UMSV.BlackListForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"  FlowDirection="RightToLeft"
+             xmlns:myc="clr-namespace:UMSV;assembly=UMSV.Common"
+             xmlns:c="clr-namespace:Folder;assembly=Folder.Common"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <conv:PersianDateConverter x:Key="PersianDateConverter" />
+    </UserControl.Resources>
+    <DataGrid Name="dataGrid" CanUserAddRows="True" InitializingNewItem="dataGrid_InitializingNewItem">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="شماره تلفن" Binding="{Binding Number}" />
+            <DataGridComboBoxColumn x:Name="Users" Header="ثبت کننده" SelectedValueBinding="{Binding UserID}" IsReadOnly="True" DisplayMemberPath="Fullname" SelectedValuePath="ID" />
+            <DataGridTextColumn Header="زمان ثبت"  Binding="{Binding RegisterTime, Converter={StaticResource PersianDateConverter}}" IsReadOnly="True" />
+            <c:ListDataGridComboBox Header="وضعیت شماره تلفن"  SelectedValueBinding="{Binding Type}" EnumType="{x:Type myc:SpecialPhoneType}" ></c:ListDataGridComboBox>
+            <DataGridTextColumn Header="ملاحظات"  Binding="{Binding Comment}" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

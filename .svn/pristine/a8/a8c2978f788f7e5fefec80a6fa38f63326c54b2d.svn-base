@@ -1,0 +1,40 @@
+﻿<?xml version="1.0"?>
+
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  http://go.microsoft.com/fwlink/?LinkId=169433
+  -->
+
+<configuration>
+
+  <location path="Secured">
+    <system.webServer>
+      <directoryBrowse enabled="false" />
+    </system.webServer>
+  </location>
+  <system.web>
+    <compilation debug="true" targetFramework="4.0" />
+
+    <customErrors mode="RemoteOnly" defaultRedirect="~/Error.htm" />
+    
+    <authentication mode="Forms">
+      <forms name="AuthCookie" path="/" loginUrl="~/WebForms/login.aspx" protection="All" timeout="30"></forms>
+    </authentication>
+  </system.web>
+  <appSettings>
+    <add key="Root" value="D:/UMSV.Informing.WebInterface/"/>
+    <add key="domain" value=""/>
+  </appSettings>
+  <connectionStrings>
+
+    <!--<add name="HelpDesk.Data.Properties.Settings.HelpDeskConnectionString" connectionString="Data Source=192.168.0.3\pendarsql;Initial Catalog=HelpDesk.Semnan;User ID=sa;Password=pendar@crm;Pooling=False;" providerName="System.Data.SqlClient"/>
+    <add name="Folder.Properties.Settings.FolderConnectionString" connectionString="Data Source=192.168.0.3\pendarsql;Initial Catalog=HelpDesk.Folder;Persist Security Info=True;User ID=sa;Password=pendar@crm;Pooling=False;" providerName="System.Data.SqlClient"/>-->
+
+    <!--<add name="HelpDesk.Data.Properties.Settings.HelpDeskConnectionString" connectionString="Data Source=10.45.20.56;Initial Catalog=HelpDesk.Arak;User ID=sa;Password=Pendarppco;Pooling=False;" providerName="System.Data.SqlClient"/>
+    <add name="Folder.Properties.Settings.FolderConnectionString" connectionString="Data Source=10.45.20.56;Initial Catalog=CRM.Folder;Persist Security Info=True;User ID=sa;Password=Pendarppco;Pooling=False;" providerName="System.Data.SqlClient"/>-->
+
+    <add name="Folder.Properties.Settings.FolderConnectionString" connectionString="Data Source=192.168.0.2\pendarsql;Initial Catalog=UMSV.Folder;Persist Security Info=True;User ID=sa;Password=pendar;Pooling=False;" providerName="System.Data.SqlClient"/>
+    <add name="UMSV.Properties.Settings.UMSVConnectionString" connectionString="Data Source=192.168.0.2\pendarsql;Initial Catalog=UMSV;Persist Security Info=True;User ID=sa;Password=pendar;Pooling=False;" providerName="System.Data.SqlClient"/>
+
+  </connectionStrings>
+</configuration>

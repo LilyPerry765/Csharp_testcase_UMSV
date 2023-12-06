@@ -1,0 +1,126 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="MainMaster.master.cs"
+    Inherits="UMS.Informing.WebInterface.MasterPages.MainMaster" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <link rel="stylesheet" type="text/css" href="../Content/main.css" />
+    <link rel="stylesheet" type="text/css" href="../Content/Informing.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../Content/InformingHandHeld.css" media="handheld" />
+    <link rel="stylesheet" type="text/css" href="../Content/InformingPrint.css" media="print" />
+    <asp:ContentPlaceHolder ID="HeadPlaceHolder" runat="server" />
+    <script src="../scripts/jquery-1.7.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#ShowWidnowButton").click(function () {
+                $("#DialogWindow").show();
+                $("#DialogWindow").css("display", "block");
+                $("#DialogWindow").css("top", Math.max(0, (($(window).height() - $("#DialogWindow").outerHeight()) / 2) + $(window).scrollTop()) + "px");
+                $("#DialogWindow").css("left", Math.max(0, (($(window).width() - $("#DialogWindow").outerWidth()) / 2) + $(window).scrollLeft()) + "px");
+            });
+
+            $("#CancelButton").click(function () {
+                $("#DialogWindow").hide();
+                document.getElementById("DescriptionTextBox").value = "";
+            });
+        });
+    </script>
+</head>
+<body>
+    <form id="MasterForm" runat="server">
+    <div class="logininfo_div">
+        <%--<a href="#" id="ShowWidnowButton">
+            <img src="../Images/CreateInforming.png" alt="ایجاد ارسال پیام جدید" class="createticketpic" />
+        </a>--%>
+        <asp:Button ID="TicketListButton" runat="server" Text="لیست تیکت" class="ticketlistbutton "
+            Visible="false" OnClick="TicketListButton_Click" />
+        <asp:Label ID="UserNameLabel" runat="server" />
+        <asp:Button ID="ExitButton" runat="server" Text="خروج" OnClick="ExitButton_Click" />
+        <asp:ContentPlaceHolder ID="HeaderPlaceHolder" runat="server" />
+    </div>
+    <table id="container" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>
+                <table id="contents">
+                    <tr>
+                        <td id="main">
+                            <asp:ContentPlaceHolder ID="BodyPlaceHolder" runat="server">
+                            </asp:ContentPlaceHolder>
+                            <asp:Label ID="Label1" runat="server" EnableViewState="false" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <asp:ScriptManager ID="MainScriptmanager" runat="server" />
+    <div id="DialogWindow" runat="server" class="dialogwindow">
+        <div class="header">
+            <label>
+                ایجاد تیکت دستی</label>
+        </div>
+        <div class="content">
+            <label>
+                توضیحات</label>
+            <asp:TextBox ID="DescriptionTextBox" runat="server" TextMode="MultiLine" ClientIDMode="Static"></asp:TextBox>
+        </div>
+        <div class="buttons">
+            <asp:Button ID="SaveButton" runat="server" Text="ذخیره" OnClick="SaveButton_Click" />
+            <asp:Button ID="CancelButton" runat="server" Text="انصراف" />
+        </div>
+    </div>
+    <div class="print-only div-print-header ">
+        <img src="../Images/pendar-logo.jpg" alt="logo" class="pendarlogopic" />
+        <img src="../Images/redline.png" class="lineimage" alt="" />
+        <div class="divtext">
+            <label class="pendarlogotext">
+                مهندسی الکترونیک پندار پژوه</label>
+            <br />
+            <label class="pendarlogotextsmall">
+                (با مسئولیت محدود)</label>
+        </div>
+    </div>
+    <asp:UpdatePanel ID="MasterContentUpdatePanel" runat="server" UpdateMode="conditional">
+        <ContentTemplate>
+            <div class="contents">
+                <asp:ContentPlaceHolder ID="ContentsPlaceHolder" runat="server" ClientIDMode="Static" />
+            </div>
+            <div class="footer messagestatusbar_div not-in-print">
+                <asp:UpdateProgress ID="progress1" runat="server" DisplayAfter="1" DynamicLayout="true"
+                    AssociatedUpdatePanelID="MasterContentUpdatePanel">
+                    <ProgressTemplate>
+                        <div class="progressdiv">
+                            <img src="../Images/ajax-loader.gif" alt="" />
+                            <label>
+                                لطفا منتظر بمانید . . .
+                            </label>
+                        </div>
+                    </ProgressTemplate>
+                </asp:UpdateProgress>
+                <asp:Image ID="MessageImage" runat="server" Visible="false" CssClass="message_icon" />
+                <asp:Label ID="Messagelabel" runat="server" Visible="false" CssClass="message_label" />
+                <asp:ContentPlaceHolder ID="FooterPlaceHolder" runat="server" />
+            </div>
+            <div class="print-only div-print-footer">
+                <div>
+                    <label class="textright smallfont">
+                        info@pendarpajouh.com</label>
+                    <label class="textleft smallfont">
+                        www.pendarpajouh.com</label>
+                </div>
+                <img src="../Images/redline.png" class="lineimage" alt="" />
+                <br />
+                <div>
+                    <label class="textright">
+                        تهران،خیابان کریمخان زند،خیابان خردمند شمالی،خیابان دوم شرقی،پلاک9،واحد2</label>
+                    <label class="textleft">
+                        صندوق پستی:14155-3578 تلفن:88140142-4 نمابر:88827748</label>
+                </div>
+            </div>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+    </form>
+</body>
+</html>

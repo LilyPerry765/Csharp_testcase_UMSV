@@ -1,0 +1,16 @@
+{0}
+Route: <sip:{2}@[SipProxyAddress];lr;ftag=[RandomNumber]>
+
+v=0
+o=root 2409 2410 IN IP4 [SipProxyAddress]
+s=MCC
+c=IN IP4 [SipProxyAddress]
+t=0 0
+m=image {1} udptl t38
+a=sendrecv
+a=T38FaxVersion:0
+a=T38FaxRateManagement:transferredTCF
+a=T38FaxUdpEC:t38UDPRedundancy
+a=T38MaxBitRate:14400
+a=T38FaxMaxBuffer:1100
+a=T38FaxMaxDatagram:612

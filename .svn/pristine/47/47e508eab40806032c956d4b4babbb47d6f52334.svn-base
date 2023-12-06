@@ -1,0 +1,64 @@
+﻿<UserControl
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        mc:Ignorable="d" x:Class="Plugin.OzPhone.PhoneUserControl"
+        Height="450" Width="246" 
+        Loaded="Window_Loaded" 
+        Background="{x:Null}">
+
+    <Border CornerRadius="70" Padding="0,9,0,4" BorderThickness="5" >
+    	<Border.BorderBrush>
+    		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+    			<GradientStop Color="#FFA5A5A5" Offset="0"/>
+    			<GradientStop Color="#FFABABAB" Offset="1"/>
+    			<GradientStop Color="#FF3C3C3C" Offset="0.236"/>
+    			<GradientStop Color="#FFACACAC" Offset="0.675"/>
+    		</LinearGradientBrush>
+    	</Border.BorderBrush>
+    	<Border.Background>
+    		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+    			<GradientStop Color="#FFC8C8C8" Offset="0"/>
+    			<GradientStop Color="#FF292929" Offset="0.314"/>
+    			<GradientStop Color="#FFD0D0D0" Offset="0.81"/>
+    		</LinearGradientBrush>
+    	</Border.Background>
+		<Grid >
+            <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0" MaxWidth="150" TextWrapping="Wrap"><Hyperlink NavigateUri="http://www.voip-sip-sdk.com/p_116-c-sharp-wpf-softphone-voip.html">
+            Online Help
+            </Hyperlink></TextBlock>
+            
+			<Border x:Name="BorderNumpad" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="197" Height="191" Margin="0,0,0,36">
+				<Grid >
+					<Button x:Name="buttonPickUp" Content="Pick Up" HorizontalAlignment="Left" Width="64" Height="35" Click="buttonPickUp_Click" VerticalAlignment="Top" FontSize="13.333" />
+					<Button x:Name="buttonHangUp" Content="Hang Up" HorizontalAlignment="Right" Width="63" Click="buttonHangUp_Click" Height="35" VerticalAlignment="Top" FontSize="13.333" />
+                    <Button Content="1" HorizontalAlignment="Left" Height="35" Margin="0,39,0,0" VerticalAlignment="Top" Width="63" Tag="1" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp" FontSize="14.667" />
+                    <Button Content="2" Height="35" Margin="67,39,67,0" VerticalAlignment="Top" Tag="2" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp" Width="63" FontSize="14.667" />
+                    <Button Content="3" HorizontalAlignment="Right" Height="35" Margin="0,39,0,0" VerticalAlignment="Top" Width="63" Tag="3" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp"  FontSize="14.667" />
+                    <Button Content="4" HorizontalAlignment="Left" Margin="0,78" Width="63" Tag="4" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp" FontSize="14.667" />
+                    <Button Content="5" Margin="67,78" Tag="5" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp" Width="63" Height="35" FontSize="14.667" />
+                    <Button Content="6" HorizontalAlignment="Right" Margin="0,78" Width="63" Tag="6" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp"   FontSize="14.667" />
+                    <Button Content="7" HorizontalAlignment="Left" Height="35" Margin="0,0,0,39" VerticalAlignment="Bottom" Width="63" Tag="7" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp"   FontSize="14.667"  />
+                    <Button Content="8" Height="35" Margin="67,0,67,39" VerticalAlignment="Bottom" Tag="8" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp"   Width="63" FontSize="14.667" />
+                    <Button Content="9" HorizontalAlignment="Right" Height="35" Margin="0,0,0,39" VerticalAlignment="Bottom" Width="63" Tag="9" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp"  FontSize="14.667" />
+                    <Button Content="0" Height="35" Margin="67,0" VerticalAlignment="Bottom" Tag="0" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp"  Width="63" FontSize="14.667" />
+                    <Button Content="*" HorizontalAlignment="Left" Height="35" VerticalAlignment="Bottom" Width="63" Tag="10" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp"  FontSize="14.667" />
+                    <Button Content="#" HorizontalAlignment="Right" Height="35" VerticalAlignment="Bottom" Width="63" Tag="11" Click="buttonKeyPadButton_Click" PreviewMouseDown="buttonKeyPad_MouseDown" PreviewMouseUp="buttonKeyPad_MouseUp"  FontSize="14.667" />
+				</Grid>
+			</Border>
+			<Border x:Name="BorderDisplay" Height="163" VerticalAlignment="Top" BorderBrush="#FFA5A5A5" BorderThickness="1" CornerRadius="20" Width="205" HorizontalAlignment="Center" Margin="0,33,0,0" Background="#EDFFFFFF">
+				<Grid>
+					<TextBlock x:Name="textBlockRegStatus" HorizontalAlignment="Left" Height="24" Margin="8,8,0,0" TextWrapping="Wrap" Text="Offline" VerticalAlignment="Top" Width="82" FontSize="16" FontFamily="Times New Roman"/>
+					<TextBlock x:Name="textBlockIdentifier" HorizontalAlignment="Right" Height="16" Margin="0,8,8,0" TextWrapping="Wrap" Text="Identifier" VerticalAlignment="Top" TextAlignment="Right" FontSize="16" FontFamily="Times New Roman"/>
+					<TextBlock x:Name="textBlockCallStateInfo" Margin="8,46,8,0" TextWrapping="Wrap" Text="No connection" TextAlignment="Center" FontSize="18.667" FontFamily="Times New Roman" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+					<TextBlock x:Name="textBlockDialingNumber" Height="38" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Bottom" Margin="8,0,8,16" FontSize="18.667" FontFamily="Times New Roman"/>
+				</Grid>
+        
+			</Border>
+			<Image HorizontalAlignment="Left" Height="21" Margin="31,3,0,0" VerticalAlignment="Top" Width="24" Source="Resources/sdk_icon.ico"/>
+			<TextBlock Height="16" TextWrapping="Wrap" Text="WPF Sample Phone" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55,7,0,0"/>
+        
+		</Grid>
+	</Border>
+</UserControl>

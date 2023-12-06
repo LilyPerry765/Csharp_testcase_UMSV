@@ -1,0 +1,96 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Folder;
+using System.Web.Security;
+using Enterprise;
+using System.Data.Linq;
+
+namespace UMS.Informing.WebInterface.WebForms
+{
+    public partial class LoginForm : System.Web.UI.Page
+    {
+        #region Properties and Fields
+
+        #endregion
+
+        #region Events
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            UsernameTextBox.Focus();
+        }
+
+        protected void LoginButton_Click(object sender, EventArgs e)
+        {
+            ErrorLabel.Visible = false;
+            Folder.User user;
+
+            FolderDataContext context = new FolderDataContext();
+            string codedPass = Folder.Cryptography.Encrypt(PasswordTextBox.Text);
+            user = context.Users.FirstOrDefault(u => u.Username == UsernameTextBox.Text && (u.Password == null || u.Password == codedPass) && u.IsEnable);
+            context = null;
+
+            if (user != null)
+            {
+                Logger.WriteImportant("UMSV Informing Web Interface: User initialization completed...");
+                Folder.User.Current = user;
+
+                if (PersistCheckBox.Checked)
+                {
+                    HttpCookie usernameCookie = new HttpCookie("Username");
+                    usernameCookie.Value = Folder.User.Current.Username;
+                    usernameCookie.Expires = DateTime.Now.AddDays(30);
+                    Response.Cookies.Add(usernameCookie);
+                }
+
+                FormsAuthentication.RedirectFromLoginPage(Folder.User.Current.Username, PersistCheckBox.Checked);
+
+                Response.Redirect("InformingList.aspx");
+
+                //string returnUrl = Request.QueryString["ReturnUrl"];
+
+                //if (returnUrl == null)
+                //{
+                //    bool navigateToManagementDashboard = SecurityDB.HasAccessToManagementDashboard(DB.CurrentUser.RoleId);
+                //    if (navigateToManagementDashboard)
+                //        Response.Redirect("Dashboard.aspx");
+                //    else
+                //        Response.Redirect("TicketList.aspx");
+                //} 
+                //else
+                //    Response.Redirect(returnUrl);
+
+            }
+            else
+            {
+                ErrorLabel.Visible = true;
+            }
+        }
+
+        #endregion
+
+        #region Methods
+        private string GetExternalIPAddress()
+        {
+            string ipList = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            if (!string.IsNullOrEmpty(ipList))
+                return ipList.Split(',')[0];
+            return Request.ServerVariables["REMOTE_ADDR"];
+        }
+        private string GetLocalIPAddress()
+        {
+            string localIP = string.Empty;
+            foreach (System.Net.IPAddress ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    localIP = ip.ToString();
+            }
+            return localIP;
+        }
+        #endregion
+    }
+}

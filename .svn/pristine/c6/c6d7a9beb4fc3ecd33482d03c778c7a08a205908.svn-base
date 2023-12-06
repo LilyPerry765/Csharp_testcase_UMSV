@@ -1,0 +1,50 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LoginForm.aspx.cs" Inherits="UMS.Informing.WebInterface.WebForms.LoginForm" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <link rel="stylesheet" type="text/css" href="../Content/Informing.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../Content/InformingHandHeld.css" media="handheld" />
+    <link rel="stylesheet" type="text/css" href="../Content/InformingPrint.css" media="print" />
+    <title>فرم ورود</title>
+</head>
+<body class="gray_background">
+    <form id="form1" runat="server">
+    <div class="container">
+        <div class="shadow1">
+            <div class="shadow2">
+                <div class="login_div">
+                    <span class="right_div">
+                        <img src="../Images/Lock.png" class="login_image screen-only" alt="" />
+                    </span>
+                    <br />
+                    <span class="left_div"><span class="right_div right_label">نام کاربری: </span><span
+                        class="right_div">
+                        <asp:TextBox ID="UsernameTextBox" runat="server" TabIndex="1" CssClass="password_textbox" />
+                    </span>
+                        <br />
+                        <br />
+                        <br />
+                        <span class="right_div right_label">کلمه عبور : </span><span class="right_div">
+                            <asp:TextBox ID="PasswordTextBox" runat="server" TabIndex="2" TextMode="Password"
+                                CssClass="password_textbox" />
+                        </span>
+                        <br />
+                        <br />
+                        <asp:Button ID="LoginButton" runat="server" Text="ورود" TabIndex="3" CssClass="login_button"
+                            OnClick="LoginButton_Click" />
+                        <br />
+                        <asp:CheckBox ID="PersistCheckBox" runat="server" Text=" مرا به خاطر بسپار." CssClass="login_checkbox" />
+                        <br />
+                        <br />
+                        <asp:Label ID="ErrorLabel" runat="server" Text="نام کاربری یا کلمه عبور صحیح نمی باشد."
+                            Visible="false" CssClass="login_error_label" />
+                    </span>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</body>
+</html>

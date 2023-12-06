@@ -1,0 +1,18 @@
+NOTIFY sip:{0}@{1} SIP/2.0
+Record-Route: <sip:{0}@[SipProxyAddress];ftag={3};lr=on>
+Via: SIP/2.0/UDP [SipProxyAddress];branch=[NewBranch]
+Max-Forwards: 69
+Contact: <sip:[SipProxyEndPoint]>
+To: <sip:{0}@[SipProxyAddress]>;tag={4}
+From: <sip:[SipProxyAddress]>;tag={3}
+Call-ID: {2}
+CSeq: {5} NOTIFY
+Content-Type: message/sipfrag
+User-Agent: CallCenter
+Subscription-State: terminated;reason=noResource
+Event: refer
+P-hint: outbound
+Content-Length: 0
+
+SIP/2.0 {6} {7}
+

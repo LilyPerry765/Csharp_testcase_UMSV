@@ -1,0 +1,8 @@
+﻿<Window x:Class="UMSV.Stimul.Viewer.TemplateDesignerForm"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            xmlns:wpfDesigner="clr-namespace:Stimulsoft.Report.WpfDesign;assembly=Stimulsoft.Report.WpfDesign">
+
+    <wpfDesigner:StiWpfDesignerControl x:Name="TemplateDesigner" Loaded="TemplateDesigner_Loaded" />
+
+</Window>

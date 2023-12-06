@@ -1,0 +1,197 @@
+﻿<Window x:Class="Pendar.Ums.CompositeNodes.UserControls.CodeStatusDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:e="clr-namespace:Folder;assembly=Folder.Common"
+        xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+        xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+        WindowStartupLocation="CenterOwner"
+        Title="پيام های مبتنی بر وضعيت"
+        ResizeMode="NoResize"
+        FontFamily="Tahoma"
+        FlowDirection="RightToLeft"
+        Height="357"
+        Width="571">
+    <DockPanel>
+        <DockPanel.Resources>
+            <Style TargetType="ToolTip">
+                <Setter Property="FontFamily"
+                        Value="Tahoma" />
+            </Style>
+        </DockPanel.Resources>
+        <StackPanel DockPanel.Dock="Bottom"
+                    Margin="5,0,5,5"
+                    FlowDirection="LeftToRight"
+                    Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Width"
+                            Value="70" />
+                    <Setter Property="Height"
+                            Value="21" />
+                    <Setter Property="Margin"
+                            Value="2" />
+                </Style>
+            </StackPanel.Resources>
+            <Button IsCancel="True">انصراف</Button>
+            <Button x:Name="okButton"
+                    IsDefault="True"
+                    Click="okButton_Click">تاييد</Button>
+        </StackPanel>
+        <TabControl DockPanel.Dock="Left"
+                    Margin="5"
+                    Width="270">
+            <TabItem Header="جدول اطلاعات">
+                <DataGrid x:Name="recordsDataGrid"
+                          SelectionUnit="FullRow"
+                          AutoGenerateColumns="False"
+                          BorderThickness="1">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="*"
+                                            Header="کد"
+                                            Binding="{Binding Code}" />
+                        <DataGridTextColumn Width="*"
+                                            Binding="{Binding Status}"
+                                            Header="وضعيت" />
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="ورود ليست..."
+                                      x:Name="importCsvMenuItem"
+                                      Click="importCsvMenuItem_Click">
+                                <MenuItem.Icon>
+                                    <Image Source="../../../Images/import.png"
+                                           Width="16" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="حذف"
+                                      x:Name="deleteRecordsMenuItem"
+                                      Click="deleteRecordsMenuItem_Click">
+                                <MenuItem.Icon>
+                                    <Image Source="../../../Images/delete.png"
+                                           Width="14" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="ارتباط با پايگاه داده"
+                     IsSelected="{Binding Path=Arg[1].Value, Converter={conv:NullToBooleanConverter}, Mode=OneTime}">
+                <Grid Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Margin"
+                                    Value="0,3" />
+                        </Style>
+                    </Grid.Resources>
+                    <Label Grid.RowSpan="2">نام Server:</Label>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding Arg[1].Value}" />
+                    <Label Grid.Row="1">روش شناسايی:</Label>
+                    <ComboBox   Grid.Row="1"
+                                FlowDirection="LeftToRight"
+                                Margin="0,3"
+                                Grid.Column="1"
+                                SelectedIndex="{Binding Arg[2].Value}">
+                        <ComboBoxItem>SQL Server Authentication</ComboBoxItem>
+                        <ComboBoxItem>Windows Authentication</ComboBoxItem>
+                    </ComboBox>
+                    <Label Grid.Row="2">نام کاربری:</Label>
+                    <TextBox Grid.Column="1"
+                             Grid.Row="2"
+                             Text="{Binding Arg[3].Value}" />
+                    <Label Grid.Row="3">رمز عبور:</Label>
+                    <e:PasswordBox Grid.Row="3"
+                                   Password="{Binding Arg[4].Value}"
+                                   Margin="0,3"
+                                   Grid.Column="1" />
+                    <Label Grid.Row="4">نام پايگاه داده:</Label>
+                    <TextBox Grid.Column="1"
+                             Grid.Row="4"
+                             Text="{Binding Arg[9].Value}" />
+                    <Label Grid.Row="5">نام جدول:</Label>
+                    <TextBox Grid.Column="1"
+                             Grid.Row="5"
+                             Text="{Binding Arg[5].Value}" />
+                    <Label Grid.Row="6">نام رويه:</Label>
+                    <TextBox Grid.Column="1"
+                             Grid.Row="6"
+                             Text="{Binding Arg[6].Value}" />
+                    <Label Grid.Row="7">فيلد کد:</Label>
+                    <TextBox Grid.Column="1"
+                             Grid.Row="7"
+                             Text="{Binding Arg[7].Value}" />
+                    <Label Grid.Row="8">فيلد وضعيت:</Label>
+                    <TextBox Grid.Column="1"
+                             Grid.Row="8"
+                             Text="{Binding Arg[8].Value}" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <GroupBox Header="پيام های صوتی "
+                  Margin="5">
+            <DataGrid Margin="0,10,0,0"
+                      x:Name="voiceDataGrid"
+                      SelectionUnit="FullRow"
+                      InitializingNewItem="voiceDataGrid_InitializingNewItem"
+                      AutoGenerateColumns="False"
+                      BorderThickness="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*"
+                                        Binding="{Binding Status}"
+                                        Header="عنوان وضعيت" />
+                    <DataGridTemplateColumn Width="30"
+                                            Header="پيام">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Width="20"
+                                        ToolTip="انتخاب پيام صوتی برای اين وضعيت"
+                                        Height="20"
+                                        Click="SelectVoice"
+                                        Tag="{Binding Voice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <Image Source="../../../Images/speaker.png"
+                                           Opacity=".5" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="ورود ليست صداها..."
+                                  x:Name="importVoiceMenuItem"
+                                  Click="importVoiceMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image Source="../../../Images/import.png"
+                                       Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="حذف"
+                                  x:Name="deleteVoiceMenuItem"
+                                  Click="deleteVoiceMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image Source="../../../Images/delete.png"
+                                       Width="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+        </GroupBox>
+    </DockPanel>
+</Window>

@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CallCenterModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="CallCenterModelStoreContainer">
+          <EntitySet Name="ChangeLog" EntityType="CallCenterModel.Store.ChangeLog" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ChangeType" EntityType="CallCenterModel.Store.ChangeType" store:Type="Tables" store:Schema="dbo" store:Name="ChangeType">
+            <DefiningQuery>SELECT 
+      [ChangeType].[ID] AS [ID], 
+      [ChangeType].[Name] AS [Name], 
+      [ChangeType].[CostTypeID] AS [CostTypeID], 
+      [ChangeType].[ElkaTable] AS [ElkaTable]
+      FROM [dbo].[ChangeType] AS [ChangeType]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+        <EntityType Name="ChangeLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ChangeTypeID" Type="int" Nullable="false" />
+          <Property Name="WebServiceID" Type="bigint" Nullable="false" />
+          <Property Name="CenterID" Type="int" Nullable="false" />
+          <Property Name="PhoneNo" Type="varchar" Nullable="false" MaxLength="12" />
+          <Property Name="LogDate" Type="datetime2" Nullable="false" />
+          <Property Name="SetupDate" Type="datetime2" />
+          <Property Name="SubscriberTypeID" Type="int" />
+          <Property Name="PostCode" Type="char" MaxLength="10" />
+          <Property Name="Address" Type="nvarchar" MaxLength="511" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="255" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="255" />
+          <Property Name="LocalCounter" Type="float" />
+          <Property Name="DomecticCounter" Type="int" />
+          <Property Name="InternationalCounter" Type="int" />
+          <Property Name="OldPhoneNo" Type="varchar" MaxLength="12" />
+          <Property Name="OldLocalCounter" Type="int" />
+          <Property Name="OldDomecticCounter" Type="int" />
+          <Property Name="OldInternationalCounter" Type="int" />
+          <Property Name="Trust" Type="bigint" />
+          <Property Name="ModifyDate" Type="datetime2" Nullable="false" />
+          <Property Name="IsConfirmed" Type="bit" Nullable="false" />
+          <Property Name="IsApplied" Type="bit" Nullable="false" />
+          <Property Name="IsAutomaticLog" Type="bit" Nullable="false" />
+          <Property Name="IsFoxProExport" Type="bit" Nullable="false" />
+          <Property Name="Elka_FI_CODE" Type="varchar" MaxLength="15" />
+          <Property Name="IsAppied118" Type="bit" />
+          <Property Name="ViewIn118" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view '118CallCenter.dbo.ChangeType' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="ChangeType">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="CostTypeID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="127" />
+          <Property Name="CostTypeID" Type="int" Nullable="false" />
+          <Property Name="ElkaTable" Type="varchar" MaxLength="127" />
+        </EntityType>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CallCenterModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="myCallCenter2" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ChangeLogs" EntityType="CallCenterModel.ChangeLog" />
+          <EntitySet Name="ChangeTypes" EntityType="CallCenterModel.ChangeType" />
+        </EntityContainer>
+        <EntityType Name="ChangeLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChangeTypeID" Type="Int32" Nullable="false" />
+          <Property Name="WebServiceID" Type="Int64" Nullable="false" />
+          <Property Name="CenterID" Type="Int32" Nullable="false" />
+          <Property Name="PhoneNo" Type="String" Nullable="false" MaxLength="12" Unicode="false" FixedLength="false" />
+          <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="SetupDate" Type="DateTime" Precision="7" />
+          <Property Name="SubscriberTypeID" Type="Int32" />
+          <Property Name="PostCode" Type="String" MaxLength="10" Unicode="false" FixedLength="true" />
+          <Property Name="Address" Type="String" MaxLength="511" Unicode="true" FixedLength="false" />
+          <Property Name="LastName" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="FirstName" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="LocalCounter" Type="Double" />
+          <Property Name="DomecticCounter" Type="Int32" />
+          <Property Name="InternationalCounter" Type="Int32" />
+          <Property Name="OldPhoneNo" Type="String" MaxLength="12" Unicode="false" FixedLength="false" />
+          <Property Name="OldLocalCounter" Type="Int32" />
+          <Property Name="OldDomecticCounter" Type="Int32" />
+          <Property Name="OldInternationalCounter" Type="Int32" />
+          <Property Name="Trust" Type="Int64" />
+          <Property Name="ModifyDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="IsConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="IsApplied" Type="Boolean" Nullable="false" />
+          <Property Name="IsAutomaticLog" Type="Boolean" Nullable="false" />
+          <Property Name="IsFoxProExport" Type="Boolean" Nullable="false" />
+          <Property Name="Elka_FI_CODE" Type="String" MaxLength="15" Unicode="false" FixedLength="false" />
+          <Property Name="IsAppied118" Type="Boolean" />
+          <Property Name="ViewIn118" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="ChangeType">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="CostTypeID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="127" Unicode="true" FixedLength="false" />
+          <Property Name="CostTypeID" Type="Int32" Nullable="false" />
+          <Property Name="ElkaTable" Type="String" MaxLength="127" Unicode="false" FixedLength="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CallCenterModelStoreContainer" CdmEntityContainer="myCallCenter2">
+          <EntitySetMapping Name="ChangeLogs">
+            <EntityTypeMapping TypeName="CallCenterModel.ChangeLog">
+              <MappingFragment StoreEntitySet="ChangeLog">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ChangeTypeID" ColumnName="ChangeTypeID" />
+                <ScalarProperty Name="WebServiceID" ColumnName="WebServiceID" />
+                <ScalarProperty Name="CenterID" ColumnName="CenterID" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+                <ScalarProperty Name="SetupDate" ColumnName="SetupDate" />
+                <ScalarProperty Name="SubscriberTypeID" ColumnName="SubscriberTypeID" />
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LocalCounter" ColumnName="LocalCounter" />
+                <ScalarProperty Name="DomecticCounter" ColumnName="DomecticCounter" />
+                <ScalarProperty Name="InternationalCounter" ColumnName="InternationalCounter" />
+                <ScalarProperty Name="OldPhoneNo" ColumnName="OldPhoneNo" />
+                <ScalarProperty Name="OldLocalCounter" ColumnName="OldLocalCounter" />
+                <ScalarProperty Name="OldDomecticCounter" ColumnName="OldDomecticCounter" />
+                <ScalarProperty Name="OldInternationalCounter" ColumnName="OldInternationalCounter" />
+                <ScalarProperty Name="Trust" ColumnName="Trust" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="IsConfirmed" ColumnName="IsConfirmed" />
+                <ScalarProperty Name="IsApplied" ColumnName="IsApplied" />
+                <ScalarProperty Name="IsAutomaticLog" ColumnName="IsAutomaticLog" />
+                <ScalarProperty Name="IsFoxProExport" ColumnName="IsFoxProExport" />
+                <ScalarProperty Name="Elka_FI_CODE" ColumnName="Elka_FI_CODE" />
+                <ScalarProperty Name="IsAppied118" ColumnName="IsAppied118" />
+                <ScalarProperty Name="ViewIn118" ColumnName="ViewIn118" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChangeTypes">
+            <EntityTypeMapping TypeName="CallCenterModel.ChangeType">
+              <MappingFragment StoreEntitySet="ChangeType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CostTypeID" ColumnName="CostTypeID" />
+                <ScalarProperty Name="ElkaTable" ColumnName="ElkaTable" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="CallCenter">
+        <EntityTypeShape EntityType="CallCenterModel.ChangeLog" Width="1.5" PointX="0.75" PointY="0.75" Height="6.4032194010416656" IsExpanded="true" />
+        <EntityTypeShape EntityType="CallCenterModel.ChangeType" Width="1.5" PointX="2.75" PointY="0.75" Height="1.7879850260416674" IsExpanded="true" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

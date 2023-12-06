@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="UMSV.TalkSummaryReportForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Folder;assembly=Folder.Common"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:t="clr-namespace:Enterprise.Charting.Charting;assembly=Charting"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" FontFamily="Tahoma"
+             mc:Ignorable="d" d:DesignWidth="800" FlowDirection="RightToLeft">
+    <DockPanel>
+        <Expander DockPanel.Dock="Bottom" Header="راهنما" IsExpanded="False">
+            <TextBlock Margin="10">
+                <Run Text="تعداد تماس برابر تعداد مکالمات + تعداد تماسهای بدون پاسخ است." />
+            </TextBlock>
+        </Expander>
+        <Expander DockPanel.Dock="Left" Margin="5" BorderBrush="Gray" Padding="5" IsExpanded="True" Name="FilterPanel" Background="#DDE2EB">
+            <StackPanel VerticalAlignment="Top">
+                <WrapPanel>
+                    <Label Width="70" Content="مقصد" Margin="3" />
+                    <TextBox Width="175" x:Name="CalleeIDTextbox" Margin="3" HorizontalAlignment="Left" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="70" Content="کاربر مقصد" Margin="3" />
+                    <ComboBox Width="175" x:Name="OperatorComboxBox" Margin="3" HorizontalAlignment="Left" DisplayMemberPath="Name"  SelectedValuePath="Value" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="70" Content="از تاریخ" Margin="3"  />
+                    <c:DateTimePicker Margin="3" Name="FromDate" Width="175" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="70" Content="تا تاریخ" Margin="3"  />
+                    <c:DateTimePicker Margin="3" Name="ToDate" Width="175" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="70" Content="سرویس" Margin="3"  />
+                    <ComboBox Margin="3" SelectedValuePath="ID" DisplayMemberPath="Name" x:Name="ServiceColumnFilter" Width="175" Height="24" />
+                </WrapPanel>
+                <Button DockPanel.Dock="Top" Width="75" Height="23" Content="مشاهده" Name="ViewButton" HorizontalAlignment="Left" Margin="10" Click="ViewButton_Click" />
+                <Button DockPanel.Dock="Top" Width="75" Height="23" Content="نمودار" Name="ChartButton" HorizontalAlignment="Left" Margin="10" Click="ChartButton_Click" />
+            </StackPanel>
+        </Expander>
+        <DataGrid Name="dataGrid" BorderBrush="Gray"  CanUserAddRows="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Target}" Header="مقصد" />
+                <DataGridComboBoxColumn SelectedValueBinding="{Binding Target, Mode=OneWay}" x:Name="UserColumn" DisplayMemberPath="Name"  SelectedValuePath="Value" />
+                <DataGridTextColumn Binding="{Binding Group}"  Header="گروه" />
+                <DataGridTextColumn Binding="{Binding Count}"  Header="تعداد تماس" />
+                <DataGridTextColumn Binding="{Binding AnswerCount}"  Header="تعداد مکالمات" />
+                <DataGridTextColumn Binding="{Binding NoAnswerCount}"  Header="تعداد تماسهای بدون پاسخ" />
+                <DataGridTextColumn Binding="{Binding RejectedCount}"  Header="تعداد تماسهای رد شده" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <t:Chart Name="chart" Visibility="Collapsed">
+            <t:ColumnSeries Name="CallCountsSeri"
+                                Title="تعداد تماس"
+                                DependentValueBinding="{Binding Count}"
+                                IndependentValueBinding="{Binding Target}" />
+            <t:ColumnSeries Name="CallAnswerCountsSeri"
+                                Title="تعداد مکالمات"
+                                DependentValueBinding="{Binding AnswerCount}"
+                                IndependentValueBinding="{Binding Target}" />
+        </t:Chart>
+    </DockPanel>
+</UserControl>

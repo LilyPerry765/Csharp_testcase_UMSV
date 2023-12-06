@@ -1,0 +1,842 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UMSV;
+using System.Runtime.InteropServices;
+using Enterprise;
+using System.Media;
+using System.Windows.Forms;
+using Folder.Audio;
+using System.Net;
+using UMSV.Schema;
+using System.Windows.Input;
+using System.Windows;
+using Folder;
+using System.Xml.Linq;
+using System.IO;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using NAudio.Wave;
+using System.Windows.Forms.Integration;
+using System.Text.RegularExpressions;
+using Ozeki.VoIP.SDK;
+using Ozeki.VoIP;
+using Ozeki.Media.MediaHandlers;
+
+namespace UMSV
+{
+    public class OZPhone : SoftPhone
+    {
+        bool Stopping = false;
+        //PortSipAdapter PortSip;
+        PhoneLineState phoneLineState;
+
+        const int AudioCodec_PCMA = 8;
+        const int RegisterPeriod = 60;
+        //int CurrentSessionId;
+        string OperatorUserIDAnnounceFile;
+        int OperatorUserIDOnEndAnnounceVoiceLength;
+        WaveStreamPlayback waveStreamPlayBack;
+        AudioMixerMediaHandler audioMixerMediaHandler;
+
+        public override bool Start(string account, string password)
+        {
+            try
+            {
+                softPhone = SoftPhoneFactory.CreateSoftPhone(UMSV.Schema.Config.Default.RtpLocalPortFrom, UMSV.Schema.Config.Default.RtpLocalPortTo, UMSV.Schema.Config.Default.SipProxyPort);
+                softPhone.IncomingCall += softPhone_IncomingCall;
+            }
+            catch (Exception ex)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("Error while initializing softphone.");
+                sb.AppendLine();
+                sb.AppendLine("Exception:");
+                sb.AppendLine(ex.Message);
+                sb.AppendLine();
+                if (ex.InnerException != null)
+                {
+                    sb.AppendLine("Inner Exception:");
+                    sb.AppendLine(ex.InnerException.Message);
+                    sb.AppendLine();
+                }
+                sb.AppendLine("StackTrace:");
+                sb.AppendLine(ex.StackTrace);
+
+
+                Folder.MessageBox.ShowError("خطا در شروع تلفن");
+                Logger.WriteError(String.Format("{0}", sb));
+                Logger.Write(ex);
+            }
+
+            try
+            {
+                base.Start(account, password);
+
+                //PortSip = new PortSipAdapter();
+                //var host = new WindowsFormsHost()
+                //{
+                //    Child = PortSip
+                //};
+
+                //PortSip.Core.registerSuccess += Core_registerSuccess;
+                //PortSip.Core.registerFailure += Core_registerFailure;
+                //PortSip.Core.inviteAnswered += Core_inviteAnswered;
+                //PortSip.Core.inviteClosed += Core_inviteClosed;
+                //PortSip.Core.inviteFailure += Core_inviteFailure;
+                //PortSip.Core.inviteIncoming += Core_inviteIncoming;
+                //PortSip.Core.arrivedSignaling += Core_arrivedSignaling;
+                //PortSip.Core.transferTrying += Core_transferTrying;
+                //PortSip.Core.transferRinging += Core_transferRinging;
+                //PortSip.Core.ACTVTransferSuccess += Core_ACTVTransferSuccess;
+                //PortSip.Core.ACTVTransferFailure += Core_ACTVTransferFailure;
+                //PortSip.Core.PASVTransferSuccess += Core_PASVTransferSuccess;
+                //PortSip.Core.PASVTransferFailure += Core_PASVTransferFailure;
+
+                if (!Register(account, password))
+                {
+                    //Core_registerFailure(this, null);
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Folder.MessageBox.ShowError("خطا در شروع");
+                Logger.Write(ex);
+                return false;
+            }
+        }
+
+        private void softPhone_IncomingCall(object sender, VoIPEventArgs<IPhoneCall> e)
+        {
+            var incomingCall = e.Item as IPhoneCall;
+            if (call != null)
+            {
+                incomingCall.Reject();
+                return;
+            }
+
+            call = incomingCall;
+            SubscribeToCallEvents(call);
+            CallSetup();
+        }
+
+        private void phoneLine_PhoneLineStateChanged(object sender, VoIPEventArgs<PhoneLineState> e)
+        {
+            phoneLineState = e.Item;
+
+            if (phoneLineState == PhoneLineState.RegistrationFailed)
+                RegisterFailure();
+
+            if (phoneLineState == PhoneLineState.RegistrationSucceeded)
+                RegisterSuccess();
+
+            if (phoneLineState == PhoneLineState.UnregRequested)
+                UnRegister();
+            //InvokeGUIThread(() =>
+            //{
+            //    textBlockIdentifier.Text = ((IPhoneLine)sender).SIPAccount.RegisterName;
+            //    if (e.Item == PhoneLineState.RegistrationSucceeded)
+            //    {
+            //        textBlockRegStatus.Text = "Online";
+            //        textBlockCallStateInfo.Text = "Registration succeeded";
+            //    }
+            //    else
+            //        textBlockCallStateInfo.Text = e.Item.ToString();
+            //});
+        }
+
+        private void call_CallStateChanged(object sender, VoIPEventArgs<CallState> e)
+        {
+            //InvokeGUIThread(() => { textBlockCallStateInfo.Text = e.Item.ToString(); });
+
+            //if (e.Item == CallState.Setup)
+            //    CallSetup();
+
+            if (e.Item == CallState.Error)
+                CallError();
+
+            if (e.Item == CallState.Cancelled)
+                CallCancelled();
+
+
+            if (e.Item == CallState.InCall)
+            {
+                //CallAccepted();
+                //if (Config.Default.AnnounceOperatorUserIDOnAnswer)
+                //{
+
+                //    if (waveStreamPlayBack == null)
+                //    {
+                //        waveStreamPlayBack = new WaveStreamPlayback(OperatorUserIDAnnounceFile);
+                //        waveStreamPlayBack.Stopped += waveStreamPlayBack_Stopped;
+                //    }
+
+                //    if (audioMixerMediaHandler == null)
+                //        audioMixerMediaHandler = new AudioMixerMediaHandler();
+
+                //    connector.Connect(waveStreamPlayBack, audioMixerMediaHandler);
+                //    connector.Connect(audioMixerMediaHandler, mediaSender);
+
+                //    mediaSender.AttachToCall(call);
+
+                //    waveStreamPlayBack.StartStreaming();
+                //}
+
+                /////// placed in event....
+
+                if (microphone != null)
+                    microphone.Start();
+
+                if (speaker != null)
+                    speaker.Start();
+
+                mediaSender.AttachToCall(call);
+                mediaReceiver.AttachToCall(call);
+
+            }
+
+            if (e.Item.IsCallEnded())
+            {
+                if (microphone != null)
+                    microphone.Stop();
+
+                if (speaker != null)
+                    speaker.Stop();
+
+                mediaSender.Detach();
+                mediaReceiver.Detach();
+
+                UnsubscribeFromCallEvents(sender as IPhoneCall);
+                call = null;
+
+                //InvokeGUIThread(() => { textBlockDialingNumber.Text = string.Empty; });
+            }
+        }
+
+        private void waveStreamPlayBack_Stopped(object sender, EventArgs e)
+        {
+            connector.Disconnect(waveStreamPlayBack, audioMixerMediaHandler);
+            connector.Disconnect(audioMixerMediaHandler, mediaSender);
+
+            mediaSender.Detach();
+
+
+            if (microphone != null)
+                microphone.Start();
+
+            if (speaker != null)
+                speaker.Start();
+
+            mediaSender.AttachToCall(call);
+            mediaReceiver.AttachToCall(call);
+        }
+
+        private void SubscribeToCallEvents(IPhoneCall call)
+        {
+            if (call == null)
+                return;
+
+            call.CallStateChanged += (call_CallStateChanged);
+            //call.DtmfReceived += (call_DtmfReceived);
+            //call.CallErrorOccured += (call_CallErrorOccured);
+        }
+
+        private void UnsubscribeFromCallEvents(IPhoneCall call)
+        {
+            if (call == null)
+                return;
+
+            call.CallStateChanged -= (call_CallStateChanged);
+            //call.DtmfReceived -= (call_DtmfReceived);
+            //call.CallErrorOccured -= (call_CallErrorOccured);
+        }
+
+        private void ConnectMedia()
+        {
+            if (speaker != null)
+                connector.Connect(mediaReceiver, speaker);
+
+            if (microphone != null)
+                connector.Connect(microphone, mediaSender);
+        }
+
+        private void DisconnectMedia()
+        {
+            if (speaker != null)
+                connector.Disconnect(mediaReceiver, speaker);
+
+            if (microphone != null)
+                connector.Disconnect(microphone, mediaSender);
+        }
+
+        //void Core_arrivedSignaling(object sender, _DPortSIPCoreLibEvents_arrivedSignalingEvent e)
+        //{
+        //    Logger.WriteView(e.signaling);
+        //    OnMessageArrived(e.signaling);
+        //}
+
+        public override void DndStart()
+        {
+            phoneLine.DoNotDisturb = true;
+            base.DndStart();
+            string to = User.Current.Username, sdp = "s=DND:on";
+            //PortSip.Core.sendPagerMessage(ref to, ref sdp);
+            //AxPortSIPCoreLibLib.AxPortSIPCoreLib core = new AxPortSIPCoreLibLib.AxPortSIPCoreLib();
+            //core.sendPagerMessage(ref to, ref sdp);
+            //core = null;
+        }
+
+        public override void DndEnd()
+        {
+            phoneLine.DoNotDisturb = false;
+            base.DndEnd();
+            string to = User.Current.Username, sdp = "s=DND:off";
+            //PortSip.Core.sendPagerMessage(ref to, ref sdp);
+            //AxPortSIPCoreLibLib.AxPortSIPCoreLib core = new AxPortSIPCoreLibLib.AxPortSIPCoreLib();
+            //core.sendPagerMessage(ref to, ref sdp);
+            //core = null;
+        }
+
+        void RejectCall(StatusCode statusCode, string callerID)
+        {
+            Logger.WriteWarning("Incomming call on status: {1}. caller:{0}, sending {2} response.", callerID, AccountStatus, statusCode);
+            //string reason = statusCode.ToString();
+            //PortSip.Core.rejectCall(sessionId, (int)statusCode, ref reason);
+            call.Reject();
+        }
+
+        void CallSetup()
+        {
+            Logger.WriteInfo("Core_inviteIncoming callID:{0} caller:{1} callee:{2} calleeDisplayName:{3} callerDisplayName:{4}", call.CallID, call.DialInfo.UserName, call.OtherParty.UserName, call.OtherParty.DisplayName, call.DialInfo.DisplayName);
+
+            if (Stopping)
+            {
+                Logger.WriteWarning("Incomming call while stopping, rejecting call...");
+                //RejectCall(e.sessionId, StatusCode.ServiceUnavailable, e.caller);
+                RejectCall(StatusCode.ServiceUnavailable, call.DialInfo.UserName);
+                return;
+            }
+            else if (AccountStatus != SipAccountStatus.Idle)
+            {
+                switch (AccountStatus)
+                {
+                    case SipAccountStatus.Dialing:
+                    case SipAccountStatus.Hold:
+                    case SipAccountStatus.Talking:
+                        //RejectCall(e.sessionId, StatusCode.TemporarilyUnavailable, e.caller);
+                        RejectCall(StatusCode.TemporarilyUnavailable, call.DialInfo.UserName);
+                        break;
+
+                    case SipAccountStatus.DND:
+                        //RejectCall(e.sessionId, StatusCode.DoNotDisturb/*(StatusCode)Config.Default.StatusCodeOnDndRejection*/, e.caller);
+                        RejectCall(StatusCode.DoNotDisturb, call.DialInfo.UserName);
+                        break;
+
+                    case SipAccountStatus.Offline:
+                        //RejectCall(e.sessionId, StatusCode.ServiceUnavailable, e.caller);
+                        RejectCall(StatusCode.ServiceUnavailable, call.DialInfo.UserName);
+                        break;
+                }
+                return;
+            }
+            else if (DoNotDisturb)
+            {
+                //RejectCall(e.sessionId, StatusCode.DoNotDisturb/*(StatusCode)Config.Default.StatusCodeOnDndRejection*/, e.caller);
+                RejectCall(StatusCode.DoNotDisturb, call.DialInfo.UserName);
+                return;
+            }
+
+            //CurrentSessionId = e.sessionId;
+            AccountStatus = SipAccountStatus.Dialing;
+
+
+            CallAlertWindow.ShowCallAlert();
+
+            SipDialog dialog = new SipDialog();
+            dialog.Call.DialogID = call.OtherParty.DisplayName;
+            dialog.Call.CallerID = call.DialInfo.DisplayName;
+            //DialogID = call.OtherParty.DisplayName;
+            DialogID = call.CallID;
+            Logger.WriteInfo("Dialog ID: {0}", DialogID);
+            CallerID = call.DialInfo.DisplayName;
+            OnIncommingCall(new IncommingCallEventArgs(dialog));
+        }
+
+        //private void InvokeGUIThread(Action action)
+        //{
+        //    Dispatcher.Invoke(action, null);
+        //}
+
+        void CallError()
+        {
+            Logger.WriteInfo("Call Error");
+            CallAlertWindow.HideCallAlert();
+            Folder.Console.ShowStatusMessage("تماس قطع شد");
+            IncommingCallPlayer.Stop();
+
+            if (Stopping)
+                CompleteUnRegister();
+            else
+                AccountStatus = SipAccountStatus.Idle;
+        }
+
+        void CallCancelled()
+        {
+            //Logger.WriteInfo("Core_inviteClosed, call cancelled.");
+            //if (Global.Default != null)
+            //{
+            //    if (Global.Default.TalkingImage != null)
+            //        Global.Default.TalkingImage.Visibility = Visibility.Hidden;
+            //}
+
+            IncommingCallPlayer.Stop();
+
+            OnCallDisconnected();
+
+            CallFailureCounter++;
+            CallAlertWindow.HideCallAlert();
+            CheckCallFailureCounter();
+            Folder.Console.ShowStatusMessage("تماس قطع شد");
+
+            if (Stopping)
+                CompleteUnRegister();
+            else
+                AccountStatus = SipAccountStatus.Idle;
+        }
+
+        void CallAccepted()
+        {
+            CallFailureCounter = 0;
+
+            //if (Global.Default != null)
+            //{
+            //    if (Global.Default.TalkingImage != null)
+            //        Global.Default.TalkingImage.Visibility = Visibility.Visible;
+            //}
+
+            IncommingCallPlayer.Stop();
+            OnCallAnswered();
+        }
+
+        void RegisterFailure()
+        {
+            Logger.WriteInfo("Core_registerFailure, Registration Failed");
+            //try
+            //{
+            //    PortSip.Core.unInitialize();
+            //    int ret = PortSip.Core.registerServer(RegisterPeriod);
+            //    if (ret == 0)
+            //    {
+            //        Folder.Console.ShowStatusMessage("اختلال در شبکه، تلفن مجدد آنلاین شد.");
+            //        return;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.Write(ex);
+            //}
+
+            OnUnRegistered();
+            Folder.Console.ShowStatusMessage("تلفن آنلاین نشد، عدم دریافت تماس جدید");
+            Folder.MessageBox.ShowError("با عرض پوزش کاربر شما آنلاین نشد، لطفا دوباره سعی کنید!");
+        }
+
+        void RegisterSuccess()
+        {
+            Logger.WriteInfo("Core_registerSuccess, Registration Succeeded.");
+            OnRegistered();
+
+            CallFailureCounter = 0;
+
+            if (AccountStatus == SipAccountStatus.Offline)
+                AccountStatus = SipAccountStatus.Idle;
+
+            Folder.Console.ShowStatusMessage("تلفن آنلاین شد");
+        }
+
+        bool Register(string account, string password)
+        {
+            try
+            {
+                //PortSip.Device.initialize();
+
+                //string agent = "PendarSip";
+                string userDomain = string.Empty;
+                string outbandServer = string.Empty;
+                string stunServer = string.Empty;
+                string proxyServer = string.Empty;
+                try
+                {
+                    proxyServer = string.IsNullOrWhiteSpace(Config.Default.SoftPhoneRegistrationDomain) ? Config.Default.SipProxyAddress : Config.Default.SoftPhoneRegistrationDomain;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write(ex);
+                    Logger.WriteImportant("Proxy server could not be extracted. Probably config schema is old and does not contain a configuration for softphone registration domain.");
+                }
+                int proxyPort = Config.Default.SipProxyPort;
+
+                //PortSip.Core.setRtpPortRange(Config.Default.RtpLocalPortFrom, Config.Default.RtpLocalPortTo, 0, 0);
+
+                Logger.WriteInfo("Register User:{0} Server:({1}:{2})", account, proxyServer, proxyPort);
+                var localIP = LocalAddress.Address.ToString();
+                //int result = PortSip.Core.initialize(
+                //    0,
+                //    2, // Config.Default.SoftPhoneMaxConcurrentCalls
+                //    ref account,
+                //    ref account,
+                //    ref account,
+                //    ref password,
+                //    ref agent,
+                //    ref localIP,
+                //    LocalAddress.Port,
+                //    ref userDomain,
+                //    ref proxyServer,
+                //    proxyPort,
+                //    ref outbandServer,
+                //    36000,
+                //    ref stunServer,
+                //    0);
+
+                phoneLine = softPhone.CreatePhoneLine(new Ozeki.VoIP.SIPAccount(true, account, account, account, password, proxyServer, proxyPort), Ozeki.Network.TransportType.Udp);
+                phoneLine.PhoneLineStateChanged += phoneLine_PhoneLineStateChanged;
+
+                softPhone.RegisterPhoneLine(phoneLine);
+
+                ConnectMedia();
+
+                if (phoneLineState == PhoneLineState.RegistrationFailed)
+                {
+                    Logger.WriteError("Login Failed on OzPhone Registration!");
+                    return false;
+                }
+
+                //PortSip.Core.setRTPJitterBufferLength(2);
+                //PortSip.Core.clearAudioCodec();
+                //PortSip.Core.addAudioCodec(AudioCodec_PCMA);
+
+                //int ret = PortSip.Core.registerServer(RegisterPeriod);
+                //if (ret != 0)
+                //{
+                //    PortSip.Core.unInitialize();
+                //    Logger.WriteError("SIP RegistrationFailure");
+                //    {
+                //        Logger.WriteError("Login Failed on PortSip.Core.registerServer!");
+                //        return false;
+                //    }
+                //}
+
+                //string licenseKey = "2WmTBs6dmS/nVdM35kw7QQ==@FfjO0il3RjDMxkBvLGG8dw==@Dy+WEF5wpaKTGgVpAiAOAQ==@6Xo+rtBKB9Ddf/kWby4Uyw==";
+                //PortSip.Core.setLicenseKey(ref licenseKey);
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex, "Softphone.Register");
+                return false;
+            }
+
+            return true;
+        }
+
+        void CompleteUnRegister()
+        {
+            Logger.WriteInfo("CompleteUnRegister SoftPhone ...");
+
+            try
+            {
+                if (AccountStatus == SipAccountStatus.Offline)
+                {
+                    Logger.WriteWarning("Already unregisterd.");
+                    return;
+                }
+
+                AccountStatus = SipAccountStatus.Offline;
+                CallAlertWindow.HideCallAlert();
+
+                //PortSip.Core.registerSuccess -= Core_registerSuccess;
+                //PortSip.Core.registerFailure -= Core_registerFailure;
+                //PortSip.Core.inviteAnswered -= Core_inviteAnswered;
+                //PortSip.Core.inviteClosed -= Core_inviteClosed;
+                //PortSip.Core.inviteFailure -= Core_inviteFailure;
+                //PortSip.Core.inviteIncoming -= Core_inviteIncoming;
+                softPhone.UnregisterPhoneLine(phoneLine);
+                UnsubscribeFromCallEvents(call);
+
+                softPhone.IncomingCall -= softPhone_IncomingCall;
+                phoneLine.PhoneLineStateChanged -= phoneLine_PhoneLineStateChanged;
+
+                DisconnectMedia();
+                if (microphone != null)
+                    microphone.Stop();
+
+                if (speaker != null)
+                    speaker.Stop();
+
+                mediaSender.Detach();
+                mediaReceiver.Detach();
+
+                mediaSender.Dispose();
+                mediaReceiver.Dispose();
+                phoneLine.Dispose();
+                softPhone.Close();
+                //PortSip.Core.unInitialize();
+                //PortSip.Core.unRegisterServer();
+                //PortSip.Device.unInitialize();
+
+                OnUnRegistered();
+
+                Stopping = false;
+                Folder.Console.ShowStatusMessage("سیستم آفلاین شد، عدم دریافت تماس جدید");
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        public override void UnRegister()
+        {
+            Stopping = true;
+
+            if (AccountStatus == SipAccountStatus.Idle)
+                CompleteUnRegister();
+            //else
+            Folder.Console.ShowStatusMessage("در حال خروج ...");
+        }
+
+        public override void AnswerCall()
+        {
+            CallFailureCounter = 0;
+
+            if (AccountStatus != SipAccountStatus.Dialing)
+            {
+                Logger.WriteInfo("Invalid AnswerCall, current state:{0}", AccountStatus);
+                return;
+            }
+
+            //Logger.WriteInfo("Answerd sessionId:{0}", CurrentSessionId);
+
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    Logger.WriteInfo("Answerd in Loop: {0}", i);
+                    //PortSip.Core.answerCall(CurrentSessionId);
+                    call.Accept(Ozeki.VoIP.Media.CallType.Audio);
+                    break;
+                }
+                catch (OutOfMemoryException ex)
+                {
+                    Logger.WriteError("OutOfMemoryException on Call Answerd.");
+                    Logger.Write(ex);
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteError("Error in accepting call...");
+                    Logger.Write(ex);
+                }
+
+            }
+
+            Logger.WriteDebug("Call Answerd.");
+            AccountStatus = SipAccountStatus.Talking;
+
+            OnCallAnswered();
+
+            Folder.Console.ShowStatusMessage("برقراری ارتباط با مشترک");
+        }
+
+        protected override void CreateOperatorUserIDAnnounceOnAnswer(string userID)
+        {
+            if (Config.Default.AnnounceOperatorUserIDOnAnswer || Config.Default.AnnounceOperatorUserIDOnEnd)
+            {
+                try
+                {
+                    OperatorUserIDAnnounceFile = System.IO.Path.Combine(Folder.SystemFile.FolderCachePath, Constants.OperatorUserIDAnnounceFile + ".wav");
+
+                    MemoryStream stream = new MemoryStream();
+                    string userVoiceName = string.Format(Config.Default.OperatorIncommingCallWelcomeVoiceFormat, userID, User.Current.ID);
+                    var operatorSpecialVoice = UMSV.Voice.GetByName(userVoiceName);
+
+                    if (operatorSpecialVoice != null)
+                    {
+                        stream.Write(operatorSpecialVoice, 0, operatorSpecialVoice.Length);
+                    }
+                    else
+                    {
+                        var operatorVoice = UMSV.Voice.GetByName(Constants.OperatorUserIDAnnounceFile);
+                        stream.Write(operatorVoice, 0, operatorVoice.Length);
+
+                        byte[] operatorNameVoice;
+
+                        if (IsNumber(userID))
+                            operatorNameVoice = UMSV.Voice.GetNumberVoice(userID);
+                        else
+                            operatorNameVoice = UMSV.Voice.GetByName(userID);
+
+                        if (operatorNameVoice != null)
+                            stream.Write(operatorNameVoice, 0, operatorNameVoice.Length);
+                    }
+
+                    OperatorUserIDOnEndAnnounceVoiceLength = (int)(stream.Position / 8);
+
+                    var befarmaeidVoice = UMSV.Voice.GetByName(Constants.Voice_Befarmaeid);
+                    if (befarmaeidVoice != null)
+                        stream.Write(befarmaeidVoice, 0, befarmaeidVoice.Length);
+
+
+                    var rawData = stream.ToArray();
+                    OperatorUserIDAnnounceTime = rawData.Length / 8;
+
+                    byte[] waveFile = Folder.Audio.AudioUtility.ConvertMsg2Wave(rawData);
+                    //waveFile = Folder.Audio.AudioUtility.AppendAlawHeader(waveFile);
+                    //Logger.WriteImportant("11");
+                    //byte[] waveFile = Folder.Audio.AudioUtility.ConvertRawAlawToRawPcm(rawData);
+                    //waveFile = Folder.Audio.AudioUtility.AppendPcmHeader(waveFile);
+                    //byte[] waveFile = Folder.Audio.AudioUtility.ConvertRawPcmToRawAlaw(rawData);
+                    //waveFile = Folder.Audio.AudioUtility.AppendAlawHeader(waveFile);
+
+
+                    System.IO.File.WriteAllBytes(OperatorUserIDAnnounceFile, waveFile);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write(ex);
+                }
+            }
+        }
+
+        private bool IsNumber(string userID)
+        {
+            foreach (char ch in userID.ToCharArray())
+                if (!Char.IsDigit(ch))
+                    return false;
+            return true;
+        }
+
+        public override void Transfer(string number)
+        {
+            Logger.WriteDebug("Transfering to {0}", number);
+            //PortSip.Core.refer(CurrentSessionId, ref number);
+            call.BlindTransfer(number);
+        }
+
+        public void Dispose()
+        {
+            UnRegister();
+        }
+
+        public override void SendDtmf(char key)
+        {
+            int keyCode = key == '*' ? 10 : key == '#' ? 11 : key - 48;
+            //PortSip.Core.sendDtmf(CurrentSessionId, keyCode);
+        }
+
+        public override void RejectCall()
+        {
+            Logger.WriteDebug("RejectCall {0}", CallFailureCounter);
+            //string reason = "Busy Here";
+            //PortSip.Core.rejectCall(CurrentSessionId, 486, ref reason);
+            call.Reject();
+            CallAlertWindow.HideCallAlert();
+            if (Stopping)
+                CompleteUnRegister();
+            else
+                AccountStatus = SipAccountStatus.Idle;
+        }
+
+        public override bool Call(string target)
+        {
+            target = target.Replace(" ", "");
+            if (target == string.Empty)
+                return false;
+
+            var privilegedDialTargets = User.Current[Constants.UserProfileKey_PrivilegedDialTargets];
+            if (!string.IsNullOrWhiteSpace(privilegedDialTargets))
+            {
+                if (!Regex.IsMatch(target, privilegedDialTargets))
+                {
+                    Logger.WriteDebug("cannot dial number '{0}' because of pattern '{1}' ...", target, privilegedDialTargets);
+                    Folder.Console.ShowStatusMessage("تماس با شماره تلفن '{0}' مجاز نمیباشد.", target);
+                    return false;
+                }
+            }
+
+            Logger.WriteDebug("Calling phone number '{0}' ...", target);
+
+            if (call != null)
+            {
+                Logger.WriteInfo("cannot dial... Call is not null...");
+                return false;
+            }
+
+            if (phoneLine.RegisteredInfo != PhoneLineState.RegistrationSucceeded && phoneLine.RegisteredInfo != PhoneLineState.NoRegNeeded)
+            {
+                Folder.MessageBox.ShowInfo("تلفن باید آنلاین باشد");
+                return false;
+            }
+
+            call = softPhone.CreateCallObject(phoneLine, target, Ozeki.VoIP.Media.CallType.Audio);
+            SubscribeToCallEvents(call);
+            call.Start();
+
+            //CurrentSessionId = PortSip.Core.call(ref target, 1);
+
+            AccountStatus = SipAccountStatus.Dialing;
+            return true;
+        }
+
+        public override void DisconnectCall()
+        {
+            //Logger.WriteDebug("DisconnectCall {0}", CurrentSessionId);
+            Logger.WriteDebug("DisconnectCall {0}", call.IsIncoming ? call.DialInfo.UserName : call.OtherParty.UserName);
+            AccountStatus = SipAccountStatus.Idle;
+
+            //if (Global.Default != null)
+            //{
+            //    if (Global.Default.TalkingImage != null)
+            //        Global.Default.TalkingImage.Visibility = Visibility.Hidden;
+            //}
+
+            //Logger.WriteDebug("PortSip.Core.terminateCall, sessionID:{0}", CurrentSessionId);
+            if (call != null)
+            {
+                if (Config.Default.AnnounceOperatorUserIDOnEnd)
+                {
+                    //PortSip.Core.setPlayWaveFileToRemote(ref OperatorUserIDAnnounceFile, 1, 1);
+                    Ozeki.VoIP.Media.VoIPMediaData media = new VoiceMedia(System.IO.File.ReadAllBytes(OperatorUserIDAnnounceFile));
+                    call.SendMediaData((int)Ozeki.VoIP.Media.VoIPMediaType.Unknown, media);
+                    System.Threading.Thread.Sleep(OperatorUserIDOnEndAnnounceVoiceLength);
+                }
+                //PortSip.Core.terminateCall(CurrentSessionId);
+                call.HangUp();
+            }
+            OnCallDisconnected();
+            Folder.Console.ShowStatusMessage("تماس قطع شد");
+
+            ClearCall();
+            if (Stopping)
+                CompleteUnRegister();
+        }
+    }
+
+    public class VoiceMedia : Ozeki.VoIP.Media.VoIPMediaData
+    {
+        public VoiceMedia()
+        {
+            base.MediaType = Ozeki.VoIP.Media.VoIPMediaType.Audio;
+        }
+
+        public VoiceMedia(byte[] Data)
+        {
+            base.Data = Data;
+            base.MediaType = Ozeki.VoIP.Media.VoIPMediaType.Audio;
+        }
+    }
+
+
+}

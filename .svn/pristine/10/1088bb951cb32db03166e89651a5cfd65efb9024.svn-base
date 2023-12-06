@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace UMS.Informing.WebInterface.Classes
+{
+    public static class Constants
+    {
+        public static readonly string InformingEditinASPAccess = "930912eb-7654-4017-b56d-f71d35c3c5d4";
+    }
+}

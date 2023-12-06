@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Config" targetNamespace="http://tempuri.org/Config.xsd" elementFormDefault="qualified" xmlns="http://tempuri.org/Config.xsd" xmlns:mstns="http://tempuri.org/Config.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Config">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Email" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence />
+            <xs:attribute name="Sender" type="xs:string" use="required" />
+            <xs:attribute name="Subject" type="xs:string" use="required" />
+            <xs:attribute name="BodyFormat" type="xs:string" use="required" />
+            <xs:attribute name="AttachVoiceMessage" type="xs:boolean" use="optional" default="false" />
+            <xs:attribute name="Authenticate" type="xs:boolean" use="optional" default="false" />
+            <xs:attribute name="UseSsl" type="xs:boolean" use="optional" default="false" />
+            <xs:attribute name="Username" type="xs:string" use="optional" />
+            <xs:attribute name="Password" type="xs:string" use="optional" />
+            <xs:attribute name="Server" type="xs:string" use="optional" default="localhost" />
+            <xs:attribute name="Port" type="xs:int" use="optional" default="25" />
+            <xs:attribute name="Timeout" type="xs:int" use="optional" default ="60"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="MaxNewMessage" type="xs:int" use="optional" default="10" />
+      <xs:attribute name="AnswerExpireMinutes" type="xs:int" use="optional" default="2880" />
+      <xs:attribute name="MaxArchiveMessage" type="xs:int" use="optional" default="10" />
+      <xs:attribute name="InvalidBoxMaxTry" type="xs:int" use="optional" default="3" />
+      <xs:attribute name="AutoDequeueFullMailbox" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="MaxRecordTime" type="xs:int" use="optional" default="180" />
+      <xs:attribute name="PagingRetryDelay" type="xs:int" use="optional" default="1800000" />
+      <xs:attribute name="RemoveBeepFromRecordedMessage" type="xs:int" use="optional" default="0" />
+      <xs:attribute name="MessageMinDuration" type="xs:int" use="optional" default="3" />
+      <xs:attribute name="MailBoxWelcomeMessage" type="xs:string" use="optional" default="MailBoxWelcomeMessage" />
+      <xs:attribute name="PlaySendTimeWithMessage" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="PlayCallerIDWithMessage" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="MailboxDefaultMode" type="xs:byte" use="optional" default="1" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

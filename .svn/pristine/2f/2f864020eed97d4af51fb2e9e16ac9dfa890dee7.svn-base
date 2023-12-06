@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace UMS.Informing.WebInterface.Classes
+{
+    public class CustomInforming
+    {
+        public int Id { get; set; }
+        public bool Enabled { get; set; }
+        public string GraphName { get; set; }
+        public Guid? GraphId { get; set; }
+        public string Subject { get; set; }
+        public int RetryCount { get; set; }
+        public string CallDate { get; set; }
+        public string CallFromTime { get; set; }
+        public string CallToTime { get; set; }
+    }
+
+    public class CustomSchedule
+    {
+        public string CallDate { get; set; }
+        public string CallFromTime { get; set; }
+        public string CallToTime { get; set; }
+    }
+}

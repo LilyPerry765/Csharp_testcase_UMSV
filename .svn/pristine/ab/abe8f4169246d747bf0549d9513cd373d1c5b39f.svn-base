@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Folder;
+
+namespace Pendar._118
+{
+    /// <summary>
+    /// Interaction logic for JobsList.xaml
+    /// </summary>
+    public partial class JobsListForm : UserControl, IEditableForm, IDataGridForm, IFolderForm
+    {
+        public JobsListForm()
+        {
+            InitializeComponent();
+        }
+
+        Voip118DataContext dc = new Voip118DataContext();
+
+        public bool Save()
+        {
+            dc.SubmitChanges();
+            return true;
+        }
+
+        public DataGrid DataGrid
+        {
+            get { return dataGrid; }
+        }
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            dataGrid.ItemsSource = dc.Jobs.ToList();
+        }
+    }
+}

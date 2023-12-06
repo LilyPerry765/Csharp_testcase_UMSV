@@ -1,0 +1,82 @@
+﻿<UserControl x:Class=" Plugin.Mailbox.Views.MailBoxView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             FontFamily="Tahoma"
+             FlowDirection="RightToLeft"
+             xmlns:acb="clr-namespace:Folder.Commands;assembly=Folder.Common"
+             xmlns:c="clr-namespace:Folder;assembly=Folder.Common"
+             xmlns:umsv="clr-namespace:UMSV;assembly=UMSV.Common"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:a="clr-namespace:Plugin.Mailbox.Assets"
+             mc:Ignorable="d"
+             d:DesignHeight="201"
+             d:DesignWidth="506">
+    <DockPanel>
+        <!--<TabControl DockPanel.Dock="Top"
+                    BorderThickness="0"
+                    Padding="0">
+            <TabItem Header="همه صندوق ها" />
+            <TabItem Header="صندوق های عمومی"
+                     IsSelected="{Binding IsGeneral}" />
+        </TabControl>-->
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal"
+                    Margin="5,10,5,5">
+            <Label>شماره صندوق:</Label>
+            <TextBox acb:CommandBehavior.Event="TextChanged"
+                     acb:CommandBehavior.CommandParameter="{Binding Text, RelativeSource={RelativeSource Self}}"
+                     acb:CommandBehavior.Command="{Binding SearchCommand}"
+                     Width="100" />
+            <Label>کل صندوق ها:</Label>
+            <Label Content="{Binding AllMailboxesCount}"/>
+            <Label>حداکثر مقدار بازیابی:</Label>
+            <Label Content="{Binding RetrievedMailboxesCount}"/>
+            <Button Content="+" Width="25" IsEnabled="{Binding CanRetrieveMore}" Command="{Binding MoreResultCommand}"></Button>
+        </StackPanel>
+        <DataGrid AutoGenerateColumns="False"
+                  EnableRowVirtualization="True"
+                  CanUserAddRows="False"
+                  SelectionUnit="FullRow"
+                  acb:CommandBehavior.Event="MouseDoubleClick"
+                  acb:CommandBehavior.Command="{Binding EditMailboxCommand}"
+                  SelectedItem="{Binding SelectedMailbox}"
+                  ItemsSource="{Binding Mailboxes}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=BoxNo}"
+                                    Header="شماره صندوق"
+                                    Width="SizeToHeader" />
+                <c:ListDataGridComboBox EnumValuesType="{x:Type s:Byte}" IsReadOnly="True" Header="نوع صندوق" SelectedValueBinding="{Binding Type}" EnumType="{x:Type umsv:MailboxType}" />
+                <DataGridTextColumn Binding="{Binding Path=Name}"
+                                    Header="عنوان"
+                                    Width="100" />
+                <DataGridTextColumn Binding="{Binding Path=ActivationDate, Converter={x:Static conv:PersianDateConverter.Instance}, ConverterParameter=yyyy/MM/dd}"
+                                    Header="تاریخ فعال سازی"
+                                    Width="100" />
+                <DataGridTextColumn Header="تاریخ انقضاء"
+                                    Binding="{Binding Path=ExpirationDate, Converter={x:Static conv:PersianDateConverter.Instance}, ConverterParameter=yyyy/MM/dd}"
+                                    Width="100" />
+                <DataGridTextColumn Binding="{Binding Path=Comment}"
+                                    Header="توضیحات"
+                                    Width="*" />
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="صندوق شخصی جديد"
+                              Icon="{a:ImageSource new.png, Width=16}"
+                              Command="{Binding NewMailboxCommand}" />
+                    <MenuItem Header="صندوق عمومی جديد"
+                              Icon="{a:ImageSource new.png, Width=16}"
+                              Command="{Binding NewPublicMailboxCommand}" />
+                    <MenuItem Header="جزئيات"
+                              Command="{Binding EditMailboxCommand}" />
+                    <MenuItem Header="پيام ها"
+                              Icon="{a:ImageSource talk.png, Width=16}"
+                              Command="{Binding MessagesCommand}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

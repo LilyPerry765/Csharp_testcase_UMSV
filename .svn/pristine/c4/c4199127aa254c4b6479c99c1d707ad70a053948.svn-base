@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://tempuri.org/Informing.xsd" xmlns="http://tempuri.org/Informing.xsd">
+  <xs:element name="Schedule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Time" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Date" type="xs:date" use="optional"/>
+            <xs:attribute name="Start" type="xs:string" use="optional"  default="08:00"/>
+            <xs:attribute name="Finish" type="xs:string" use="optional"  default="22:00"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name ="Priodic" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

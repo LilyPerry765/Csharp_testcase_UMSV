@@ -1,0 +1,19 @@
+﻿<Window x:Class="UMSV.AddToBlackListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="اعلام در لیست سیاه" FontFamily="Tahoma" FlowDirection="RightToLeft" SizeToContent="WidthAndHeight" Topmost="True" Background="WhiteSmoke" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <StackPanel VerticalAlignment="Top" Margin="10">
+        <WrapPanel>
+            <Label Content="شماره تلفن:" Width="70" />
+            <TextBox Margin="4" Width="300" Name="NumberTextbox" IsEnabled="False" />
+        </WrapPanel>
+        <WrapPanel>
+            <Label Content="ملاحظات:" Width="70" />
+            <TextBox Margin="4" Width="300" Name="CommentTextbox" />
+        </WrapPanel>
+        <StackPanel DockPanel.Dock="Right" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Width="75" Height="23" Margin="5" Content="تائید" FontFamily="Tahoma" Name="OkButton" Click="OkButton_Click" />
+            <Button Width="75" Height="23" Margin="5" Content="انصراف" FontFamily="Tahoma" Name="CancelButton" Click="CancelButton_Click" />
+        </StackPanel>
+    </StackPanel>
+</Window>

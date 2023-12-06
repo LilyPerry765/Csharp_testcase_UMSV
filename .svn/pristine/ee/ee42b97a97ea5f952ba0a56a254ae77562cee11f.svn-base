@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder.EMQ;
+using Folder;
+using Enterprise;
+
+namespace Pendar._118
+{
+    [ServiceModule("118_Voip_EMQ", ServiceModuleSide.Client)]
+    public class ServiceClient : ServiceModuleClient
+    {
+        #region Search For Inputed Title and Address
+        
+        public event EventHandler<SearchResultEventArgs> GotSearchResult;//After search result send back to UI
+        
+        /// <summary>
+        /// intialize token with Title and Address and call this method for starting search.
+        /// </summary>
+        /// <param name="token">token.Title and token.Address are required</param>
+        public void Search(TokenForSearch token)
+        {
+            Logger.WriteInfo("CientID: {0}", User.Current.ID);
+            Call("Search", User.Current.ID, token);
+        }
+
+        [RemoteMethod]
+        public void Search_Result(CallInfo callInfo, List<Phone> phones)
+        {
+            Logger.WriteInfo("ClientSide=> Search_Result {0}",phones.Count());
+            if (GotSearchResult != null)
+            {
+                GotSearchResult(this, new SearchResultEventArgs()
+                {
+                    Phones = phones
+                });
+            }
+        }
+        #endregion
+
+        #region Get All Cities and fill in City-ComboBox
+
+        public event EventHandler<GetAllCitiesResultEventArgs> GotAllCitiesResult;//After Get All Cities send back to UI
+
+        /// <summary>
+        /// Get All Cities from Server
+        /// </summary>
+        public void GetAllCities()
+        {
+            Call("GetAllCities", User.Current.ID);
+        }
+
+        [RemoteMethod]
+        public void GetAllCities_Result(CallInfo callInfo, List<City> cities)
+        {
+            Logger.WriteInfo("ClientSide=> GetAllCities_Result {0}", cities.Count());
+            if (GotAllCitiesResult != null)
+            {
+                GotAllCitiesResult(this, new GetAllCitiesResultEventArgs()
+                {
+                    Cities = cities
+                });
+            }
+        }
+        #endregion
+
+        #region Get Operator Level
+
+        //delegate void GotOperatorLevelResultEventHandler(string phone);
+        //event GotOperatorLevelResultEventHandler GotOperatorLevelResult;
+
+        public event EventHandler<GetOperatorLevelResultEventArgs> GotOperatorLevelResult;//After Get Operator Level send back to UI
+
+        /// <summary>
+        /// Get Operator Level
+        /// </summary>
+        public void GetOperatorLeveL()
+        {
+            Logger.WriteInfo("Getting Operator Level...");
+            Call("GetOperatorLevel", User.Current.ID);
+        }
+        [RemoteMethod]
+        public void GetOperatorLevel_Result(CallInfo callInfo, string operatorLevel)
+        {
+            Logger.WriteInfo("ClientSide=> GetOperatorLevel_Result {0}", operatorLevel);
+            if (GotOperatorLevelResult != null)
+            {
+                GotOperatorLevelResult(this, new GetOperatorLevelResultEventArgs()
+                    {
+                        OperatorLevel=operatorLevel
+                    });
+            }
+        }
+        #endregion
+ 
+    }
+}

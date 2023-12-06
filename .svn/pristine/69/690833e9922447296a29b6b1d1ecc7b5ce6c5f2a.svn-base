@@ -1,0 +1,282 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Enterprise;
+using System.Net;
+using System.Threading;
+using System.Net.Sockets;
+using UMSV.Schema;
+using System.Net.NetworkInformation;
+using System.Threading.Tasks;
+
+namespace UMSV
+{
+    public delegate void PacketTransmitEventHandler(RtpNet sender, byte[] packet);
+
+    public class RtpNet : IDisposable
+    {
+        const int BufferSize = 500;
+        UdpClient socket;
+        byte[] buffer = new byte[BufferSize];
+        int ReconnectRetryTime = 1;
+        IPEndPoint SipLocalAddress;
+
+        //only need for RTPLogging
+        int SeqNum;
+        Int64 TimeSt;
+        //byte[] SeqNum = new byte[2];
+        //byte[] TimeSt = new byte[4];
+
+        private bool isSocketConnected = false;
+        public bool IsSocketConnected
+        {
+            get { return isSocketConnected; }
+        }
+
+        public event PacketTransmitEventHandler OnReceive;
+        public int LocalPort { get { return ((IPEndPoint)socket.Client.LocalEndPoint).Port; } }
+        public IPEndPoint RemoteEndPoint;
+        public IPEndPoint LocalEndPoint { get { return (IPEndPoint)socket.Client.LocalEndPoint; } }
+
+        public RtpNet(IPAddress localAddress)
+        {
+            Random rand = new Random();
+            for (int index = 0; index < 10; index++)
+            {
+                try
+                {
+                    int udpPort = rand.Next(Config.Default.RtpLocalPortFrom, Config.Default.RtpLocalPortTo);
+                    SipLocalAddress = new IPEndPoint(localAddress, udpPort);
+                    socket = new UdpClient(SipLocalAddress);
+
+                    return;
+                }
+                catch
+                {
+                }
+            }
+            throw new Exception("After 10 times, RtpNet get socket failed.");
+        }
+
+        public void Start()
+        {
+            try
+            {
+                //if (socket == null)
+                //{
+                //    Logger.WriteImportant("Socket is null.. Going to rebuild...");
+                //    SipDialog d = SipService.Default.Dialogs.SingleOrDefault(t => t.RtpNet == this);
+                //    socket = new UdpClient(d.InviteMessage.RtpEndPoint);
+                //}
+
+                Logger.Write(LogType.Info, "RTP endpoint start at:{0} ", socket.Client.LocalEndPoint);
+                socket.Connect(RemoteEndPoint);
+                isSocketConnected = true;
+                socket.Client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, PacketReceive, null);
+
+                Logger.Write(LogType.Info, "RTP started successfully! remote: {0}, local port:{1}", RemoteEndPoint, LocalPort);
+                //return true;
+            }
+            catch (SocketException ex)
+            {
+                Logger.WriteError("UMSV.RtpNet.Start Socket Error: {0}, {1}", ex.SocketErrorCode, ex.Message);
+                //return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                //return false;
+            }
+        }
+
+        ~RtpNet()
+        {
+            Stop();
+        }
+
+        public void Stop()
+        {
+            isSocketConnected = false;
+
+            if (socket == null)
+                return;
+            //Logger.WriteInfo("Rtp Stop Local:{0}, remote:{1}", socket.Client.LocalEndPoint, socket.Client.RemoteEndPoint);
+
+            try
+            {
+                socket.Client.Shutdown(SocketShutdown.Both);
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                socket.Close();
+            }
+            catch
+            {
+            }
+
+            socket = null;
+        }
+
+        private void PacketReceive(IAsyncResult result)
+        {
+            bool closed = false;
+
+            try
+            {
+                try
+                {
+                    if (socket == null || socket.Client == null)
+                        return;
+                }
+                catch
+                {
+                    return;
+                }
+
+                int length;
+                try
+                {
+                    length = socket.Client.EndReceive(result);
+                    if (length == 0)
+                    {
+                        closed = true;
+                        isSocketConnected = false;
+                        return;
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    closed = true;
+                    isSocketConnected = false;
+                    Logger.WriteDebug("Socket client is null on RTP packet receive.");
+                    return;
+                }
+
+                byte[] packet = new byte[length];
+                Array.Copy(buffer, packet, length);
+
+                //Logger.Write("RTP", "{0}", socket.Client.RemoteEndPoint);
+                if (OnReceive != null)
+                    OnReceive(this, packet);
+            }
+            catch (SocketException)
+            {
+                if (!Config.Default.ContinueOnRtpReceiveSocketError)
+                {
+                    closed = true;
+                    isSocketConnected = false;
+                }
+
+                //Logger.WriteView("Error on receive RTP socket message:{0}", ex.Message);
+            }
+            catch (ObjectDisposedException)
+            {
+                closed = true;
+                isSocketConnected = false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+            finally
+            {
+                try
+                {
+                    if (!closed && socket != null && socket.Client != null)
+                        socket.Client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, PacketReceive, null);
+                }
+                catch (SocketException ex)
+                {
+                    try { Logger.WriteError("Error on socket.Client.BeginReceive, local: {0}, remote: {1}, RtpNet.PacketReceive: {2}", socket.Client.LocalEndPoint, socket.Client.RemoteEndPoint, ex.Message); }
+                    catch { Logger.WriteError("Error on socket.Client.BeginReceive, RtpNet.PacketReceive: {0}", ex.Message); }
+
+                    if (ex.Message.ToLower().Contains("forcibly closed by the remote host"))
+                        CheckForReconnect();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write(ex);
+                }
+            }
+        }
+
+        private void CheckForReconnect()
+        {
+            try
+            {
+                if (ReconnectRetryTime > Constants.RtpSocketReconnectOnForceCloseMaxRetryTime)
+                    return;
+
+                Logger.WriteImportant("RtpSocketReconnectOnForceCloseMaxRetryTime: {0}, local: {1}, remote: {2}", ReconnectRetryTime, socket.Client.LocalEndPoint, socket.Client.RemoteEndPoint);
+                ReconnectRetryTime++;
+
+                Stop();
+                socket = new UdpClient(SipLocalAddress);
+                new Task(Start).Start();
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        public void Send(byte[] packet)
+        {
+            if (socket != null && IsSocketConnected)
+                try
+                {
+                    socket.Send(packet, packet.Length);
+
+                    if (Config.Default.LogRtp)
+                    {
+                        /*
+                        // Find SN and TS with BitConverter
+                        SeqNum[0] = packet[2];
+                        SeqNum[1] = packet[3];
+                        TimeSt[0] = packet[4];
+                        TimeSt[1] = packet[5];
+                        TimeSt[2] = packet[6];
+                        TimeSt[3] = packet[7];
+                        if (BitConverter.IsLittleEndian)
+                        {
+                            Array.Reverse(SeqNum);
+                            Array.Reverse(TimeSt);
+                        }*/
+
+                        // Find SN and TS with arithmetic operations
+                        SeqNum = (packet[2] >> 4) * 4096 + (packet[2] & 0x0f) * 256 + (packet[3] >> 4) * 16 + (packet[3] & 0x0f);
+                        TimeSt = (packet[4] >> 4) * 268435456L + (packet[4] & 0x0f) * 16777216L + (packet[5] >> 4) * 1048576 + (packet[5] & 0x0f) * 65536
+                                                        + (packet[6] >> 4) * 4096 + (packet[6] & 0x0f) * 256 + (packet[7] >> 4) * 16 + (packet[7] & 0x0f);
+
+                        Logger.Write("RTP", "Send(sec.ms):{0} {1}->{2}, len: {3}, SN:{4}, TS:{5}", DateTime.Now.ToString("ss.ffff"),
+                                                    socket.Client.LocalEndPoint, socket.Client.RemoteEndPoint, packet.Length, SeqNum, TimeSt);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Stop();
+                    throw ex;
+                }
+            //else
+            //{
+            //    Logger.WriteWarning("Socket is null while sending ,endPoint:{0}", RemoteEndPoint);
+            //    Stop();
+            //}
+        }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            Stop();
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="UMSV.CallDetailForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:c="clr-namespace:Folder;assembly=Folder.Common"
+             xmlns:common="clr-namespace:UMSV;assembly=UMSV.Common"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" FontFamily="Tahoma"
+             mc:Ignorable="d" d:DesignWidth="800" FlowDirection="RightToLeft">
+    <DockPanel>
+        <Expander DockPanel.Dock="Left" Margin="5" BorderBrush="Gray" Padding="5" IsExpanded="True" Name="FilterPanel" Background="#DDE2EB">
+            <StackPanel VerticalAlignment="Top">
+                <WrapPanel>
+                    <Label Width="65" Content="نوع مبدا" Margin="3" />
+                    <CheckBox VerticalAlignment="Center" Content="کلاینت" x:Name="TypeIncommingComboxBox" Margin="3" IsChecked="True" />
+                    <CheckBox VerticalAlignment="Center" Content="Gateway" x:Name="TypeOutgoingComboxBox" Margin="3" IsChecked="True" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="60" Content="مبدا" Margin="3" />
+                    <TextBox Width="175" x:Name="CallerIDTextbox" Margin="3" HorizontalAlignment="Left" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="60" Content="مقصد" Margin="3" />
+                    <TextBox Width="175" x:Name="CalleeIDTextbox" Margin="3" HorizontalAlignment="Left" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="60" Content="از تاریخ" Margin="3"  />
+                    <c:DateTimePicker Margin="3" Name="FromDate" Width="175" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="60" Content="تا تاریخ" Margin="3"  />
+                    <c:DateTimePicker Margin="3" Name="ToDate" Width="175" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="60" Content="سرویس" Margin="3"  />
+                    <ComboBox SelectedValuePath="ID" DisplayMemberPath="Name" x:Name="ServiceColumnFilter" Width="175" Height="24" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="60" Content="دلیل قطع" Margin="3"  />
+                    <ComboBox SelectedValuePath="Value" DisplayMemberPath="Name" x:Name="CauseColumnFilter" Width="175" Height="24" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="60" Content="عبارت" Margin="3"  />
+                    <TextBox  Margin="3" Width="175" HorizontalAlignment="Left" Name="tokenTextbox" />
+                </WrapPanel>
+                <CheckBox Content="مشاهده شناسه تماس" Margin="3" HorizontalAlignment="Left" Name="ShowCallID" Checked="ShowCallID_Checked" Unchecked="ShowCallID_Checked"  />
+                <Button DockPanel.Dock="Top" Width="75" Height="23" Content="مشاهده" Name="ViewButton" HorizontalAlignment="Left" Margin="10" Click="ViewButton_Click" />
+            </StackPanel>
+        </Expander>
+        <DataGrid Name="dataGrid" BorderBrush="Gray"  CanUserAddRows="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding ID}"  Header="شناسه" x:Name="CallIDColumn" Visibility="Collapsed" />
+                <DataGridTextColumn Binding="{Binding DialogID}"  Header="Sip Call-ID" x:Name="DialogIDColumn" Visibility="Collapsed" />
+                <c:ListDataGridComboBox EnumType="{x:Type common:DialogType}" SelectedValueBinding="{Binding Type}" Header="نوع مبداء" />
+                <DataGridTextColumn Binding="{Binding CallerID}"  Header="مبدا" />
+                <DataGridTextColumn Binding="{Binding CalleeID}"  Header="مقصد" />
+                <DataGridTextColumn Binding="{Binding CallTime, Converter={StaticResource PersianDateConverter}}"  Header="تاریخ تماس" />
+                <DataGridTextColumn Binding="{Binding CallTime,StringFormat={}\{0:HH:mm:ss\}}"  Header="زمان تماس" />
+                <DataGridTextColumn Binding="{Binding Duration}"  Header="مدت تماس" />
+                <DataGridComboBoxColumn SelectedValueBinding="{Binding GraphID}" Header="سرویس" SelectedValuePath="ID" DisplayMemberPath="Name" x:Name="ServiceColumn" />
+                <c:ListDataGridComboBox EnumValuesType="{x:Type s:Byte}" EnumType="{x:Type common:DisconnectCause}" SelectedValueBinding="{Binding DisconnectCause}" Header="وضعیت قطع" />
+                <DataGridTextColumn Binding="{Binding Extension}"  Header="ضمیمه" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

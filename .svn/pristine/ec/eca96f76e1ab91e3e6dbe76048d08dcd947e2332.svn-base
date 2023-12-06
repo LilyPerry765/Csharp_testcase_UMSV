@@ -1,0 +1,93 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder.EMQ;
+using UMSV.Schema;
+using Enterprise;
+using System.Threading;
+
+namespace UMSV
+{
+    [ServiceModule("UMSV", ServiceModuleSide.Client)]
+    public class VoipServiceClient : ServiceModuleClient
+    {
+        public static VoipServiceClient Default;
+
+        static VoipServiceClient()
+        {
+            Default = ServiceModule.InstantiateServiceModule<VoipServiceClient>();
+        }
+
+        public void Hold(string dialogID)
+        {
+            Call("Hold", dialogID);
+        }
+
+        public void UnHold(string dialogID)
+        {
+            Call("UnHold", dialogID);
+        }
+
+        #region SetDialogExtension
+        public bool SetDialogExtension(string dialogID, string extension)
+        {
+            Call("SetDialogExtension", dialogID, extension);
+            lock (SetDialogExtensionSyncObject)
+            {
+                return Monitor.Wait(SetDialogExtensionSyncObject, 20000);
+            }
+        }
+
+        private object SetDialogExtensionSyncObject = new object();
+
+        [RemoteMethod]
+        public void SetDialogExtensionConfirm(CallInfo callInfo)
+        {
+            lock (SetDialogExtensionSyncObject)
+            {
+                Monitor.Pulse(SetDialogExtensionSyncObject);
+            }
+        }
+        #endregion
+
+        #region SetDialogDivertPartnerExtension
+        public bool SetDialogDivertPartnerExtension(string dialogID, string extension)
+        {
+            Call("SetDialogDivertPartnerExtension", dialogID, extension);
+            lock (SetDialogDivertPartnerExtensionSyncObject)
+            {
+                return Monitor.Wait(SetDialogDivertPartnerExtensionSyncObject, 20000);
+            }
+        }
+
+        private object SetDialogDivertPartnerExtensionSyncObject = new object();
+
+        [RemoteMethod]
+        public void SetDialogDivertPartnerExtensionConfirm(CallInfo callInfo)
+        {
+            lock (SetDialogDivertPartnerExtensionSyncObject)
+            {
+                Monitor.Pulse(SetDialogDivertPartnerExtensionSyncObject);
+            }
+        }
+        #endregion
+
+        #region RequestAccountsAndDialogs
+        public void RequestAccountsAndDialogs()
+        {
+            Call("RequestAccountsAndDialogs");
+        }
+
+        public delegate void ResponseAccountsAndDialogsHandler(DateTime serverTime, List<SipAccount> accounts, List<SipDialog> dialogs);
+        public event ResponseAccountsAndDialogsHandler OnResponseAccountsAndDialogs;
+
+        [RemoteMethod]
+        public void ResponseAccountsAndDialogs(CallInfo callInfo, DateTime serverTime, List<SipAccount> accounts, List<SipDialog> dialogs)
+        {
+            if (OnResponseAccountsAndDialogs != null)
+                OnResponseAccountsAndDialogs(serverTime, accounts, dialogs);
+        }
+        #endregion
+    }
+}

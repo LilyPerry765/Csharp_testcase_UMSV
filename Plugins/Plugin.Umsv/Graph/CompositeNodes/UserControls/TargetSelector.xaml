@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.UserControls.TargetSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             DataContextChanged="UserControl_DataContextChanged"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma">
+    <!--  DataContext is inherited from host controls (eg: Composite Nodes whose datacontext is CompositeNodeViewModel) -->
+    <Grid Height="Auto">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <!-- DataContext for this comboBox is set separately in code behind to a TreeNode -->
+        <ComboBox x:Name="comboBox"
+                  SelectionChanged="comboBox_SelectionChanged"
+                  FlowDirection="LeftToRight"
+                  HorizontalContentAlignment="Right"
+                  VerticalContentAlignment="Center"
+                  VerticalAlignment="Top"
+                  Height="25">
+            <ComboBox.Resources>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Height"
+                            Value="{Binding Header.ActualHeight}" />
+                    <Setter Property="VerticalContentAlignment"
+                            Value="Center" />
+                </Style>
+            </ComboBox.Resources>
+            <ComboBoxItem x:Name="noneComboBoxItem"
+                          Tag="{x:Null}"
+                          Content="" />
+            <ComboBoxItem x:Name="pickedNodeComboBoxItem"
+                          Visibility="{Binding Converter={conv:NullVisibilityConverter}}">
+                <StackPanel  Orientation="Horizontal"
+                             FlowDirection="RightToLeft"
+                             Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ComboBox,  Mode=FindAncestor}, Converter={conv:AdderConverter}, ConverterParameter=-30}">
+                    <Image Source="{Binding NodeInitInfo.Image.Source}"
+                           Margin="1,0,5,0"
+                           Width="16" />
+                    <TextBlock Text="{Binding GraphNode.Description}"
+                               Width="Auto" />
+                </StackPanel>
+            </ComboBoxItem>
+            <ComboBoxItem Tag="Bye">
+                <StackPanel  Orientation="Horizontal">
+                    <TextBlock Text="خداحافظ" />
+                    <Image Source="../../../images/off.png"
+                           Margin="5,0,0,0"
+                           Width="16" />
+                </StackPanel>
+            </ComboBoxItem>
+            <ComboBoxItem Tag="DisconnectCall">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="قطع تماس" />
+                    <Image Source="../../../images/hangup.png"
+                           Margin="5,0,0,0"
+                           Width="16" />
+                </StackPanel>
+            </ComboBoxItem>
+            <ComboBoxItem Selected="selectorComboBoxItem_Selected"
+                          x:Name="selectorComboBoxItem"
+                          Tag="This tag can be anything but null">
+                <TextBlock Text="...انتخاب از درختواره" />
+            </ComboBoxItem>
+        </ComboBox>
+    </Grid>
+</UserControl>

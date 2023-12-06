@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Folder;
+
+namespace UMSV
+{
+    /// <summary>
+    /// Interaction logic for CallHearHistoryForm.xaml
+    /// </summary>
+    public partial class CallHearHistoryForm : UserControl, IFolderForm
+    {
+        public CallHearHistoryForm()
+        {
+            InitializeComponent();
+        }
+
+        public Guid VoiceID;
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            List<User> SubUsers = (new User[] { new User() { ID = Guid.Empty } }).Union(User.Current.SubUsers).OrderBy(u => u.Fullname).ToList();
+
+            var users = SubUsers.Select(u => new
+            {
+                u.ID,
+                Fullname = (u.ID == Guid.Empty) ?  Constants.AllUsersFilterPhrase : u.Fullname + (string.IsNullOrWhiteSpace(u.Username) ? "" : " (" + u.Username + ")")
+            });
+
+            GridUserComboxBox.ItemsSource = users;
+            using (FolderDataContext dc = new FolderDataContext())
+            {
+                dataGrid.ItemsSource = dc.Logs.Where(l => l.Subject == (int)UmsLogSubject.HearVoice && (Guid)l.RecordID == VoiceID);
+            }
+        }
+    }
+}

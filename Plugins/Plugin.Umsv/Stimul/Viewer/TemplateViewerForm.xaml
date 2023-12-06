@@ -1,0 +1,7 @@
+﻿<Window x:Class="UMSV.Stimul.Viewer.TemplateViewerForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewer="clr-namespace:Stimulsoft.Report.Viewer;assembly=Stimulsoft.Report.Wpf"
+        Title="ReportViewerForm" Loaded="Window_Loaded">
+    <viewer:StiWpfViewerControl x:Name="viewer" ReportPrint="Print" />
+</Window>

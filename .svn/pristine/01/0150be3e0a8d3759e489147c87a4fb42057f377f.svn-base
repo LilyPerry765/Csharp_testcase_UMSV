@@ -1,0 +1,8 @@
+﻿<Window x:Class="Pendar._118.JobsHelpForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Help_JobAbbreviation" Loaded="Window_Loaded" SizeToContent="Height" Width="580" 
+        FlowDirection="RightToLeft" FontFamily="Tahoma" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Topmost="True" ShowInTaskbar="False" WindowStyle="None">
+    <WrapPanel Name="panel" Margin="15">
+    </WrapPanel>
+</Window>

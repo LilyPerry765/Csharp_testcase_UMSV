@@ -1,0 +1,165 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Globalization;
+using Enterprise;
+
+namespace UMSV
+{
+    public class Quran : IGraphAddin
+    {
+        // khosro
+
+        private int _soorehNo;
+        private int _ayehNo = 1;
+        private UMSV.Model.Voice _ayehVoice;
+        private UMSV.Model.Voice _nextVoice;
+        private int _count;
+        public enum result
+        {
+            Valid,
+            Invalid,
+            EndSooreh
+        }
+
+        public bool CheckSooreh()
+        {
+            string digit = Dialog.Keys.Trim('#').Trim('*');
+            try
+            {
+
+                using (UMSV.Model.QuranDataContext dc = new UMSV.Model.QuranDataContext())
+                {
+                    if (int.Parse(digit) > 0 && int.Parse(digit) < 115)
+                    {
+                        _soorehNo = int.Parse(digit);
+                        Logger.Write(LogType.Warning, "Sooreh : {0} va Sooreh is between '0,115'", _soorehNo);
+                        return true;
+                    }
+                    else
+                        Logger.Write(LogType.Warning, "Sooreh : {0} va Sooreh is not between '0,115'", _soorehNo);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(LogType.Warning, ex);
+                return false;
+            }
+        }
+        public int EnteredAyeh;
+        public void GetAyeh()
+        {
+            _ayehNo = int.Parse(Dialog.Keys.Trim('#').Trim('*'));
+            EnteredAyeh = _ayehNo;
+        }
+        public int AyeCount
+        {
+            get;
+            set;
+        }
+
+        public result CheckAyeh()
+        {
+
+            try
+            {
+                using (UMSV.Model.QuranDataContext dc = new UMSV.Model.QuranDataContext())
+                {
+
+                    AyeCount = dc.Voices.Where(a => a.Sooreh == _soorehNo).Count();
+                    if (EnteredAyeh > AyeCount)
+                    {
+                        return result.Invalid;
+                    }
+
+
+                    UMSV.Model.Voice voice = dc.Voices.FirstOrDefault(t => t.Sooreh == _soorehNo && t.Ayeh == _ayehNo);
+                    _ayehVoice = voice;
+
+                    //_nextVoice = dc.Voices.FirstOrDefault(t => t.Sooreh == _soorehNo && t.Ayeh == _ayehNo + 1);
+                    //if (_nextVoice != null)
+                    //    _ayehNo = _ayehVoice.Ayeh + 1;
+                    if (_ayehVoice != null)
+                    {
+                        _ayehNo = _ayehVoice.Ayeh + 1;
+                        return result.Valid;
+                    }
+                    else
+                    {
+                        Logger.WriteInfo("EndSooreh sooreh:{0} , Ayeh:{1}", _soorehNo, _ayehNo);
+                        _soorehNo = _soorehNo + 1;
+                        _ayehNo = 1;
+                        return result.EndSooreh;
+                    }
+                }
+
+                if (_ayehVoice.Data != null)
+                    return result.Valid;
+                else
+                    return result.Invalid;
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(LogType.Warning, ex);
+                return result.Invalid;
+            }
+        }
+
+        public result NextSooreh()
+        {
+            try
+            {
+
+                using (UMSV.Model.QuranDataContext dc = new UMSV.Model.QuranDataContext())
+                {
+
+                    UMSV.Model.Voice voice = dc.Voices.FirstOrDefault(t => t.Sooreh == _soorehNo && t.Ayeh == _ayehNo);
+                    _ayehVoice = voice;
+
+                    // _nextVoice = dc.Voices.FirstOrDefault(t => t.Sooreh == _soorehNo && t.Ayeh == _ayehNo + 1);
+                    if (_ayehVoice != null)
+                    {
+                        _ayehNo = _ayehVoice.Ayeh + 1;
+                        return result.Valid;
+                    }
+
+                    else
+                    {
+                        Logger.WriteInfo("EndSooreh sooreh:{0} , Ayeh:{1}", _soorehNo, _ayehNo);
+                        _soorehNo = _soorehNo + 1;
+                        _ayehNo = 1;
+                        return result.EndSooreh;
+                    }
+                }
+
+                if (_ayehVoice.Data != null)
+                    return result.Valid;
+                else
+                    return result.Invalid;
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(LogType.Warning, ex);
+                return result.Invalid;
+            }
+        }
+
+        public byte[] Ayeh
+        {
+            get
+            {
+                Logger.WriteInfo(_ayehVoice.Sooreh.ToString() + ":" + _ayehVoice.Ayeh.ToString());
+                return _ayehVoice.Data.ToArray();
+            }
+        }
+
+        public ISipDialog Dialog
+        {
+            get;
+            set;
+        }
+    }
+}

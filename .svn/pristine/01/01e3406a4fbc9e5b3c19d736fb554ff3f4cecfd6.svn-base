@@ -1,0 +1,46 @@
+﻿using Folder;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UMSV;
+using System.Transactions;
+namespace Plugin.Poll.DB
+{
+    internal static class GraphDB
+    {
+        static Guid Role_GraphAccess = new Guid("3F33E83D-7E71-463D-BBCA-5D68308828E1");
+        public static void SaveGraph(UMSV.Schema.Graph graphSchema, string graphName)
+        {
+            Graph graph = null;
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                graph = new Graph()
+                {
+                    ID = Guid.NewGuid(),
+                    Name = graphName,
+                    Data = System.Xml.Linq.XElement.Parse(graphSchema.Serialize()),
+                };
+                context.Graphs.InsertOnSubmit(graph);
+                context.SubmitChanges();
+            }
+
+            using (FolderDataContext context = new FolderDataContext())
+            {
+                if (!context.Roles.Any(r => r.ID == graph.ID))
+                {
+                    context.Roles.InsertOnSubmit(new Role()
+                    {
+                        ID = graph.ID,
+                        Name = graph.Name,
+                        ParentID = Role_GraphAccess,
+                        Type = Role.RoleType_Simple
+                    });
+                    context.SubmitChanges();
+                }
+            }
+
+            User.Current.ReloadAllRoles();
+        }
+    }
+}

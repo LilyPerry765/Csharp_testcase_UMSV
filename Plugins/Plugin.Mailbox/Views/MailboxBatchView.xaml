@@ -1,0 +1,226 @@
+﻿<Window x:Class="Plugin.Mailbox.Views.MailboxBatchView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:a="clr-namespace:Plugin.Mailbox.Assets;assembly=Plugin.Mailbox"
+        xmlns:f="clr-namespace:Folder;assembly=Folder.Common"
+        f:DialogResultHelper.DialogResult="{Binding DialogResult}"
+        FlowDirection="RightToLeft" 
+        FontFamily="Tahoma"
+        Title="ساخت دسته ای صندوق"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Height="461"
+        Width="387">
+    <DockPanel>
+        <StackPanel Orientation="Horizontal"
+                    FlowDirection="LeftToRight"
+                    DockPanel.Dock="Bottom">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin"
+                            Value="10,10,0,10" />
+                    <Setter Property="Width"
+                            Value="75" />
+                </Style>
+            </StackPanel.Resources>
+            <Button IsCancel="True"
+                    Command="{Binding CancelCommand}">انصراف</Button>
+            <Button Command="{Binding SaveCommand}"
+                    IsDefault="True">تاييد</Button>
+        </StackPanel>
+        <ProgressBar DockPanel.Dock="Bottom"
+                     Margin="10,0"
+                     Height="17"
+                     Maximum="{Binding ProgressMax}"
+                     Value="{Binding ProgressValue}" />
+        <Grid HorizontalAlignment="Center"
+              DataContext="{Binding ModelMailbox}"
+              Margin="5,5,5,0"
+              Name="grid1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="29" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="0"
+                        Grid.ColumnSpan="2">
+                <Label Content="شماره صندوق از:"
+                       Grid.Column="0"
+                       HorizontalAlignment="Left"
+                       Margin="3"
+                       VerticalAlignment="Center" />
+                <TextBox Grid.Column="1"
+                         Height="23"
+                         HorizontalAlignment="Left"
+                         Margin="3"
+                         IsReadOnlyCaretVisible="False"
+                         Text="{Binding Path=BoxNoFrom}"
+                         VerticalAlignment="Center"
+                         Width="100" />
+                <Label>تا</Label>
+                <TextBox Grid.Column="1"
+                         Height="23"
+                         HorizontalAlignment="Right"
+                         Margin="3"
+                         Text="{Binding Path=BoxNoTo}"
+                         VerticalAlignment="Center"
+                         Width="100" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Grid.ColumnSpan="2"
+                        Grid.Row="1">
+                <Label Content="تاريخ فعال شدن از:"
+                       Grid.Column="0"
+                       Grid.Row="1"
+                       HorizontalAlignment="Left"
+                       Margin="3"
+                       VerticalAlignment="Center" />
+                <f:PersianDateBox Grid.Column="1"
+                                  Grid.Row="1"
+                                  Height="25"
+                                  Margin="3"
+                                  Width="100"
+                                  Name="activationDateDatePicker"
+                                  Date="{Binding Path=ActivationDate, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                                  VerticalAlignment="Center" />
+                <Label Content="تا"
+                       Grid.Column="0"
+                       Grid.Row="2"
+                       HorizontalAlignment="Left"
+                       Margin="3"
+                       VerticalAlignment="Center" />
+                <f:PersianDateBox Grid.Column="1"
+                                  Grid.Row="2"
+                                  Height="25"
+                                  Margin="3"
+                                  Width="100"
+                                  Name="expirationDateDatePicker"
+                                  Date="{Binding Path=ExpirationDate, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                                  VerticalAlignment="Center" />
+            </StackPanel>
+            <Label Content="حداکثر تعداد پيام‏هاي بايگاني:"
+                   Grid.Column="0"
+                   Grid.Row="4"
+                   HorizontalAlignment="Left"
+                   Margin="3"
+                   VerticalAlignment="Center" />
+            <f:NumericUpDown Grid.Column="1"
+                             Grid.Row="4"
+                             Height="23"
+                             HorizontalAlignment="Left"
+                             Margin="3"
+                             Name="maxArchiveMessageTextBox"
+                             Maximum="100000"
+                             Value="{Binding Path=MaxArchiveMessage, Mode=TwoWay}"
+                             VerticalAlignment="Center"
+                             Width="120" />
+            <Label Content="حداکثر تعداد پيام‏هاي جديد:"
+                   Grid.Column="0"
+                   Grid.Row="5"
+                   HorizontalAlignment="Left"
+                   Margin="3"
+                   VerticalAlignment="Center" />
+            <f:NumericUpDown Grid.Column="1"
+                             Grid.Row="5"
+                             Height="23"
+                             HorizontalAlignment="Left"
+                             Margin="3"
+                             Name="maxNewMessageTextBox"
+                             Value="{Binding Path=MaxNewMessage, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                             VerticalAlignment="Center"
+                             Width="120"
+                             Maximum="100000" />
+            <Label Content="حداکثر زمان نگهداری سوال (روز):"
+                   Grid.Column="0"
+                   Grid.Row="6"
+                   HorizontalAlignment="Left"
+                   Margin="3"
+                   VerticalAlignment="Center" />
+            <f:NumericUpDown Grid.Column="1"
+                             Grid.Row="6"
+                             Height="23"
+                             HorizontalAlignment="Left"
+                             Margin="3"
+                             Name="messageAskExpirePeriodTextBox"
+                             Value="{Binding Path=MessageAskExpirePeriod, Mode=TwoWay}"
+                             VerticalAlignment="Center"
+                             Width="120"
+                             Maximum="100000" />
+            <Label Content="حداکثر زمان نگهداری جواب (روز):"
+                   Grid.Column="0"
+                   Grid.Row="7"
+                   HorizontalAlignment="Left"
+                   Margin="3"
+                   VerticalAlignment="Center" />
+            <f:NumericUpDown Grid.Column="1"
+                             Grid.Row="7"
+                             Height="23"
+                             HorizontalAlignment="Left"
+                             Margin="3"
+                             Name="messageAnswerExpirePeriodTextBox"
+                             Value="{Binding Path=MessageAnswerExpirePeriod, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                             VerticalAlignment="Center"
+                             Width="120"
+                             Maximum="100000" />
+            <Label Content="حداکثر زمان نگهداری پیام جدید (روز):"
+                   Grid.Column="0"
+                   Grid.Row="8"
+                   HorizontalAlignment="Left"
+                   Margin="3"
+                   VerticalAlignment="Center" />
+            <f:NumericUpDown Grid.Column="1"
+                             Grid.Row="8"
+                             Height="23"
+                             HorizontalAlignment="Left"
+                             Margin="3"
+                             Name="messageNewExpirePeriodTextBox"
+                             Value="{Binding Path=MessageNewExpirePeriod, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                             VerticalAlignment="Center"
+                             Width="120"
+                             Maximum="100000" />
+            <CheckBox Content="حذف اتومات قدیمی ترین پیام صندوق پر"
+                      Grid.Row="9"
+                      Grid.ColumnSpan="2"
+                      Margin="3"
+                      Height="16"
+                      HorizontalAlignment="Left"
+                      IsChecked="{Binding Path=AutoDequeueFullMailbox, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                      Name="autoDequeueFullMailboxCheckBox"
+                      VerticalAlignment="Center" />
+            <Label Grid.Row="3"
+                   VerticalContentAlignment="Bottom"
+                   Foreground="CornflowerBlue"
+                   FontSize="12"
+                   FontStyle="Italic"
+                   Grid.ColumnSpan="2">خالی گذاشتن هر يک از مقادیر زير به معنی بینهايت است.</Label>
+            <CheckBox  Grid.ColumnSpan="2"
+                       IsChecked="{Binding BoxNoAsCallerID}"
+                       Grid.Row="10"
+                       Margin="3">در نظر گرفتن شماره صندوق به عنوان Caller ID مشترک</CheckBox>
+            <CheckBox  Grid.ColumnSpan="2"
+                       IsChecked="{Binding RandomPassword}"
+                       Grid.Row="11"
+                       Margin="3">کلمه عبور تصادفی</CheckBox>
+            <Label   Grid.Row="12">توضيحات:</Label>
+            <TextBox Grid.ColumnSpan="2"
+                     Text="{Binding Comment}"
+                     Grid.Row="13" />
+        </Grid>
+    </DockPanel>
+</Window>

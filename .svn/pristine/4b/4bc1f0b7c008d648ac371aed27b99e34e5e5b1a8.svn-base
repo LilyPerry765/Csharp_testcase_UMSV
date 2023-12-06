@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="UMSV.GraphsListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             Cursor="{Binding Cursor}"
+             mc:Ignorable="d"
+             xmlns:acb="clr-namespace:Folder.Commands;assembly=Folder.Common"
+             xmlns:c="clr-namespace:UMSV"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             d:DesignHeight="324"
+             d:DesignWidth="431">
+    <Grid>
+        <DataGrid AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  x:Name="DataGrid"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  SelectedItem="{Binding SelectedGraph, Converter={x:Static  conv:IgnoreNewItemPlaceHolderConverter.Instance}}"
+                  EnableRowVirtualization="True"
+                  ItemsSource="{Binding Graphs}"
+                  RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="درختواره">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button ToolTip="مشاهده درختواره"
+                                    Cursor="Hand"
+                                    BorderThickness="0"
+                                    BorderBrush="Transparent"
+                                    DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Command="{Binding ShowGraphCommand}"
+                                    Click="Button_Click"
+                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Width="35"
+                                    Padding="0"
+                                    Background="Transparent">
+                                <Image Source="..\Images\tree16.png"
+                                       Width="16" />
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn x:Name="nameColumn"
+                                    Binding="{Binding Path=Name}"
+                                    Header="نام درختواره" />
+                <DataGridTemplateColumn x:Name="codeColumn" Header="کد تماس">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock FlowDirection="LeftToRight" Text="{Binding Code}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox FlowDirection="LeftToRight" Text="{Binding Code}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridCheckBoxColumn x:Name="enableColumn"
+                                        Binding="{Binding Path=Enable}"
+                                        Header="فعال" />
+                <DataGridTemplateColumn Header="آپلود Add-in">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button ToolTip="{Binding Converter={x:Static c:GraphTooltipConverter.Instance}}"
+                                    Cursor="Hand"
+                                    BorderThickness="0"
+                                    BorderBrush="Transparent"
+                                    Command="{Binding DataContext.GetAssemblyFile, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Click="Button_Click"
+                                    Width="35"
+                                    Padding="0"
+                                    Background="Transparent">
+                                <Grid>
+                                    <Image Source="..\Images\gear.png"
+                                       Width="16" />
+                                    <Image Source="..\Images\bluegear.png"
+                                           Visibility="{Binding Assembly,Converter={x:Static c:NullStateToVisibilityConverter.Instance}}"
+                                       Width="16" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridCheckBoxColumn x:Name="hasAddInColumn"
+                                        IsReadOnly="True"
+                                        Binding="{Binding Assembly,Converter={x:Static c:NullStateConverter.Instance}}"
+                                        Header="Add-in دارد" />-->
+                <DataGridTemplateColumn Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

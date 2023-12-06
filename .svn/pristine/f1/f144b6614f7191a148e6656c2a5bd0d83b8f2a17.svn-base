@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 9.75" name="Mailbox">
+  <DataContextMoniker Name="/MailboxDataContext" />
+  <nestedChildShapes>
+    <classShape Id="269bd051-24b8-4627-ad31-3e1a664576d2" absoluteBounds="0.75, 1.25, 2, 8.3091455078125">
+      <DataClassMoniker Name="/MailboxDataContext/Mailbox" />
+      <nestedChildShapes>
+        <elementListCompartment Id="58558e0b-efd3-47c1-966b-1fbfcb1c6c59" absoluteBounds="0.765, 1.71, 1.9700000000000002, 7.7491455078125009" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="fa8b3181-91bc-4e06-8720-a9971a315cc3" absoluteBounds="3.5, 4.125, 2, 2.5401025390625005">
+      <DataClassMoniker Name="/MailboxDataContext/MailboxMessage" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ad0a6bec-be18-4c7e-b9f7-77cea91db5fc" absoluteBounds="3.515, 4.585, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 5.39505126953125); (3.5 : 5.39505126953125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/MailboxDataContext/Mailbox/Mailbox_MailboxMessage" />
+      <nodes>
+        <classShapeMoniker Id="269bd051-24b8-4627-ad31-3e1a664576d2" />
+        <classShapeMoniker Id="fa8b3181-91bc-4e06-8720-a9971a315cc3" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

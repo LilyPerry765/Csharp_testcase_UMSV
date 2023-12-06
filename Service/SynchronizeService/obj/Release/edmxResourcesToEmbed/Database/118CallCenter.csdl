@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CallCenterModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityContainer Name="CallCenter" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="ChangeLogs" EntityType="CallCenterModel.ChangeLog" />
+    <EntitySet Name="ChangeTypes" EntityType="CallCenterModel.ChangeType" />
+    <EntitySet Name="JobPhones" EntityType="CallCenterModel.JobPhone" />
+    <EntitySet Name="Phones" EntityType="CallCenterModel.Phone" />
+  </EntityContainer>
+  <EntityType Name="ChangeLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="ChangeTypeID" Nullable="false" />
+    <Property Type="Int64" Name="WebServiceID" Nullable="false" />
+    <Property Type="Int32" Name="CenterID" Nullable="false" />
+    <Property Type="String" Name="PhoneNo" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="LogDate" Nullable="false" Precision="7" />
+    <Property Type="DateTime" Name="SetupDate" Precision="7" />
+    <Property Type="Int32" Name="SubscriberTypeID" />
+    <Property Type="String" Name="PostCode" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Type="String" Name="Address" MaxLength="511" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="LastName" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="FirstName" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Type="Double" Name="LocalCounter" />
+    <Property Type="Int32" Name="DomecticCounter" />
+    <Property Type="Int32" Name="InternationalCounter" />
+    <Property Type="String" Name="OldPhoneNo" MaxLength="12" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="OldLocalCounter" />
+    <Property Type="Int32" Name="OldDomecticCounter" />
+    <Property Type="Int32" Name="OldInternationalCounter" />
+    <Property Type="Int64" Name="Trust" />
+    <Property Type="DateTime" Name="ModifyDate" Nullable="false" Precision="7" />
+    <Property Type="Boolean" Name="IsConfirmed" Nullable="false" />
+    <Property Type="Boolean" Name="IsApplied" Nullable="false" />
+    <Property Type="Boolean" Name="IsAutomaticLog" Nullable="false" />
+    <Property Type="Boolean" Name="IsFoxProExport" Nullable="false" />
+    <Property Type="String" Name="Elka_FI_CODE" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Type="Boolean" Name="IsAppied118" />
+  </EntityType>
+  <EntityType Name="ChangeType">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="CostTypeID" />
+    </Key>
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="127" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="CostTypeID" Nullable="false" />
+    <Property Type="String" Name="ElkaTable" MaxLength="127" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="JobPhone">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="Phonenumber" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="Address" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="Hidden" Nullable="false" />
+    <Property Type="Boolean" Name="AllowSearchByPhone" Nullable="false" />
+    <Property Type="DateTime" Name="PhysicalSetupDate" Nullable="false" Precision="3" />
+    <Property Type="Guid" Name="InserterId" />
+    <Property Type="Int32" Name="RegionId" />
+    <Property Type="Int32" Name="JobId" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Phone">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="Firstname" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="Lastname" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="Fathername" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="PhoneNumber" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="Address" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="Hidden" Nullable="false" />
+    <Property Type="Boolean" Name="AllowSearchByPhone" Nullable="false" />
+    <Property Type="Guid" Name="InserterId" />
+    <Property Type="DateTime" Name="PhysicalSetupDate" Precision="3" />
+    <Property Type="Int32" Name="RegionId" />
+  </EntityType>
+</Schema>

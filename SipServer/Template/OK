@@ -1,0 +1,23 @@
+SIP/2.0 200 OK
+Via: {2}
+Record-Route: <{6};ftag={7};lr=on>
+Contact: <sip:[SipProxyEndPoint]>
+To: {4}
+From: {3}
+Call-ID: {1}
+CSeq: {5}
+Server: CallCenter
+User-Agent: CallCenter
+Content-Type: application/sdp
+Content-Length: 0
+
+v=0
+o=- 3517046709 3517046709 IN IP4 [SipProxyAddress]
+s=Pendar Pajouh
+c=IN IP4 [SipProxyAddress]
+t=0 0
+a=direction:active
+m=audio {0} RTP/AVP 8 101
+a=rtpmap:8 PCMA/8000
+a=rtpmap:101 telephone-event/8000
+

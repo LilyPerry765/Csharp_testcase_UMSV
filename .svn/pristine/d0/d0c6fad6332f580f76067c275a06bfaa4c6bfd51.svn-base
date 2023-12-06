@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Pendar._118
+{
+    partial class Config
+    {
+        public readonly static Config Default;
+
+        static Config()
+        {
+            var xml = Folder.File.ReadAsUnicodeText(Constants._118ConfigFile);
+            Default = ConfigUtility.Deserialize<Config>(xml);
+        }
+
+        static void Save()
+        {
+            var xml = ConfigUtility.Serialize<Config>(Default, true);
+            Folder.File.WriteAsUnicodeText(Constants._118ConfigFile, xml);
+        }
+    }
+}

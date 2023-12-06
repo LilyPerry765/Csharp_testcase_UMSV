@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://tempuri.org/VoiceGraph.xsd"  targetNamespace="http://tempuri.org/VoiceGraph.xsd">
+  <xs:complexType name="Node">
+    <xs:attribute name="ID" type="xs:string">
+    </xs:attribute>
+    <xs:attribute name="Description" type="xs:string" use="optional" />
+    <xs:attribute name="ClearDigits" type="xs:boolean" default="true" use="optional" />
+    <xs:attribute name="Tag" type="xs:string" />
+  </xs:complexType>
+  <xs:element name="Graph">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="GraphGroup">
+          <xs:sequence>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RecordNode">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="WithTimerNode">
+          <xs:attribute name="StopKey" type="xs:string" />
+          <xs:attribute name="TargetNode" type="xs:string" />
+          <xs:attribute name="CancelOnDisconnect" type="xs:boolean" use="optional" default="false" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InvokeNode">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="WithTimerNode">
+          <xs:sequence>
+            <xs:element name="Arg" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                </xs:sequence>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+                <xs:attribute name="Value" type="xs:string" use="required" />
+              </xs:complexType>
+            </xs:element>
+            <xs:element ref="NodeResult" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+          <xs:attribute name="Function" type="xs:string" use="required" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetKeyNode">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="WithTimerNode">
+          <xs:sequence>
+            <xs:element ref="NodeResult" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+          <xs:attribute name="MaxDigits" type="xs:int" use="optional" />
+          <xs:attribute name="MaxDigitsNode" type="xs:string" use="optional" />
+          <xs:attribute name="EndKey" type="xs:string" use="optional" />
+          <xs:attribute name="MinDigits" type="xs:int" use="optional" default="0" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PlayNode">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Node">
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="Voice">
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="TargetNode" type="xs:string" />
+          <xs:attribute name="IgnoreKeyPress" type="xs:boolean" use="optional" default="false" />
+          <xs:attribute name="BoxNo" type="xs:string" use="optional" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Voice">
+    <xs:complexType>
+      <xs:sequence />
+      <xs:attribute name="ID" type="xs:string" use="optional" />
+      <xs:attribute name="Name" type="xs:string" use="optional" />
+      <xs:attribute name="Description" type="xs:string" use="optional" />
+      <xs:attribute name="Type" type="xs:unsignedByte" use="optional" default="0" />
+      <xs:attribute name="Group" type="xs:unsignedByte" use="optional" default="0" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NodeGroup">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="GraphGroup">
+          <xs:attribute name="LastNode" type="xs:string" use="optional" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="GraphGroup">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element ref="RecordNode" minOccurs="0" />
+      <xs:element ref="InvokeNode" minOccurs="0" />
+      <xs:element ref="GetKeyNode" minOccurs="0" />
+      <xs:element ref="PlayNode" minOccurs="0" />
+      <xs:element ref="NodeGroup" />
+      <xs:element ref="JumpNode">
+      </xs:element>
+      <xs:element ref="DivertNode">
+      </xs:element>
+      <xs:element ref="SelectNode">
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="Description" type="xs:string" use="optional" />
+    <xs:attribute name="StartNode" type="xs:string" use="optional" />
+    <xs:attribute name="Tag" type="xs:string" use="optional" />
+  </xs:complexType>
+  <xs:element name="NodeResult">
+    <xs:complexType>
+      <xs:sequence>
+      </xs:sequence>
+      <xs:attribute name="Value" type="xs:string" use="optional" />
+      <xs:attribute name="TargetNode" type="xs:string" use="required" />
+      <xs:attribute name="Description" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="WithTimerNode">
+    <xs:complexContent>
+      <xs:extension base="Node">
+        <xs:attribute name="Timeout" type="xs:int" use="optional" />
+        <xs:attribute name="TimeoutNode" type="xs:string" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="JumpNode">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Node">
+          <xs:sequence>
+          </xs:sequence>
+          <xs:attribute name="TargetNode" type="xs:string" use="optional" />
+          <xs:attribute name="TargetGraph" type="xs:string" use="optional" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DivertNode">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="WithTimerNode">
+          <xs:sequence>
+            <xs:element ref="NodeResult" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+          <xs:attribute name="CallerPrefix" type="xs:string" use="optional" default="" />
+          <xs:attribute name="CallerPostfix" type="xs:string" use="optional"  default=""/>
+          <xs:attribute name="CallerDeleteFromStart" type="xs:int" use="optional" default ="0" />
+          <xs:attribute name="CallerDeleteFromEnd" type="xs:int" use="optional" default="0" />
+
+          <xs:attribute name="CalleePrefix" type="xs:string" use="optional" default="" />
+          <xs:attribute name="CalleePostfix" type="xs:string" use="optional"  default=""/>
+          <xs:attribute name="CalleeDeleteFromStart" type="xs:int" use="optional" default ="0" />
+          <xs:attribute name="CalleeDeleteFromEnd" type="xs:int" use="optional" default="0" />
+
+          <xs:attribute name="ClearAllSource" type="xs:boolean" use="optional" default="false" />
+          <xs:attribute name="TargetPhone" type="xs:string" use="required" />
+          <xs:attribute name="TargetTeam" type="xs:token" use="optional" />
+          <xs:attribute name="TargetNode" type="xs:string" use="optional" />
+          <xs:attribute name="BusyNode" type="xs:string" use="optional" />
+          <xs:attribute name="QueueSize" type="xs:int" use="optional" default="0" />
+          <xs:attribute name="QueueSizePerOnlineUsers" type="xs:decimal" use="optional" default="0" />
+          <xs:attribute name="FullQueueNode" type="xs:string" use="optional" />
+          <xs:attribute name="WaitMessage" type="xs:string" />
+          <xs:attribute name="RecordVoice" type="xs:boolean" use="optional" default="false" />
+          <xs:attribute name="ProxyMode" type="xs:boolean" use="optional" default="true" />
+          <xs:attribute name="FailureNode" type="xs:string" use="optional" />
+          <xs:attribute name="UnallocatedNumberNode" type="xs:string" use="optional" />
+          <xs:attribute name="SubscriberAbsentNode" type="xs:string" use="optional" />
+          <xs:attribute name="ForwardAnswer" type="xs:boolean" use="optional"  default ="true"/>
+          <xs:attribute name="MaxTalkTime" type="xs:int" use="optional" default="600" />
+          <xs:attribute name="MaxTalkTimeNode" type="xs:string" use="optional" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FaxNode">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="WithTimerNode">
+          <xs:sequence>
+            <xs:element name="Arg" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                </xs:sequence>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+                <xs:attribute name="Value" type="xs:string" use="required" />
+              </xs:complexType>
+            </xs:element>
+            <xs:element ref="NodeResult" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+          <xs:attribute name="TemplateID" type="xs:int" use="required" />
+          <xs:attribute name="TemplateName" type="xs:string" use="required"/>
+          <xs:attribute name="ReadFromFile" type="xs:boolean" use="optional" default="false"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SelectNode">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Node">
+          <xs:sequence>
+            <xs:element name="MatchCallerID" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence />
+                <xs:attribute name="TargetNode" type="xs:string" use="optional" />
+                <xs:attribute name="Code" type="xs:string" use="optional" />
+                <xs:attribute name="Comment" type="xs:string" use="optional" />
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="MatchTime" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence />
+                <xs:attribute name="StartTime" type="xs:time" use="optional" />
+                <xs:attribute name="EndTime" type="xs:time" use="optional" />
+                <xs:attribute name="TargetNode" type="xs:string" use="required" />
+                <xs:attribute name="Comment" type="xs:string" use="optional" />
+                <xs:attribute name="StartDate" type="xs:date" use="optional" />
+                <xs:attribute name="EndDate" type="xs:date" use="optional" />
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="DefaultNode" type="xs:string" use="optional" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="NodeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Play" />
+      <xs:enumeration value="GetKey" />
+      <xs:enumeration value="Invoke" />
+      <xs:enumeration value="Record" />
+      <xs:enumeration value="Jump" />
+      <xs:enumeration value="Divert" />
+      <xs:enumeration value="Select" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,101 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.IO;
+using System.Text;
+
+namespace UMS.Informing.WebInterface.Classes
+{
+    public class ALawVoice
+    {
+        public static byte[] ConvertWaveToMessage(byte[] waveBuffer)
+        {
+            int headerLength = CheckFormat(waveBuffer);
+            byte[] messageBuffer = new byte[waveBuffer.Length - headerLength];
+            Array.Copy(waveBuffer, headerLength, messageBuffer, 0, messageBuffer.Length);
+            return messageBuffer;
+        }
+
+        public static void ConvertWaveToMessage(string waveFile, string messageFile)
+        {
+            byte[] waveBuffer = File.ReadAllBytes(waveFile);
+            byte[] messageBuffer = ConvertWaveToMessage(waveBuffer);
+            File.WriteAllBytes(messageFile, messageBuffer);
+        }
+
+        public static void ConvertMessageToWave(string messageFile, string waveFile)
+        {
+            byte[] waveBuffer = null;
+            byte[] messageBuffer = File.ReadAllBytes(messageFile);
+            waveBuffer = ConvertMessageToWave(messageBuffer);
+            File.WriteAllBytes(waveFile, waveBuffer);
+        }
+
+        public static int CheckFormat(byte[] buffer)
+        {
+            try
+            {
+                BinaryReader reader = new BinaryReader(new MemoryStream(buffer));
+                if (Encoding.ASCII.GetString(reader.ReadBytes(4)) != "RIFF") return -1;
+                reader.ReadInt32(); // File size
+                if (Encoding.ASCII.GetString(reader.ReadBytes(4)) != "WAVE") return -1;
+
+                string segment = Encoding.ASCII.GetString(reader.ReadBytes(4));
+                if (segment == "Fake")
+                {
+                    reader.ReadBytes(6);
+                    segment = Encoding.ASCII.GetString(reader.ReadBytes(4));
+                }
+
+                if (segment != "fmt ") return -1;
+                if (reader.ReadInt32() != 0x12) return -1;
+                if (reader.ReadInt16() != 6) return -1;
+                if (reader.ReadInt16() != 1) return -1;
+                if (reader.ReadInt32() != 8000) return -1;
+                if (reader.ReadInt32() != 8000) return -1;
+                if (reader.ReadInt16() != 1) return -1;
+                if (reader.ReadInt16() != 8) return -1;
+                if (reader.ReadInt16() != 0) return -1;
+                reader.ReadBytes(8);
+
+                return (int)reader.BaseStream.Position;
+            }
+            catch
+            {
+                return -1;
+            }
+
+        }
+
+        public static byte[] ConvertMessageToWave(byte[] messageBuffer)
+        {
+            if (messageBuffer == null || messageBuffer.Length == 0) return null;
+
+            MemoryStream waveStream = new MemoryStream();
+            BinaryWriter writer = new BinaryWriter(waveStream);
+            {
+                writer.Write(Encoding.ASCII.GetBytes("RIFF"));
+                writer.Write(messageBuffer.Length + 50);
+                writer.Write(Encoding.ASCII.GetBytes("WAVEfmt "));
+                writer.Write(0x12);
+                writer.Write((short)6);
+                writer.Write((short)1);
+                writer.Write(8000);
+                writer.Write(8000);
+                writer.Write((short)1);
+                writer.Write((short)8);
+                writer.Write((short)0);
+                writer.Write(Encoding.ASCII.GetBytes("fact"));
+                writer.Write(new byte[] { 4, 0, 0, 0 });
+                writer.Write(messageBuffer.Length);
+                writer.Write(Encoding.ASCII.GetBytes("data"));
+                writer.Write(messageBuffer.Length);
+                writer.Write(messageBuffer);
+            }
+
+            writer.Close();
+            return waveStream.GetBuffer();
+        }
+    }
+}

@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\Administrator.pendar-PC\Desktop\p11</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="App_Browsers/BrowserFile.browser">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="bin/Folder.Common.dll">
+      <publishTime>10/29/2012 12:12:22</publishTime>
+    </File>
+    <File Include="bin/Folder.EMQ.dll">
+      <publishTime>02/11/2012 22:29:32</publishTime>
+    </File>
+    <File Include="bin/Logger.dll">
+      <publishTime>04/25/2015 10:24:18</publishTime>
+    </File>
+    <File Include="bin/UMSV.Common.dll">
+      <publishTime>08/19/2015 12:33:30</publishTime>
+    </File>
+    <File Include="bin/UMSV.Informing.WebInterface.dll">
+      <publishTime>08/19/2015 14:14:12</publishTime>
+    </File>
+    <File Include="bin/UMSV.Informing.WebInterface.pdb">
+      <publishTime>08/19/2015 14:14:12</publishTime>
+    </File>
+    <File Include="Content/body.css">
+      <publishTime>09/22/2014 12:30:19</publishTime>
+    </File>
+    <File Include="Content/form.css">
+      <publishTime>06/25/2012 21:30:46</publishTime>
+    </File>
+    <File Include="Content/Informing.css">
+      <publishTime>09/22/2014 14:39:12</publishTime>
+    </File>
+    <File Include="Content/InformingHandHeld.css">
+      <publishTime>09/22/2014 14:38:52</publishTime>
+    </File>
+    <File Include="Content/InformingPrint.css">
+      <publishTime>09/22/2014 14:12:06</publishTime>
+    </File>
+    <File Include="Content/jquery-ui.css">
+      <publishTime>02/24/2013 19:04:08</publishTime>
+    </File>
+    <File Include="Content/main.css">
+      <publishTime>09/23/2014 07:23:17</publishTime>
+    </File>
+    <File Include="Error.htm">
+      <publishTime>08/17/2015 14:34:10</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>09/21/2014 09:52:05</publishTime>
+    </File>
+    <File Include="Images/accept_16x16.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/ajax-loader%281%29.gif">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/ajax-loader%282%29.gif">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/ajax-loader.gif">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/banner_bg.jpg">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/banner_bg_thick.jpg">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/banner_bg_thin.jpg">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/bg.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/bullet-black.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/bullet-blue.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/bullet-green.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/bullet-red.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/bullet-yellow.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/buttons.gif">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/check2.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/clock.png">
+      <publishTime>08/16/2015 13:56:52</publishTime>
+    </File>
+    <File Include="Images/clock1.png">
+      <publishTime>08/16/2015 13:59:58</publishTime>
+    </File>
+    <File Include="Images/collapse.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/CreateInforming.PNG">
+      <publishTime>09/20/2014 14:35:59</publishTime>
+    </File>
+    <File Include="Images/CreateTicket.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/CurvedCorner.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/delete2.png">
+      <publishTime>11/03/2012 15:00:40</publishTime>
+    </File>
+    <File Include="Images/disk_blue.png">
+      <publishTime>11/03/2012 15:00:14</publishTime>
+    </File>
+    <File Include="Images/document.png">
+      <publishTime>09/25/2010 11:40:22</publishTime>
+    </File>
+    <File Include="Images/edit-1.gif">
+      <publishTime>11/20/2008 16:09:42</publishTime>
+    </File>
+    <File Include="Images/error.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/expand.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/eye.png">
+      <publishTime>09/28/2010 04:58:16</publishTime>
+    </File>
+    <File Include="Images/flag_blue.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/flag_green.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/flag_null.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/flag_orange.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/flag_red.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/flag_yellow.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/graypanel.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/header-bg.jpg">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/header_bg.gif">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/indicator.gif">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/loading.gif">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/Lock.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/mail_new.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/MaleOperator.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/media_play.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/pendar-logo.jpg">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/redline.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/table-header-bg.gif">
+      <publishTime>10/24/2008 10:03:28</publishTime>
+    </File>
+    <File Include="Images/undo.png">
+      <publishTime>08/13/2014 15:14:44</publishTime>
+    </File>
+    <File Include="Images/Untitled.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="Images/warning_16x16.png">
+      <publishTime>08/13/2014 15:14:45</publishTime>
+    </File>
+    <File Include="MasterPages/MainMaster.Master">
+      <publishTime>09/22/2014 14:36:12</publishTime>
+    </File>
+    <File Include="scripts/calendar/calendar.js">
+      <publishTime>08/13/2014 15:14:41</publishTime>
+    </File>
+    <File Include="scripts/calendar/calendar2.js">
+      <publishTime>08/13/2014 15:14:41</publishTime>
+    </File>
+    <File Include="scripts/jquery-1.7.min.js">
+      <publishTime>08/13/2014 15:14:41</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>08/19/2015 14:14:13</publishTime>
+    </File>
+    <File Include="WebForms/InformingList.aspx">
+      <publishTime>08/17/2015 12:21:15</publishTime>
+    </File>
+    <File Include="WebForms/InformingReport.aspx">
+      <publishTime>09/30/2014 18:23:20</publishTime>
+    </File>
+    <File Include="WebForms/LoginForm.aspx">
+      <publishTime>09/21/2014 09:11:34</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

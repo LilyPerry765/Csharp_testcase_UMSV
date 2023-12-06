@@ -1,0 +1,444 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Diagnostics;
+using Enterprise;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using UMSV.Schema;
+
+
+
+namespace UMSV.Engine
+{
+    public class InformingManagement
+    {
+
+        private static InformingManagement _instance;
+        private static object syncRoot = new Object();
+
+        private Timer _timer;
+        private Timer _rebuildTimer;
+
+        private InformingManagement()
+        {
+            if (_timer == null)
+                _timer = new Timer(_timer_Elapsed, null, 0, Constants.InformingTimerInterval);
+
+            if (_rebuildTimer == null)
+                _rebuildTimer = new Timer(RebuildStatus, null, 240000, 240000/*four minutes*/);
+        }
+
+        public static InformingManagement Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (_instance == null)
+                            _instance = new InformingManagement();
+                    }
+                }
+
+                return _instance;
+            }
+        }
+
+        //The method and idea are not proper... developed in emergency situation! :D
+        private void RebuildStatus(object state)
+        {
+            //try
+            //{
+            //    using (UmsDataContext dc = new UmsDataContext())
+            //    {
+            //        foreach (Informing informing in dc.Informings)
+            //        {
+            //            if (!informing.Enabled)
+            //                continue;
+
+            //            var informingRecords = dc.InformingRecords.Where(p => p.Informing == informing.ID &&
+            //                                                                           p.CallCount > informing.RetryCount)
+            //                                                                           .ToList();
+
+            //            var informingRecords1 = dc.InformingRecords.Where(p => p.Informing == informing.ID &&
+            //                                                                           p.Status == (byte)InformingRecordStatus.Queued &&
+            //                                                                           p.CallCount >= informing.RetryCount)
+            //                                                                           .ToList();
+
+
+            //            //if (informingRecords == null)
+            //            //    continue;
+
+            //            Logger.WriteImportant("{0} : Rebuilding informing calls after several minutes...", informing.Subject);
+
+            //            foreach (var informingRec in informingRecords)
+            //            {
+            //                informingRec.CallCount = (byte)informing.RetryCount;
+            //            }
+
+            //            foreach (var informingRec in informingRecords1)
+            //            {
+            //                informingRec.Status = (byte)InformingRecordStatus.UnsuccessfulCall;
+            //            }
+
+            //            dc.SubmitChanges();
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.WriteError("An Error occured in rebuilding status....");
+            //    Logger.Write(ex);
+            //}
+        }
+
+        private void _timer_Elapsed(object sender)
+        {
+            //Logger.WriteImportant("Timer Elapsed...");
+
+            //try
+            //{
+            //    List<Informing> informings = null;
+            //    using (UmsDataContext dc = new UmsDataContext())
+            //    {
+            //        informings = dc.Informings.ToList();
+            //    }
+
+            //    foreach (Informing informing in informings)
+            //    {
+            //        if (informing.Schedule.CheckNow() && informing.Enabled)
+            //        {
+            //            SendCall(informing);
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Enterprise.Logger.Write(ex);
+            //}
+
+
+            try
+            {
+                List<Informing> informings = null;
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    informings = dc.Informings.Where(i => i.Enabled).ToList();
+                }
+
+                if (informings.Count > 0)
+                {
+                    foreach (Informing informing in informings)
+                    {
+                        if (informing.Schedule.CheckNow())
+                        {
+                            Logger.WriteImportant("Informing for {0} ...", informing.Subject);
+
+                            SendCall(informing);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Enterprise.Logger.Write(ex);
+            }
+
+        }
+
+        public void Start()
+        {
+            Logger.WriteImportant("Starting Scheduled Outcall...");
+
+
+
+        }
+
+        public void Stop()
+        {
+            Logger.WriteImportant("Stopping Scheduled Outcall");
+
+            if (_instance != null)
+                _instance = null;
+
+            if (_timer != null)
+            {
+                _timer.Dispose();
+                _timer = null;
+            }
+
+            if (_rebuildTimer != null)
+            {
+                _rebuildTimer.Dispose();
+                _rebuildTimer = null;
+            }
+
+        }
+
+        public void SendCall(Informing informing)
+        {
+            //IQueryable<InformingRecord> informingRecords = null;
+            //using (UmsDataContext dc = new UmsDataContext())
+            //{
+            //    informingRecords = dc.InformingRecords.Where(t => t.Informing == informing.ID);
+            //}
+
+            //if (informingRecords == null)
+            //{
+            //    Logger.WriteWarning("No infroming records found for informing: {0}", informing.Subject);
+            //    return;
+            //}
+
+            //maximum capacity needs refactor based on limited capacity experience
+            if (Schema.Config.Default.InformingConcurrentCalls <= 0)
+            {
+                //foreach (InformingRecord informingRecord in informingRecords)
+                //{
+                //    if (
+                //         (
+                //            (informingRecord.Status == (byte)InformingRecordStatus.UnsuccessfulCall && informingRecord.CallCount < informing.RetryCount)
+                //            ||
+                //            (informingRecord.Status == (byte)InformingRecordStatus.Queued && informingRecord.CallCount < informing.RetryCount)
+                //         )
+                //         &&
+                //         (!informingRecord.LastCallTime.HasValue || informingRecord.LastCallTime.Value < DateTime.Now.AddSeconds(-Schema.Config.Default.InformingRetryInterval))
+                //       )
+                //    {
+                //        InformingDial(informing, SipService.Default, informingRecord);
+                //    }
+                //}
+            }
+            else //limited capacity
+            {
+                lock (syncRoot)
+                {
+
+                    List<InformingRecord> currentRecords = null;
+                    using (UmsDataContext dc = new UmsDataContext())
+                    {
+                        int currentCallsCount = dc.InformingRecords.Count(t => t.Informing == informing.ID &&  (t.Status == (byte)InformingRecordStatus.SetupProgress || t.Status == (byte)InformingRecordStatus.InProgress || t.Status == (byte)InformingRecordStatus.Connected));
+
+                        //Logger.WriteInfo("currentCallsCount {0}", currentCallsCount);
+
+                        //Logger.WriteInfo("Schema.Config.Default.InformingConcurrentCalls {0} ", Schema.Config.Default.InformingConcurrentCalls);
+
+                        if (currentCallsCount >= Schema.Config.Default.InformingConcurrentCalls)
+                            return;
+
+                        currentRecords = dc.InformingRecords.Where(informingRecord =>
+                                                            informingRecord.Informing == informing.ID &&
+                                                           (
+                                                            (informingRecord.Status == (byte)InformingRecordStatus.UnsuccessfulCall && informingRecord.CallCount < informing.RetryCount)
+                                                            ||
+                                                            (informingRecord.Status == (byte)InformingRecordStatus.Queued && informingRecord.CallCount < informing.RetryCount)
+                                                           )
+                                                           &&
+                                                           (!informingRecord.LastCallTime.HasValue || informingRecord.LastCallTime.Value < DateTime.Now.AddSeconds(-Schema.Config.Default.InformingRetryInterval))
+                                                           )
+                                                         .OrderBy(t => t.LastCallTime)
+                                                         .Take(Schema.Config.Default.InformingConcurrentCalls - currentCallsCount)
+                                                         .ToList();
+                    }
+
+                    //Logger.WriteInfo("Count {0}", currentRecords.Count.ToString());
+
+                    foreach (InformingRecord informingRecord in currentRecords)
+                    {
+                        DivertTarget target = FindProperGateway(Schema.Config.Default.OutcallPrefix + informingRecord.Phone);
+
+                        //Logger.WriteInfo("target is {0}", target.Account.DisplayName + " " + target.Phone);
+
+                        Graph graph = null;
+                        using (UmsDataContext context = new UmsDataContext())
+                        {
+                            graph = context.Graphs.Where(t => t.ID == informing.Graph.Value).Single();
+
+                            InformingRecord record = context.InformingRecords.Where(t => t.ID == informingRecord.ID).SingleOrDefault();
+                            record.Status = (byte)InformingRecordStatus.SetupProgress;
+                            context.SubmitChanges();
+                        }
+                        InformingDial(informing, SipService.Default, informingRecord, graph, target);
+                    }
+
+                }
+            }
+        }
+
+        private DivertTarget FindProperGateway(string calleeId)
+        {
+            List<DivertTarget> targets = new List<DivertTarget>();
+            foreach (SipAccount account in InformingDivertTargets)
+            {
+                if (
+                    Regex.IsMatch(calleeId, account.MatchRule) &&
+                    (SipService.Default.Dialogs.Count(t => t.CalleeID == account.UserID/*outgoing*/ || t.DialogID.EndsWith(MediaGatewayConfig.Default.Ciscos.Where(c => c.UserID == account.UserID).Single().Address)/*incoming*/) < (account.MaxConcurrentCalls - 4/*check*/))
+                    )
+                    targets.Add(new DivertTarget(account, calleeId));
+
+            }
+            targets = targets.OrderBy
+                (o =>
+                    SipService.Default.Dialogs.Count(t => t.CalleeID == o.Account.UserID/*outgoing*/ || t.DialogID.EndsWith(MediaGatewayConfig.Default.Ciscos.Where(c => c.UserID == o.Account.UserID).Single().Address)/*incoming*/)
+                ).ToList();
+
+            if (targets != null && targets.Count > 0)
+                return targets.First();
+            return null;
+        }
+
+        private List<SipAccount> informingDivertTargets;
+        public List<SipAccount> InformingDivertTargets
+        {
+            get
+            {
+                if (informingDivertTargets == null)
+                {
+                    var registeredAccounts = SipService.Default.Accounts.Where(a => a.Status != SipAccountStatus.Offline && a.MaxConcurrentCalls > 1 && !string.IsNullOrEmpty(a.MatchRule)).ToList();
+                    if (registeredAccounts != null)
+                        informingDivertTargets = registeredAccounts;
+                }
+                return informingDivertTargets;
+            }
+        }
+
+        private void InformingDial(Informing informingData, SipService sipServer, InformingRecord informingRecord, Graph graph, DivertTarget properGateway)
+        {
+            //optimize
+            if (informingData.Graph == null || properGateway == null)
+            {
+                using (UmsDataContext context = new UmsDataContext())
+                {
+                    InformingRecord record = context.InformingRecords.Where(t => t.ID == informingRecord.ID).SingleOrDefault();
+                    if (record.Status == (byte)InformingRecordStatus.SetupProgress)
+                    {
+                        if (record.CallCount > 0)
+                            record.Status = (byte)InformingRecordStatus.UnsuccessfulCall;
+                        else
+                            record.Status = (byte)InformingRecordStatus.Queued;
+                    }
+                    context.SubmitChanges();
+                }
+                return;
+            }
+
+            //Graph graph = null;
+            //using (UmsDataContext context = new UmsDataContext())
+            //{
+            //    graph = context.Graphs.Where(t => t.ID == informingData.Graph.Value).Single();
+
+            //    InformingRecord record = context.InformingRecords.Where(t => t.ID == informingRecord.ID).SingleOrDefault();
+            //    record.Status = (byte)InformingRecordStatus.SetupProgress;
+            //    context.SubmitChanges();
+            //}
+
+            //5350xm supports 20 calls per second
+            //we chose approximately 3 cps
+            Thread.Sleep(300);
+
+            //lock (this)
+            //{
+            //using outcall prefix in order to match with outcall regular expression
+            SipDialog dialog = sipServer.StartIVROutCall(graph.Code, Schema.Config.Default.OutcallPrefix + informingRecord.Phone, properGateway);
+
+            Logger.WriteInfo("dialog is {0}", dialog.CalleeID);
+
+            if (dialog == null)
+            {
+                using (UmsDataContext context = new UmsDataContext())
+                {
+                    InformingRecord record = context.InformingRecords.Where(t => t.ID == informingRecord.ID).SingleOrDefault();
+                    if (record.Status == (byte)InformingRecordStatus.SetupProgress)
+                    {
+                        if (record.CallCount > 0)
+                            record.Status = (byte)InformingRecordStatus.UnsuccessfulCall;
+                        else
+                            record.Status = (byte)InformingRecordStatus.Queued;
+                    }
+                    context.SubmitChanges();
+                }
+                return;
+            }
+
+
+            dialog[Constants.DialogState_InformingRecord] = informingRecord;
+            dialog.Call.GraphID = informingData.Graph;
+            dialog.StatusChanged += dialog_StatusChanged;
+
+            //}
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void dialog_StatusChanged(object sender, StatusChangedEventArgs e)
+        {
+            //lock (syncRoot)
+            //{
+            SipDialog dialog = (SipDialog)sender;
+            switch (dialog.Status)
+            {
+                case Schema.DialogStatus.DialingWaitForOk:
+                    if (dialog[Constants.DialogState_InformingRecord] != null)
+                    {
+                        InformingRecord informingRecord = (InformingRecord)dialog[Constants.DialogState_InformingRecord];
+                        using (UmsDataContext dc = new UmsDataContext())
+                        {
+                            var informingRec = dc.InformingRecords.FirstOrDefault(p => p.ID == informingRecord.ID);
+                            informingRec.Status = (byte)InformingRecordStatus.InProgress;
+                            dc.SubmitChanges();
+                        }
+                    }
+                    break;
+                case Schema.DialogStatus.Connect:
+                    if (dialog[Constants.DialogState_InformingRecord] != null)
+                    {
+                        InformingRecord informingRecord = (InformingRecord)dialog[Constants.DialogState_InformingRecord];
+                        using (UmsDataContext dc = new UmsDataContext())
+                        {
+                            var informingRec = dc.InformingRecords.FirstOrDefault(p => p.ID == informingRecord.ID);
+                            informingRec.Status = (byte)InformingRecordStatus.Connected;
+                            informingRec.CallCount++;
+                            informingRec.LastCallTime = DateTime.Now;
+                            dc.SubmitChanges();
+                        }
+                    }
+                    break;
+                case Schema.DialogStatus.Disconnected:
+                    if (dialog[Constants.DialogState_InformingRecord] != null)
+                    {
+                        InformingRecord informingRecord = (InformingRecord)dialog[Constants.DialogState_InformingRecord];
+                        if (dialog.Graph == null)
+                        {
+                            using (UmsDataContext dc = new UmsDataContext())
+                            {
+                                var informingRec = dc.InformingRecords.FirstOrDefault(p => p.ID == informingRecord.ID);
+                                informingRec.Status = (byte)InformingRecordStatus.UnsuccessfulCall;
+                                informingRec.CallCount++;
+                                informingRec.LastCallTime = DateTime.Now;
+                                informingRec.LastDisconnectedTime = DateTime.Now;
+                                dc.SubmitChanges();
+                            }
+                        }
+                        else
+                        {
+                            using (UmsDataContext dc = new UmsDataContext())
+                            {
+                                var informingRec = dc.InformingRecords.FirstOrDefault(p => p.ID == informingRecord.ID);
+
+                                if (informingRec.Status == (byte)InformingRecordStatus.Connected)
+                                {
+                                    informingRec.Status = (byte)InformingRecordStatus.Done;
+                                    informingRec.LastDisconnectedTime = DateTime.Now;
+                                    dc.SubmitChanges();
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+            //}
+        }
+    }
+}

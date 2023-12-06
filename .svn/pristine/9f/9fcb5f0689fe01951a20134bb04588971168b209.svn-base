@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="UMSV.BasicNodes.MatchTimeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:f="clr-namespace:Folder;assembly=Folder.Common"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Orientation="Horizontal">
+        <WrapPanel>
+            <Label>از ساعت</Label>
+            <f:PersianDateBox DisplayMode="Time"
+                                ShowSecond="False"
+                                Width="40"
+                                Date="{Binding StartTime,UpdateSourceTrigger=PropertyChanged}" />
+        </WrapPanel>
+        <WrapPanel>
+            <Label>تا ساعت</Label>
+            <f:PersianDateBox DisplayMode="Time"
+                                ShowSecond="False"
+                                Width="40"
+                                Date="{Binding EndTime,UpdateSourceTrigger=PropertyChanged}" />
+        </WrapPanel>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,5 @@
+﻿<Menu xmlns="http://tempuri.org/Menu.xsd">
+  <MenuItem Header="ایجاد نظرسنجی" Tab="UMSV" Icon="Images/pollform.png" Group="نظرسنجی" Class="Plugin.Poll.Forms.PollForm"  />
+<!--<MenuItem Header="گزارشات نظرسنجی" Tab="UMSV" Icon="Images/polllist.png" Group="نظرسنجی" Class="Plugin.Poll.Forms.PollList" />-->
+ 
+</Menu>

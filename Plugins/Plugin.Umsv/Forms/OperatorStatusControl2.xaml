@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="UMSV.OperatorStatusControl2"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             Height="70" Width="80" Cursor="Hand" FontFamily="Tahoma">
+    <Border Background="White" CornerRadius="5" BorderThickness="1" BorderBrush="Gray">
+        <StackPanel>
+            <Image Name="IconImage" Source="..\Images\Offline.png" Height="50" Width="50" Margin="3" />
+            <Label FlowDirection="LeftToRight" Name="TitleBlock" HorizontalAlignment="Center" Margin="0,-8,0,0" />
+        </StackPanel>
+    </Border>
+</UserControl>

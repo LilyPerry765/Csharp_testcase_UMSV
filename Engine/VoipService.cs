@@ -1,0 +1,826 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder;
+using Enterprise;
+using System.IO;
+using UMSV.Schema;
+using System.Reflection;
+using System.Collections;
+using System.Text.RegularExpressions;
+using System.Threading;
+using Folder.EMQ;
+
+namespace UMSV.Engine
+{
+    public partial class VoipService
+    {
+        SipService SipServer = new SipService();
+        Dictionary<Guid, Type> GraphAddins = new Dictionary<Guid, Type>();
+        byte[] RingingVoice;
+        List<Role> OperatorTeams;
+        InformingManagement informingManagement = new InformingManagement();
+
+        public override void Stop()
+        {
+            Logger.WriteEnd("Stopping VoipService Service ...");
+            SipServer.Stop();
+
+            //NodeTimeoutManager.Stop();
+            informingManagement.Stop();
+
+            NodeTimeoutManager.NodeTimeout -= NodeTimeoutManager_NodeTimeout;
+
+            try
+            {
+                CheckDivertQueueTimer.Dispose();
+                CheckDivertQueueTimer = null;
+            }
+            catch
+            {
+            }
+        }
+
+        public override bool Start()
+        {
+            try
+            {
+                Logger.WriteStart("Starting VoipService Service ...");
+
+                SipServer.DtmfDetected += sipServer_OnDtmfDetected;
+                SipServer.IncommingCall += sipServer_IncommingCall;
+                SipServer.CallStablished += sipServer_CallStablished;
+                SipServer.ScheduledOutcallStablished += sipServer_ScheduledOutcallStablished;
+                SipServer.FaxStablished += sipServer_FaxStablished;
+                SipServer.CallDisconnected += sipServer_OnCallDisconnected;
+                SipServer.Registered += sipServer_OnUserRegister;
+                SipServer.UnRegistered += sipServer_OnUserUnRegister;
+                SipServer.PlayFinished += SipServer_OnPlayFinished;
+                SipServer.OnTargetRinging += SipServer_OnTargetRinging;
+                SipServer.TransferFailed += SipServer_TransferFailed;
+
+                NodeTimeoutManager.NodeTimeout += NodeTimeoutManager_NodeTimeout;
+                NodeTimeoutManager.Start();
+
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    var voice = dc.Voices.FirstOrDefault(v => v.Name == Constants.VoiceName_RingingVoice);
+                    if (voice != null)
+                        RingingVoice = voice.Data.ToArray();
+                }
+
+                LoadGraphAddinsAssembly();
+
+                CheckDivertQueueTimer = new Timer(CheckDivertQueue, null, 0, 500);
+                GetOperatorTeams();
+
+                SipServer.Start(Config.Default.SipProxyEndPoint);
+
+                //InformingManagement.Instance.Start();
+                informingManagement.Start();
+
+                return true;
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                Logger.WriteCritical("Starting VoipService failed, UMSV database connection error: {0}", ex.Message);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return false;
+            }
+        }
+
+        void GetOperatorTeams()
+        {
+            try
+            {
+                using (FolderDataContext dc = new FolderDataContext())
+                {
+                    if (!dc.Roles.Any(r => r.ID == Constants.TeamsRole))
+                    {
+                        Logger.WriteImportant("دسترسی تیم اپراتورها وجود ندارد، ایجاد ...");
+                        dc.Roles.InsertOnSubmit(new Role()
+                        {
+                            ID = Constants.TeamsRole,
+                            Name = "تیم اپراتورها",
+                            ParentID = Guid.Empty,
+                            Type = (int)RoleType.Group,
+                        });
+                        dc.SubmitChanges();
+                    }
+                    OperatorTeams = dc.Roles.Where(r => r.ParentID == Constants.TeamsRole).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        void NodeTimeoutManager_NodeTimeout(object sender, TimeoutEventArgs e)
+        {
+            try
+            {
+                if (e.Dialog.CurrentNode is GetKeyNode)
+                {
+                    var node = e.Dialog.CurrentNode.AsGetKeyNode;
+
+                    var matchedResult = node.NodeResult.FirstOrDefault(p => p.Value == e.Dialog.Keys && !string.IsNullOrEmpty(e.Dialog.Keys));
+                    if (matchedResult == null)
+                        e.Dialog.CurrentNodeID = node.TimeoutNode;
+                    else
+                        e.Dialog.CurrentNodeID = matchedResult.TargetNode;
+
+                    TrackCurrentNode(e.Dialog);
+                }
+                else if (e.Dialog.CurrentNode is DivertNode && e.Dialog.Status == DialogStatus.Talking &&
+                    e.Dialog.CurrentNode.AsDivertNode.MaxTalkTime > 0 && DateTime.Now.Subtract(e.Dialog.StatusChangeTime).TotalSeconds > e.Dialog.CurrentNode.AsDivertNode.MaxTalkTime)
+                {
+                    e.Dialog.CurrentNodeID = e.Dialog.CurrentNode.AsDivertNode.MaxTalkTimeNode;
+                    TrackCurrentNode(e.Dialog);
+                }
+                else if (e.Dialog.CurrentNode is DivertNode && e.Dialog.Status == DialogStatus.WaitForDiverting)
+                {
+                    Logger.WriteInfo("Divert Node Timeout, dialog:{0}", e.Dialog.DialogID);
+                    if (e.Dialog.DivertPartner != null)
+                        SipServer.CancelDialog(e.Dialog.DivertPartner);
+                    e.Dialog.CurrentNodeID = e.Dialog.CurrentNode.AsDivertNode.TimeoutNode;
+                    TrackCurrentNode(e.Dialog);
+                }
+                else if (e.Dialog.CurrentNode is WithTimerNode)
+                {
+                    e.Dialog.CurrentNodeID = e.Dialog.CurrentNode.AsWithTimerNode.TimeoutNode;
+                    TrackCurrentNode(e.Dialog);
+                }
+                else if (e.Dialog.Status == DialogStatus.Disconnected)
+                    Logger.Write(LogType.Debug, "NodeTimeoutManager_NodeTimeout when status Disconnected, current node ID: {0}, callID:{1}", e.Dialog.CurrentNodeID, e.Dialog.DialogID);
+                else
+                    Logger.Write(LogType.Exception, "NodeTimeoutManager_NodeTimeout on status: {0}, callID:{1}, current node type:{2}", e.Dialog.Status, e.Dialog.DialogID, e.Dialog.CurrentNode);
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        void SipServer_OnTargetRinging(object sender, TargetRingingEventArgs e)
+        {
+            SipServer.PlayVoice(e.Dialog, RingingVoice);
+        }
+
+        void LoadGraphAddinsAssembly()
+        {
+            lock (GraphAddins)
+            {
+                GraphAddins = new Dictionary<Guid, Type>();
+
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    var graphAddins = dc.Graphs.Where(g => g.Assembly != null && g.Assembly.Length > 0);
+                    foreach (var graph in graphAddins)
+                        try
+                        {
+                            Logger.WriteInfo("LoadGraphAddinsAssembly, graph:{0}", graph.Name);
+
+                            Assembly assembly = Assembly.Load(graph.Assembly.ToArray());
+                            if (assembly == null)
+                            {
+                                Logger.WriteError("Error loading assembly for graph id:{0}", graph.ID);
+                                return;
+                            }
+
+                            Type addinType = assembly.GetTypes().FirstOrDefault(t => typeof(IGraphAddin).IsAssignableFrom(t));
+                            if (addinType != null)
+                            {
+                                GraphAddins.Add(graph.ID, addinType);
+                                Logger.WriteInfo("Addins {0} Loaded Version is {1}", assembly.GetName().Name, assembly.GetName().Version);
+                            }
+                            else
+                                Logger.WriteError("Error loading addins type for graph: {0}", graph.Name);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Write(ex);
+                        }
+                }
+            }
+        }
+
+        void sipServer_OnUserUnRegister(object sender, UnRegisteredEventArgs e)
+        {
+            Logger.WriteDebug("UnRegister, user:{0}", e.Account.UserID);
+
+        }
+
+        void sipServer_OnUserRegister(object sender, RegisteredEventArgs e)
+        {
+            Logger.WriteDebug("Register, user:{0}", e.Account.UserID);
+            //using (UmsDataContext dc = new UmsDataContext())
+            //{
+            //    Session session = new Session()
+            //    {
+            //        StartTime = DateTime.Now,
+            //        Type = (byte)ClientSessionType.Login,
+            //        UserID = e.Account.FolderUserID,
+            //        SipID = e.Account.UserID,
+            //        MachineAddress = (int)e.Account.SipEndPoint.Address.Address
+            //    };
+            //    dc.Sessions.InsertOnSubmit(session);
+            //    dc.SubmitChanges();
+            //}
+
+            //CheckDivertQueueForNewUser(e.Account);
+        }
+
+        void sipServer_OnCallDisconnected(object sender, CallDisconnectedEventArgs e)
+        {
+            CheckDisconnectedDialogToAccountForDivertQueue(e.Dialog);
+
+            var currentNode = e.Dialog.CurrentNode;
+            if (currentNode != null && currentNode.Type == NodeType.Record)
+                SipServer.StopRecord(e.Dialog.DialogID);
+        }
+
+        void sipServer_OnDtmfDetected(object sender, DtmfDetectedEventArgs e)
+        {
+            e.Dialog.Keys += e.Key;
+            if (!e.Dialog.Call.GraphTrack.EndsWith(Constants.GraphTrackDtmfSeprator.ToString()))
+                e.Dialog.Call.GraphTrack += string.Format("{0}{1}{0}", Constants.GraphTrackDtmfSeprator, e.Key);
+            else
+                e.Dialog.Call.GraphTrack = e.Dialog.Call.GraphTrack.Substring(0, e.Dialog.Call.GraphTrack.Length - 1) + e.Key + Constants.GraphTrackDtmfSeprator;
+
+
+            if (e.Dialog.CurrentNode == null && e.Dialog.Status == DialogStatus.Recording)
+            {
+                Logger.WriteInfo("call has been diverted to voice mailbox directly and recording finished because of detecting dtmf, dialog: {0}", e.Dialog.DialogID);
+                SipServer.StopRecord(e.Dialog.DialogID);
+
+                try
+                {
+                    Logger.WriteInfo("Going to save message in database in direct mailbox calling mode.");
+                    using (UmsDataContext context = new UmsDataContext())
+                    {
+                        MailboxMessage message = new MailboxMessage()
+                        {
+                            BoxNo = e.Dialog.CalleeID,
+                            Data = e.Dialog.RecordedVoice,
+                            ReceiveTime = DateTime.Now,
+                            Sender = e.Dialog.CallerID,
+                            Type = (byte)MailboxMessageType.New
+                        };
+                        context.MailboxMessages.InsertOnSubmit(message);
+                        context.SubmitChanges();
+                        Logger.WriteInfo("Message saved successfully in direct mailbox calling mode.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write(ex);
+                    Logger.WriteError("An exception occurred while saving recorded voice in direct mailbox calling mode.");
+                    return;
+                }
+
+                VoiceStream voiceStream = new VoiceStream();
+                voiceStream.AddVoice(Constants.VoiceName_YourMessageSaved);
+                voiceStream.AddVoice(Constants.VoiceName_Bye);
+                SipServer.PlayVoice(e.Dialog, voiceStream.stream.ToArray());
+                return;
+            }
+
+            if (e.Dialog.CurrentNode == null)
+            {
+                Logger.WriteWarning("CurrentNode on sipServer_OnDtmfDetected, dialog: {0} is null", e.Dialog.DialogID);
+                return;
+            }
+
+            switch (e.Dialog.CurrentNode.Type)
+            {
+                case NodeType.Record:
+                    if (e.Key.ToString() == e.Dialog.CurrentNode.AsRecordNode.StopKey)
+                    {
+                        SipServer.StopRecord(e.Dialog.DialogID);
+                        e.Dialog.CurrentNodeID = e.Dialog.CurrentNode.AsRecordNode.TargetNode;
+                        TrackCurrentNode(e.Dialog);
+                    }
+                    break;
+
+                case NodeType.Play:
+                    if (!e.Dialog.CurrentNode.AsPlayNode.IgnoreKeyPress)
+                    {
+                        SipServer.StopPlayVoice(e.Dialog);
+                        e.Dialog.CurrentNodeID = e.Dialog.CurrentNode.AsPlayNode.TargetNode;
+
+                        if (e.Dialog.CurrentNode.Type == NodeType.GetKey)
+                        {
+                            e.Dialog.Keys = e.Key.ToString();
+                            TrackGetKeyNode(e.Dialog);
+                        }
+                        else
+                            TrackCurrentNode(e.Dialog);
+                    }
+                    break;
+
+                case NodeType.GetKey:
+
+                    TrackGetKeyNode(e.Dialog);
+                    break;
+            }
+        }
+
+        void sipServer_ScheduledOutcallStablished(object sender, CallStablishedEventArgs e)
+        {
+            Logger.WriteInfo("({0}:{1})->sipServer_ScheduledOutcallStablished", e.Dialog.CalleeID, e.Dialog.CallerID);
+            //Logger.WriteInfo("Finding graph for {0}", e.Dialog.CallerID.Substring(14));
+
+            //bool result = InitializeGraphORMailBox(e.Dialog, e.Dialog.CallerID.Substring(14));
+            bool result = InitializeGraphORMailBox(e.Dialog, e.Dialog.CallerID);
+            if (result == false)
+                SipServer.DisconnectCall(e.Dialog);
+        }
+
+        void sipServer_CallStablished(object sender, CallStablishedEventArgs e)
+        {
+
+            Logger.WriteInfo("({0}:{1})->sipServer_CallStablished", e.Dialog.CalleeID, e.Dialog.CallerID);
+            if (e.Dialog.DivertPartner != null) // Target On Transfer Established
+            {
+                SipServer.StopPlayVoice(e.Dialog.DivertPartner); // Stop playing voice
+                if (e.Dialog.DivertPartner.CurrentNode is DivertNode && e.Dialog.DivertPartner.CurrentNode.AsDivertNode.MaxTalkTime > 0)
+                    NodeTimeoutManager.NodeTimeouts[e.Dialog.DivertPartner] = DateTime.Now.AddSeconds(e.Dialog.DivertPartner.CurrentNode.AsDivertNode.MaxTalkTime);
+            }
+            else if (e.Dialog.Extension != "ed")//Eavesdropping Dialog
+            {
+                bool result = InitializeGraphORMailBox(e.Dialog, e.Dialog.CalleeID);
+                if (result == false)
+                    SipServer.DisconnectCall(e.Dialog);
+            }
+        }
+
+        void sipServer_FaxStablished(object sender, CallStablishedEventArgs e)
+        {
+            Logger.WriteInfo("({0}:{1})->sipServer_FaxStablished", e.Dialog.CalleeID, e.Dialog.CallerID);
+            SipServer.StopPlayVoice(e.Dialog);
+            StartFaxThread(e.Dialog);
+        }
+
+        void sipServer_IncommingCall(object sender, IncommingCallEventArgs e)
+        {
+            Logger.WriteDebug("({0}:{1})->sipServer_IncommingCall", e.Dialog.CalleeID, e.Dialog.CallerID);
+            SipServer.AnswerCall(e.Dialog);
+        }
+
+        void TrackCurrentNode(SipDialog dialog)
+        {
+
+            try
+            {
+                if (dialog.CurrentNode == null)
+                {
+                    Logger.WriteInfo("({0}:{1})->CurrentNode is null.", dialog.CalleeID, dialog.CallerID);
+                    return;
+                }
+
+                if (dialog.Status == DialogStatus.Disconnected)
+                {
+                    Logger.WriteInfo("({0}:{1})->CurrentNode is Disconnected.", dialog.CalleeID, dialog.CallerID);
+                    return;
+                }
+
+                NodeTimeoutManager.CheckNodeForTimeout(dialog);
+
+                #region Tracking Logs
+                var group = FindNodeGroupByStartID(dialog.Graph, dialog.CurrentNode.ID);
+                if (group != null)
+                {
+                    dialog.Call.LastNodeID = dialog.CurrentNode.ID;
+                    dialog.Call.LastNodeName = group.Description;
+                }
+                // #3:2>#4:29>#7:85>"322345234"     :  NodeID : Tenth Seconds > "DTMF Keys"
+                if (dialog.Call.GraphTrack.EndsWith(Constants.GraphTrackDtmfSeprator.ToString()))
+                    dialog.Call.GraphTrack += Constants.GraphTrackNodeSeprator;
+
+                dialog.Call.GraphTrack += string.Format("{0}:{1}{2}", dialog.CurrentNode.ID, (int)(DateTime.Now.Subtract(dialog.CallTime).TotalSeconds * 10), Constants.GraphTrackNodeSeprator);
+                #endregion
+
+                switch (dialog.CurrentNode.Type)
+                {
+
+                    case NodeType.Play:
+                        ThreadPool.QueueUserWorkItem(delegate
+                        {
+                            TrackPlayNode(dialog);
+                        });
+                        break;
+
+                    case NodeType.Invoke:
+                        ThreadPool.QueueUserWorkItem(delegate
+                        {
+                            TrackInvokeNode(dialog);
+                        });
+                        //System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(delegate
+                        //{
+                        //    TrackInvokeNode(dialog);
+                        //}));
+                        //thread.Start();
+                        break;
+
+                    case NodeType.Fax:
+                        ThreadPool.QueueUserWorkItem(delegate
+                        {
+                            TrackFaxNode(dialog);
+                        });
+                        break;
+
+                    case NodeType.Record:
+                        TrackRecordNode(dialog);
+                        break;
+
+                    case NodeType.Jump:
+                        TrackJumpNode(dialog);
+                        break;
+
+                    case NodeType.Divert:
+                        TrackDivertNode(dialog);
+                        break;
+
+                    case NodeType.Select:
+                        TrackSelectNode(dialog);
+                        break;
+
+                    case NodeType.GetKey:
+                        dialog.Keys = string.Empty;
+                        TrackGetKeyNode(dialog);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex, "TrackCurrentNode callID:{0}", dialog.DialogID);
+            }
+            finally
+            {
+                //if (dialog.CurrentNode != null && dialog.CurrentNode.ClearDigits && dialog.CurrentNode.Type != NodeType.GetKey)
+                //  dialog.Keys = string.Empty;
+            }
+        }
+
+        private void TrackGetKeyNode(SipDialog dialog)
+        {
+            NodeTimeoutManager.CheckNodeForTimeout(dialog);
+
+            var node = dialog.CurrentNode.AsGetKeyNode;
+            bool gotEndKey = !string.IsNullOrEmpty(node.EndKey) && dialog.Keys.EndsWith(node.EndKey);
+            var keys = gotEndKey ? dialog.Keys.TrimEnd(node.EndKey.First()) : dialog.Keys;
+
+            var matchedResult = node.NodeResult.FirstOrDefault(p => p.Value == keys);
+
+            if (matchedResult == null)
+            {
+                if (gotEndKey || (node.MaxDigits.HasValue && dialog.Keys.Count() >= node.MaxDigits))
+                {
+                    if (!string.IsNullOrEmpty(node.MaxDigitsNode))
+                        dialog.CurrentNodeID = node.MaxDigitsNode;
+                    else
+                    {
+                        var result = node.NodeResult.FirstOrDefault(p => string.IsNullOrEmpty(p.Value));
+                        if (result != null)
+                            dialog.CurrentNodeID = result.TargetNode;
+                    }
+                }
+                else
+                    return;
+            }
+            else
+                dialog.CurrentNodeID = matchedResult.TargetNode;
+
+            TrackCurrentNode(dialog);
+        }
+
+        void TrackSelectNode(SipDialog dialog)
+        {
+            string target = null;
+
+            if (dialog.CurrentNode.AsSelectNode.MatchTimes.Count > 0)
+                target = dialog.CurrentNode.AsSelectNode.GetTimeMatchTarget();
+            else if (dialog.CurrentNode.AsSelectNode.MatchCallerIDs.Count > 0)
+                target = dialog.CurrentNode.AsSelectNode.GetCallerIDMatchTarget(dialog.CallerID);
+            else if (dialog.CurrentNode.AsSelectNode.MatchDates.Count > 0)
+                target = dialog.CurrentNode.AsSelectNode.GetDateMatchTarget();
+
+            if (string.IsNullOrEmpty(target))
+            {
+                Logger.WriteError("No match found for dialog: {0}", dialog.DialogID);
+                if (dialog.CurrentNode.AsSelectNode.DefaultNode == null)
+                {
+                    Logger.WriteInfo("Also no default node found for dialog: {0}", dialog.DialogID);
+                    DisconnectCall(dialog);
+                }
+                else
+                {
+                    Logger.WriteInfo("Default node found for dialog: {0}", dialog.DialogID);
+                    dialog.CurrentNodeID = dialog.CurrentNode.AsSelectNode.DefaultNode;
+                    TrackCurrentNode(dialog);
+                }
+            }
+            else
+            {
+                dialog.CurrentNodeID = target;
+                TrackCurrentNode(dialog);
+            }
+        }
+
+
+
+        GraphGroup FindNodeGroupByStartID(GraphGroup nodeGroup, string nodeID)
+        {
+            if (nodeGroup.StartNode == nodeID)
+                return nodeGroup;
+
+            if (nodeGroup.NodeGroups != null)
+            {
+                foreach (var innerGroup in nodeGroup.NodeGroups)
+                {
+                    var group = FindNodeGroupByStartID(innerGroup, nodeID);
+                    if (group != null)
+                        return group;
+                }
+            }
+            return null;
+        }
+
+        void TrackJumpNode(SipDialog dialog)
+        {
+            var jumpNode = dialog.CurrentNode.AsJumpNode;
+            if (string.IsNullOrEmpty(jumpNode.TargetGraph))
+            {
+                dialog.CurrentNodeID = jumpNode.TargetNode;
+                TrackCurrentNode(dialog);
+            }
+            else
+            {
+                Guid targetGraph = new Guid(jumpNode.TargetGraph);
+                using (UmsDataContext dc = new UmsDataContext())
+                {
+                    var graphRecord = dc.Graphs.FirstOrDefault(g => g.ID == targetGraph);
+                    if (graphRecord != null)
+                    {
+                        InitializeGraphFromNode(dialog, graphRecord.Code, string.IsNullOrEmpty(jumpNode.TargetNode) ? string.Empty : jumpNode.TargetNode);
+                    }
+                    else
+                        Logger.WriteError("Graph Jump Node... Graph NOT found: {0}", targetGraph.ToString());
+                }
+            }
+        }
+
+        void TrackRecordNode(SipDialog dialog)
+        {
+            SipServer.StartRecord(dialog.DialogID);
+        }
+
+        bool InitializeGraphFromNode(SipDialog dialog, string code, string startNode)
+        {
+            UmsDataContext dc = new UmsDataContext();
+            var graphs = dc.Graphs.Where(t => t.Enable).ToList();
+            var graphRecord = graphs.FirstOrDefault(g => g.Code == code);
+
+            if (graphRecord == null)
+                graphRecord = graphs.FirstOrDefault(g => (dialog.Call.GraphID.HasValue && g.ID == dialog.Call.GraphID));
+
+            if (graphRecord == null)
+            {
+                graphRecord = graphs.Where(g => !string.IsNullOrWhiteSpace(g.Code) &&
+                    code.StartsWith(g.Code)).OrderBy(g => g.Code.Length).FirstOrDefault();
+            }
+
+            var graphXml = graphRecord.Data.ToString();
+            var graph = Schema.Graph.Deserialize(graphXml);
+
+            if (!string.IsNullOrEmpty(startNode))
+                graph.StartNode = startNode;
+
+            Logger.WriteInfo("Graph Jump Node... target Node: {0}", graph.StartNode);
+
+            dialog.Call.GraphID = graphRecord.ID;
+            dialog.Graph = graph;
+            dialog.CurrentNodeID = graph.StartNode;
+            lock (GraphAddins)
+            {
+                if (GraphAddins.ContainsKey(graphRecord.ID))
+                {
+                    dialog.GraphAddins = (IGraphAddin)GraphAddins[graphRecord.ID].Assembly.CreateInstance(
+                            GraphAddins[graphRecord.ID].FullName);
+                    dialog.GraphAddins.Dialog = dialog;
+                }
+            }
+
+            TrackCurrentNode(dialog);
+            return true;
+        }
+
+        bool InitializeGraphORMailBox(SipDialog dialog, string code)
+        {
+
+            UmsDataContext dc = new UmsDataContext();
+            var graphs = dc.Graphs.Where(t => t.Enable).ToList();
+            var graphRecord = graphs.FirstOrDefault(g => g.Code == code);
+
+            if (graphRecord == null)
+                graphRecord = graphs.FirstOrDefault(g => (dialog.Call.GraphID.HasValue && g.ID == dialog.Call.GraphID));
+
+            if (graphRecord == null)
+            {
+                graphRecord = graphs.Where(g => !string.IsNullOrWhiteSpace(g.Code) &&
+                    code.StartsWith(g.Code)).OrderBy(g => g.Code.Length).FirstOrDefault();
+                if (graphRecord == null)
+                {
+                    Logger.WriteInfo("Graph for callee ID {0} not found.", code);
+
+                    if (CheckCalleeIDForMailBox(code))
+                    {
+                        return InitializeVoiceMailBox(dialog, code);
+                    }
+                    else
+                        Logger.WriteInfo("Mailbox for callee ID {0} not found.", code);
+
+                    graphRecord = graphs.FirstOrDefault(g => g.ID == Config.Default.DefaultGraph);
+                    if (graphRecord == null)
+                        return false;
+                }
+            }
+
+            var graphXml = graphRecord.Data.ToString();
+            var graph = Schema.Graph.Deserialize(graphXml);
+
+            dialog.Call.GraphID = graphRecord.ID;
+            dialog.Graph = graph;
+            dialog.CurrentNodeID = graph.StartNode;
+            lock (GraphAddins)
+            {
+                if (GraphAddins.ContainsKey(graphRecord.ID))
+                {
+                    dialog.GraphAddins = (IGraphAddin)GraphAddins[graphRecord.ID].Assembly.CreateInstance(
+                            GraphAddins[graphRecord.ID].FullName);
+                    dialog.GraphAddins.Dialog = dialog;
+                }
+            }
+
+            TrackCurrentNode(dialog);
+            return true;
+        }
+
+        bool CheckCalleeIDForMailBox(string boxNo)
+        {
+            Logger.WriteInfo("Checking mailboxes for {0}.", boxNo);
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.Mailboxes.Where(t => t.BoxNo == boxNo).Any();
+            }
+        }
+
+        bool InitializeVoiceMailBox(SipDialog dialog, string boxNo)
+        {
+            try
+            {
+                using (UmsDataContext context = new UmsDataContext())
+                {
+                    Mailbox mailbox = context.Mailboxes.Where(t => t.BoxNo == boxNo).SingleOrDefault();
+                    Logger.WriteInfo("Mailbox found in direct mailbox calling mode");
+                    VoiceStream voiceStream = new VoiceStream();
+
+                    if (mailbox.WelcomeMessages == null)
+                        voiceStream.AddVoice(Constants.VoiceName_LeaveMessageAndPressNine);
+                    else
+                        voiceStream.AddVoice(mailbox.WelcomeMessages.ToArray());
+
+                    voiceStream.AddVoice(Constants.VoiceName_Beep);
+
+                    SipServer.PlayVoice(dialog, voiceStream.stream.ToArray());
+                    Logger.WriteInfo("sip server is playing proper voice right now(direct mailbox calling mode).");
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return false;
+            }
+        }
+
+        void StartFaxThread(SipDialog dialog)
+        {
+            //System.Threading.ThreadStart threadStart = new System.Threading.ThreadStart(InitializeFax);
+            SipServer.StopPlayVoice(dialog);
+            System.Threading.Thread thread = new System.Threading.Thread(() => InitializeFax(dialog));
+            thread.Start();
+        }
+
+        void InitializeFax(SipDialog dialog)
+        {
+            try
+            {
+                byte[] ALAW_Input = new Byte[SipServer.Initial_Fax_Chunk_size];
+                Int16[] PCM_Input = new Int16[SipServer.Initial_Fax_Chunk_size];
+                //Int16[] PCM_Output = new Int16[SipServer.Initial_Fax_Chunk_size];
+                //byte[] ALAW_Output = new Byte[SipServer.Initial_Fax_Chunk_size];
+
+                Logger.WriteInfo("Waiting for memory to be initialized...");
+                while (dialog.PassThroughFaxStream.Length < SipServer.Initial_Fax_Chunk_size)
+                    Thread.Sleep(1);
+
+                Logger.WriteInfo("Initial chunk loaded...");
+
+                SipService.g711_decode(0,
+                                       PCM_Input,
+                                       dialog.PassThroughFaxStream.ToArray().Take(SipServer.Initial_Fax_Chunk_size).ToArray(),
+                                       SipServer.Initial_Fax_Chunk_size);
+
+                Thread transceiver_thread = new Thread(() => SipServer.TransceiveFax(dialog));
+                transceiver_thread.Start();
+                while (!transceiver_thread.IsAlive)
+                    Thread.Sleep(1);
+
+                Logger.WriteInfo("{0}: Initializing Fax.", dialog.CallerID);
+
+                int result = SipService.Initialize_FAX(PCM_Input, SipServer.Initial_Fax_Chunk_size, dialog.Extension.Substring(dialog.Extension.LastIndexOf("@") + 1) /*SipServer.file_name*/, 1, dialog.CallerID);
+                if (result == 1)
+                    Logger.WriteInfo("Fax: SUCCESS");
+                else if (result == -1)
+                    Logger.WriteError("Fax ERROR: All channels are inuse");
+                else if (result == -2)
+                    Logger.WriteError("Fax ERROR: File name is not valid");
+                else if (result == -3)
+                    Logger.WriteError("Fax ERROR: TimeOut");
+                else
+                    Logger.WriteError("Fax ERROR: Unknown");
+
+                // Request that transceiver_thread be stopped
+                transceiver_thread.Abort();
+                //SipServer.PassThroughFAXInitialStream = new MemoryStream();
+                Logger.WriteImportant("Finished...");
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        byte[] ReadToEnd(System.IO.Stream stream)
+        {
+            long originalPosition = 0;
+
+            if (stream.CanSeek)
+            {
+                originalPosition = stream.Position;
+                stream.Position = 0;
+            }
+
+            try
+            {
+                byte[] readBuffer = new byte[4096];
+
+                int totalBytesRead = 0;
+                int bytesRead;
+
+                while ((bytesRead = stream.Read(readBuffer, totalBytesRead, readBuffer.Length - totalBytesRead)) > 0)
+                {
+                    totalBytesRead += bytesRead;
+
+                    if (totalBytesRead == readBuffer.Length)
+                    {
+                        int nextByte = stream.ReadByte();
+                        if (nextByte != -1)
+                        {
+                            byte[] temp = new byte[readBuffer.Length * 2];
+                            Buffer.BlockCopy(readBuffer, 0, temp, 0, readBuffer.Length);
+                            Buffer.SetByte(temp, totalBytesRead, (byte)nextByte);
+                            readBuffer = temp;
+                            totalBytesRead++;
+                        }
+                    }
+                }
+
+                byte[] buffer = readBuffer;
+                if (readBuffer.Length != totalBytesRead)
+                {
+                    buffer = new byte[totalBytesRead];
+                    Buffer.BlockCopy(readBuffer, 0, buffer, 0, totalBytesRead);
+                }
+                return buffer;
+            }
+            finally
+            {
+                if (stream.CanSeek)
+                {
+                    stream.Position = originalPosition;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Voip118_EMQ_Model">
+  <DataContextMoniker Name="/Voip118DataContext" />
+  <nestedChildShapes>
+    <classShape Id="b6543c7e-917c-4074-9bbc-5010dfb5d231" absoluteBounds="6.75, 0.75, 2, 1.9631982421874987">
+      <DataClassMoniker Name="/Voip118DataContext/Job" />
+      <nestedChildShapes>
+        <elementListCompartment Id="97c01b56-6eb8-45ea-a9d2-57e053e9e1c0" absoluteBounds="6.7650000000000006, 1.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="25f3368d-21a4-4af0-82ee-52dd5ae4a7cc" absoluteBounds="3.5, 1.125, 2, 1.1939925130208327">
+      <DataClassMoniker Name="/Voip118DataContext/PrefixNumber" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a3054211-4bdf-450f-ae21-88f9e7e81913" absoluteBounds="3.515, 1.585, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="816d0321-d700-4a85-97ff-39aa86115005" absoluteBounds="0.875, 3.625, 2, 1.1939925130208327">
+      <DataClassMoniker Name="/Voip118DataContext/City" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ef6d552f-59cb-44a2-8f94-02cb53ac68ee" absoluteBounds="0.88999999999999968, 4.085, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(1.875 : 3.625); (1.875 : 1.72199625651042); (3.5 : 1.72199625651042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/Voip118DataContext/City/City_PrefixNumber" />
+      <nodes>
+        <classShapeMoniker Id="816d0321-d700-4a85-97ff-39aa86115005" />
+        <classShapeMoniker Id="25f3368d-21a4-4af0-82ee-52dd5ae4a7cc" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="2dcc9f1f-ccc1-4d8a-862b-e45898aa2922" absoluteBounds="4.125, 3.125, 2, 4.4631168619791666">
+      <DataClassMoniker Name="/Voip118DataContext/Phone" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f8b689d2-0d0f-4616-941a-d2316c88ac10" absoluteBounds="4.14, 3.585, 1.9700000000000002, 3.903116861979167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

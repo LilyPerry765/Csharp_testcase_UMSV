@@ -1,0 +1,136 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.SessionState;
+using System.Web.UI.WebControls;
+using System.Collections;
+using System.Xml.Linq;
+
+
+namespace UMS.Informing.WebInterface
+{
+    public class Global : System.Web.HttpApplication
+    {
+
+        //void Application_Start(object sender, EventArgs e)
+        //{
+        //    // Code that runs on application startup
+
+        //}
+
+        //void Application_End(object sender, EventArgs e)
+        //{
+        //    //  Code that runs on application shutdown
+
+        //}
+
+        //void Application_Error(object sender, EventArgs e)
+        //{
+        //    // Code that runs when an unhandled error occurs
+
+        //}
+
+        //void Session_Start(object sender, EventArgs e)
+        //{
+        //    // Code that runs when a new session is started
+        //    HttpCookie userNameCookie = Request.Cookies["Username"];
+
+        //    if (userNameCookie != null)
+        //    {
+        //        HelpDesk.Data.DB.IsInWebSiteMode = true;
+        //        try
+        //        {
+        //            //may usernameCookie be contain an old username that is changed since last login,in this wise we have an exception 
+        //            HelpDesk.Data.DB.InitializeUserInfo(userNameCookie.Value);
+        //            Enterprise.Logger.WriteImportant("HelpDesk Application: User initialization completed...");
+
+        //            DB.CurrentUser.LocalIPAddress = GetLocalIPAddress();
+        //            DB.CurrentUser.ExternalIPAddress = GetExternalIPAddress();
+
+        //            ActionLog actionLog = new ActionLog()
+        //            {
+        //                ActionId = (int)NamedValues.UserAction.Login,
+        //                TechId = DB.CurrentUser.Id,
+        //                Date = DB.GetServerDate(),
+        //                EntityID = DB.CurrentUser.Id,
+        //                EntityType = (int)NamedValues.ActionLogEntityType.Tech
+        //            };
+
+        //            HelpDesk.Data.Schemas.LoginLog loginLog = new HelpDesk.Data.Schemas.LoginLog();
+        //            loginLog.LoginDate = DB.GetServerDate();
+        //            loginLog.NetworkIpAddress = DB.CurrentUser.LocalIPAddress;
+        //            loginLog.InternetIpAddress = DB.CurrentUser.ExternalIPAddress;
+        //            actionLog.Details = XElement.Parse(DB.Serialize<HelpDesk.Data.Schemas.LoginLog>(loginLog), LoadOptions.None);
+
+        //            actionLog.Detach();
+        //            DB.Save(actionLog);
+        //        }
+        //        catch(Exception ex)
+        //        {
+        //            Response.Redirect("LoginForm.aspx");
+        //            Enterprise.Logger.Write(ex);
+        //        }
+        //    }
+        //}
+
+        //void Session_End(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        HttpCookie userNameCookie = Request.Cookies["Username"];
+        //        ActionLog actionLog = new ActionLog()
+        //        {
+        //            ActionId = (int)NamedValues.UserAction.Logout,
+        //            TechId = DB.CurrentUser.Id,
+        //            Date = DB.GetServerDate(),
+        //            EntityID = DB.CurrentUser.Id,
+        //            EntityType = (int)NamedValues.ActionLogEntityType.Tech
+        //        };
+
+        //        DB.CurrentUser.LocalIPAddress = GetLocalIPAddress();
+        //        DB.CurrentUser.ExternalIPAddress = GetExternalIPAddress();
+
+        //        LogoutLog logoutLog = new LogoutLog();
+        //        logoutLog.LogoutDate = DB.GetServerDate();
+        //        logoutLog.NetworkIpAddress = DB.CurrentUser.LocalIPAddress;
+        //        logoutLog.InternetIpAddress = DB.CurrentUser.ExternalIPAddress;
+        //        actionLog.Details = XElement.Parse(DB.Serialize<LogoutLog>(logoutLog));
+
+        //        actionLog.Detach();
+        //        DB.Save(actionLog);
+        //        SecurityDB.SetTechOffline();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Enterprise.Logger.Write(ex ,"Exit Log did not insert successfully.") ;
+        //    }
+        //    // Code that runs when a session ends. 
+        //    // Note: The Session_End event is raised only when the sessionstate mode
+        //    // is set to InProc in the Web.config file. If session mode is set to StateServer 
+        //    // or SQLServer, the event is not raised.
+
+        //}
+        //#region Methods
+        //private string GetExternalIPAddress()
+        //{
+        //    string ipList = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+        //    if (!string.IsNullOrEmpty(ipList))
+        //        return ipList.Split(',')[0];
+        //    return Request.ServerVariables["REMOTE_ADDR"];
+        //}
+        //private string GetLocalIPAddress()
+        //{
+        //    string localIP = string.Empty;
+        //    foreach (System.Net.IPAddress ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList)
+        //    {
+        //        if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+        //            localIP = ip.ToString();
+        //    }
+        //    return localIP;
+        //}
+        //#endregion
+
+    }
+}

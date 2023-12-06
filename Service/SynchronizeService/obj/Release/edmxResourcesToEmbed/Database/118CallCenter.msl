@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="CallCenterModelStoreContainer" CdmEntityContainer="CallCenter">
+    <EntitySetMapping Name="ChangeLogs">
+      <EntityTypeMapping TypeName="CallCenterModel.ChangeLog">
+        <MappingFragment StoreEntitySet="ChangeLog">
+          <ScalarProperty Name="IsAppied118" ColumnName="IsAppied118" />
+          <ScalarProperty Name="Elka_FI_CODE" ColumnName="Elka_FI_CODE" />
+          <ScalarProperty Name="IsFoxProExport" ColumnName="IsFoxProExport" />
+          <ScalarProperty Name="IsAutomaticLog" ColumnName="IsAutomaticLog" />
+          <ScalarProperty Name="IsApplied" ColumnName="IsApplied" />
+          <ScalarProperty Name="IsConfirmed" ColumnName="IsConfirmed" />
+          <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+          <ScalarProperty Name="Trust" ColumnName="Trust" />
+          <ScalarProperty Name="OldInternationalCounter" ColumnName="OldInternationalCounter" />
+          <ScalarProperty Name="OldDomecticCounter" ColumnName="OldDomecticCounter" />
+          <ScalarProperty Name="OldLocalCounter" ColumnName="OldLocalCounter" />
+          <ScalarProperty Name="OldPhoneNo" ColumnName="OldPhoneNo" />
+          <ScalarProperty Name="InternationalCounter" ColumnName="InternationalCounter" />
+          <ScalarProperty Name="DomecticCounter" ColumnName="DomecticCounter" />
+          <ScalarProperty Name="LocalCounter" ColumnName="LocalCounter" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+          <ScalarProperty Name="SubscriberTypeID" ColumnName="SubscriberTypeID" />
+          <ScalarProperty Name="SetupDate" ColumnName="SetupDate" />
+          <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+          <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+          <ScalarProperty Name="CenterID" ColumnName="CenterID" />
+          <ScalarProperty Name="WebServiceID" ColumnName="WebServiceID" />
+          <ScalarProperty Name="ChangeTypeID" ColumnName="ChangeTypeID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ChangeTypes">
+      <EntityTypeMapping TypeName="CallCenterModel.ChangeType">
+        <MappingFragment StoreEntitySet="ChangeType">
+          <ScalarProperty Name="ElkaTable" ColumnName="ElkaTable" />
+          <ScalarProperty Name="CostTypeID" ColumnName="CostTypeID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="JobPhones">
+      <EntityTypeMapping TypeName="CallCenterModel.JobPhone">
+        <MappingFragment StoreEntitySet="JobPhone">
+          <ScalarProperty Name="JobId" ColumnName="JobId" />
+          <ScalarProperty Name="RegionId" ColumnName="RegionId" />
+          <ScalarProperty Name="InserterId" ColumnName="InserterId" />
+          <ScalarProperty Name="PhysicalSetupDate" ColumnName="PhysicalSetupDate" />
+          <ScalarProperty Name="AllowSearchByPhone" ColumnName="AllowSearchByPhone" />
+          <ScalarProperty Name="Hidden" ColumnName="Hidden" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Phonenumber" ColumnName="Phonenumber" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Phones">
+      <EntityTypeMapping TypeName="CallCenterModel.Phone">
+        <MappingFragment StoreEntitySet="Phone">
+          <ScalarProperty Name="RegionId" ColumnName="RegionId" />
+          <ScalarProperty Name="PhysicalSetupDate" ColumnName="PhysicalSetupDate" />
+          <ScalarProperty Name="InserterId" ColumnName="InserterId" />
+          <ScalarProperty Name="AllowSearchByPhone" ColumnName="AllowSearchByPhone" />
+          <ScalarProperty Name="Hidden" ColumnName="Hidden" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+          <ScalarProperty Name="Fathername" ColumnName="Fathername" />
+          <ScalarProperty Name="Lastname" ColumnName="Lastname" />
+          <ScalarProperty Name="Firstname" ColumnName="Firstname" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

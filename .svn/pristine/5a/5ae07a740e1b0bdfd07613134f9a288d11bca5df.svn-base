@@ -1,0 +1,89 @@
+﻿using Enterprise;
+using Plugin.Poll.DB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Plugin.Poll.Forms
+{
+    public partial class PollList : UserControl
+    {
+        UMSV.UmsDataContext db = new UMSV.UmsDataContext();
+
+        public PollList()
+        {
+            InitializeComponent();
+
+            PollComboBox.ItemsSource = db.Polls.ToList();
+
+            FromDate.SelectedDate = DateTime.Now;
+            ToDate.SelectedDate = DateTime.Now;
+        }
+
+        private void ViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            UMSV.Poll selectedPoll = PollComboBox.SelectedItem as UMSV.Poll;
+
+
+            if (OperatorNumberTextBox.Text == "")
+            {
+
+                dataGrid.ItemsSource = db.ExecuteQuery<PollInfo>(" select i.CallerId,i.CalleeId,i.DateAnswered,a.Answer " +
+                                                                                " from [Poll] p " +
+                                                                                " join [PollQuestion] q on p.Id = q.PollId " +
+                                                                                " join [PollAnswer] a on q.Id = a.PollQuestionId " +
+                                                                                " join [PollInfo] i on a.Id = i.PollAnswerId " +
+                                                                                " where i.DateAnswered >= {0} and i.DateAnswered <= {1} and p.Id = {2} ",
+                                                                                  FromDate.SelectedDate.Value, ToDate.SelectedDate.Value, selectedPoll.Id);
+
+            }
+            else
+            {
+                dataGrid.ItemsSource = db.ExecuteQuery<PollInfo>(" select i.CallerId,i.CalleeId,i.DateAnswered,a.Answer " +
+                                                                            " from [Poll] p " +
+                                                                            " join [PollQuestion] q on p.Id = q.PollId " +
+                                                                            " join [PollAnswer] a on q.Id = a.PollQuestionId " +
+                                                                            " join [PollInfo] i on a.Id = i.PollAnswerId " +
+                                                                            " where i.DateAnswered >= {0} and i.DateAnswered <= {1} and i.CalleeId = {2} and p.Id = {3} ",
+                                                                              FromDate.SelectedDate.Value, ToDate.SelectedDate.Value, OperatorNumberTextBox.Text.Trim(), selectedPoll.Id);
+            }
+
+
+
+        }
+
+        private void ExportMenu_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        //private void EditMenu_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (dataGrid.SelectedItem == null)
+        //        return;
+
+        //    new PollForm((dataGrid.SelectedItem as UMSV.Poll).Id).ShowDialog();
+        //}
+
+        //private void ReportMenu_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (dataGrid.SelectedItem == null)
+        //        return;
+
+        //    UMSV.Poll selectedPoll = dataGrid.SelectedItem as UMSV.Poll;
+
+        //    Folder.Console.Navigate(new PollReport());
+
+        //}
+    }
+}

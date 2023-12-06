@@ -1,0 +1,95 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UMSV;
+using Folder.Commands;
+using System.Threading;
+
+namespace UMSV.ViewModels
+{
+    public class PhoneCallViewModel : InformingViewModel
+    {
+        #region Constructors
+
+        public PhoneCallViewModel()
+            : this(null)
+        {
+        }
+
+        public PhoneCallViewModel(Informing phoneCall, int defaultTab = 0)
+        {
+            if (phoneCall == null)
+            {
+                IsNew = true;
+                this.Informing = new Informing()
+                {
+                    Enabled = false ,
+                    Type = (byte)InformingType.Graph
+                };
+                DB.Informings.InsertOnSubmit(this.Informing);
+            }
+            else
+                this.Informing = DB.Informings.Single(i => i == phoneCall);
+
+            SelectedTabIndex = defaultTab;
+        }
+
+        #endregion
+
+        protected override bool OnSave()
+        {
+            Folder.EMQ.ClientTransport.Default.Start();
+            Folder.EMQ.ClientTransport.Default.ConnectToServer();
+
+            RemoveInvalidRecords();
+            if (Validate())
+            {
+                //Graph.Name = "تماس تلفنی " + Informing.Subject;
+                Informing.CallTime = Informing.Schedule.ToXElement();
+                // Informing.TerminalLinks = LinkSelectors.Where(t => t.IsSelected).Select(t => t.Link);
+                CancelImport = true;
+                new Thread(delegate()
+                {
+                    DB.SubmitChanges();
+                    VoIPServiceClient_Plugin_UMSV.Default.StartScheduledOutcall();
+                }).Start();
+                IsNew = false;
+                return true;
+            }
+            return false;
+        }
+
+        protected override bool Validate()
+        {
+            if (Informing.Subject == null)
+            {
+                Folder.MessageBox.ShowError("لطفا عنوان را وارد نماييد.");
+                return false;
+            }
+            return true;
+        }
+
+        private Graph graph;
+        private Graph Graph
+        {
+            get
+            {
+                if (graph == null)
+                {
+                    graph = DB.Graphs.FirstOrDefault(g => g.ID == Informing.Graph);
+                    if (graph == null)
+                    {
+                        graph = new Graph()
+                        {
+                            ID = Guid.NewGuid(),
+                            Data = System.Xml.Linq.XElement.Parse(GraphViewModel.CreateGraph().Serialize()),
+                        };
+                        DB.Graphs.InsertOnSubmit(graph);
+                    }
+                }
+                return graph;
+            }
+        }
+
+    }
+}

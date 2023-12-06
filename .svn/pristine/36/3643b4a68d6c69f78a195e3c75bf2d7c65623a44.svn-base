@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{240EF965-CA27-42DE-804D-67EEB5F3FC2A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UMSV</RootNamespace>
+    <AssemblyName>Plugin.SoftPhone.OZ</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\Folder\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Folder.Audio">
+      <HintPath>..\..\..\..\Folder\Folder.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="Folder.Common">
+      <HintPath>..\..\..\..\Folder\Folder.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Folder.EMQ">
+      <HintPath>..\..\..\..\Folder\Folder.EMQ.dll</HintPath>
+    </Reference>
+    <Reference Include="Logger">
+      <HintPath>..\..\..\..\Folder\Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VoIPSDK">
+      <HintPath>..\..\..\..\Folder\VoIPSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Forms\AddToBlackListWindow.xaml.cs">
+      <DependentUpon>AddToBlackListWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\BlackButton.xaml.cs">
+      <DependentUpon>BlackButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\BlackCheckBox.xaml.cs">
+      <DependentUpon>BlackCheckBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CallAlertWindow.xaml.cs">
+      <DependentUpon>CallAlertWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OZPhone.cs" />
+    <Compile Include="Forms\SoftPhone.cs" />
+    <Compile Include="Forms\SoftPhoneForm.xaml.cs">
+      <DependentUpon>SoftPhoneForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TransferForm.xaml.cs">
+      <DependentUpon>TransferForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UserLoginWindow.xaml.cs">
+      <DependentUpon>UserLoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Global.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VoipServiceClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Forms\AddToBlackListWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\BlackButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\BlackCheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\CallAlertWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\SoftPhoneForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\TransferForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\UserLoginWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CallAlert.png" />
+    <Resource Include="Images\currentCalls.png" />
+    <Resource Include="Images\CurrentCalls1.png" />
+    <Resource Include="Images\CurrentCalls2.png" />
+    <Resource Include="Images\DND.png" />
+    <Resource Include="Images\DND1.png" />
+    <Resource Include="Images\DND2.png" />
+    <Resource Include="Images\DND3.png" />
+    <Resource Include="Images\DND4.png" />
+    <Resource Include="Images\onlineUsers.png" />
+    <Resource Include="Images\OnlineUsers1.png" />
+    <Resource Include="Images\Queue.png" />
+    <Resource Include="Images\Queue1.png" />
+    <Resource Include="Images\Softphone.png" />
+    <Resource Include="Images\Talking.png" />
+    <EmbeddedResource Include="Menu.xml" />
+    <EmbeddedResource Include="Sound\Alert.wav" />
+    <EmbeddedResource Include="Sound\angel_eyes.mid" />
+    <EmbeddedResource Include="Sound\Music.wav" />
+    <EmbeddedResource Include="Sound\Ringing.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="External\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{59C84D10-FC24-4FD3-8D47-4091DDE4CA38}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\IGraphAddin\IGraphAddin.csproj">
+      <Project>{7B73AE74-B22A-4DBA-BAB5-1BDD2DEAAE19}</Project>
+      <Name>IGraphAddin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SipServer\SipServer.csproj">
+      <Project>{B92D3025-C749-4AC4-A8A2-ED9D858F4273}</Project>
+      <Name>SipServer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

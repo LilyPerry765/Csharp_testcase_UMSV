@@ -1,0 +1,572 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder;
+using Folder.Commands;
+using Enterprise;
+using System.Xml.Serialization;
+using System.Collections;
+
+namespace UMSV
+{
+    public partial class ReportSchemaReport
+    {
+        public string Operator
+        {
+            get;
+            set;
+        }
+
+        #region Property CurrentOperatorGroup
+        private Guid _CurrentOperatorGroup;
+        [XmlIgnore]
+        public Guid CurrentOperatorGroup
+        {
+            get
+            {
+                return _CurrentOperatorGroup;
+            }
+            set
+            {
+                _CurrentOperatorGroup = value;
+                SendPropertyChanged("CurrentOperatorGroup");
+
+                if (OperatorVisible)
+                {
+                    List<NameValue> operators;
+                    if (CurrentOperatorGroup == AllGroups)
+                        operators = User.Current.SubUsers.Select(u => new NameValue() {
+                            Value = u.Username, Name = u.Fullname
+                        }).ToList();
+                    else
+                    {
+                        using (FolderDataContext dc = new FolderDataContext())
+                        {
+                            operators = dc.UserRoles.Where(ur => ur.RoleID == CurrentOperatorGroup).Select(ur => new NameValue() {
+                                Value = ur.User.Username, Name = ur.User.Fullname
+                            }).ToList();
+                        }
+                    }
+
+                    operators = operators.OrderBy(u => u.Name).ToList();
+                    operators.Insert(0, new NameValue() {
+                        Name = "[همه اپراتورها]", Value = string.Empty
+                    });
+                    OperatorList = operators;
+                    Operator = string.Empty;
+                }
+            }
+        }
+        #endregion
+
+        #region Property OperatorGroups
+        private List<Role> _OperatorGroups = new List<Role>();
+        [XmlIgnore]
+        public List<Role> OperatorGroups
+        {
+            get
+            {
+                return _OperatorGroups;
+            }
+            set
+            {
+                _OperatorGroups = value;
+                SendPropertyChanged("OperatorGroups");
+            }
+        }
+        #endregion
+
+        #region Property OperatorList
+        private List<NameValue> _OperatorList;
+        [XmlIgnore]
+        public List<NameValue> OperatorList
+        {
+            get
+            {
+                return _OperatorList;
+            }
+            set
+            {
+                _OperatorList = value;
+                SendPropertyChanged("OperatorList");
+            }
+        }
+        #endregion
+
+        #region Property ToTimeVisible
+        public bool ToTimeVisible
+        {
+            get
+            {
+                return this.ToTimeState != PredefinedTime.Hidden;
+            }
+        }
+        #endregion
+
+        #region Property FromTime
+        private DateTime? _FromTime;
+        public DateTime? FromTime
+        {
+            get
+            {
+                return _FromTime;
+            }
+            set
+            {
+                _FromTime = value;
+                SendPropertyChanged("FromTime");
+            }
+        }
+        #endregion
+
+        #region Property ToTime
+        private DateTime? _ToTime;
+        public DateTime? ToTime
+        {
+            get
+            {
+                return _ToTime;
+            }
+            set
+            {
+                _ToTime = value;
+                SendPropertyChanged("ToTime");
+            }
+        }
+        #endregion
+
+        #region Property CallerID
+        private string _CallerID;
+        public string CallerID
+        {
+            get
+            {
+                return _CallerID;
+            }
+            set
+            {
+                _CallerID = value;
+                SendPropertyChanged("CallerID");
+            }
+        }
+        #endregion
+
+
+        public void Initialize()
+        {
+            FromTime = SetTimeState(FromTimeState);
+            ToTime = SetTimeState(ToTimeState);
+
+            var groups = User.Current.AllRoles.Where(r => r.Type == (int)RoleType.Group).OrderBy(u => u.Name).ToList();
+            groups.Insert(0, new Role() {
+                Name = "[همه گروهها]",
+                ID = AllGroups,
+            });
+
+            OperatorGroups = groups;
+            CurrentOperatorGroup = AllGroups;
+        }
+
+        private DateTime? SetTimeState(PredefinedTime predefineTime)
+        {
+            PersianDateTime today = new PersianDateTime(DateTime.Today);
+
+            switch (predefineTime)
+            {
+                case PredefinedTime.Today:
+                    return DateTime.Today;
+
+                case PredefinedTime.Now:
+                    return DateTime.Now;
+
+                case PredefinedTime.Yesterday:
+                    return DateTime.Today.AddDays(-1);
+
+                case PredefinedTime.OneWeekAgo:
+                    return DateTime.Today.AddDays(-8);
+
+                case PredefinedTime.FirstDayOfMonth:
+                    return today.AddDays(1 - today.Day).ToGregorian();
+
+                case PredefinedTime.FirstDayOfLastMonth:
+                    return today.AddDays(1 - today.Day).AddMonths(-1).ToGregorian();
+
+                default:
+                    return null;
+            }
+        }
+
+        private Guid AllGroups = Guid.NewGuid();
+
+        #region Command View
+        private DelegateCommand _ViewCommand;
+        public DelegateCommand ViewCommand
+        {
+            get
+            {
+                if (_ViewCommand == null)
+                    _ViewCommand = new DelegateCommand(View);
+                return _ViewCommand;
+            }
+        }
+
+        void View()
+        {
+            try
+            {
+                Folder.Console.ShowProgress();
+                Folder.Console.ShowStatusMessage("فراخوانی اطلاعات از پایگاه داده ...");
+                FolderDataContext fdc = new FolderDataContext();
+                var allUsers = fdc.Users.ToList();
+
+                UmsDataContext dc = new UmsDataContext();
+                dc.CommandTimeout = UMSV.Schema.Config.Default.ReportsCommandTimeout;
+                var query = dc.Calls.Where(c => (int)this.CallType == c.Type);
+
+                if (OperatorVisible)
+                {
+                    if (!string.IsNullOrEmpty(Operator))
+                        query = query.Where(c => c.CalleeID == Operator);
+                    else if (CurrentOperatorGroup != AllGroups || !User.IsInRole(Guid.Empty))
+                        query = query.Where(c => OperatorList.Select(u => (string)u.Value).Contains(c.CalleeID));
+                }
+
+                if (FromTime.HasValue)
+                    query = query.Where(c => c.CallTime >= FromTime);
+
+                if (ToTime.HasValue)
+                    query = query.Where(c => c.CallTime < ToTime);
+
+                if (!string.IsNullOrEmpty(CallerID))
+                    query = query.Where(c => c.CallerID.StartsWith(CallerID));
+
+                IList LoadedData;
+                switch (this.Type)
+                {
+                    #region TalkSummaryReport
+                    case ReportType.TalkSummaryReport:
+                        {
+                            var data = (from v in query
+                                        group v by v.CalleeID into g
+                                        select new {
+                                            Operator = g.Key,
+                                            Count = g.Count(),
+                                            AnswerCount = g.Count(i => i.AnswerTime.HasValue),
+                                            NoAnswerCount = g.Count(i => !i.AnswerTime.HasValue),
+                                            RejectedCount = g.Count(i => i.DisconnectCause == (int)DisconnectCause.CallRejected),
+                                        });
+                            LoadedData = data.ToList().Select(q => new {
+                                q.Operator,
+                                OperatorName = allUsers.Where(u => u.Username == q.Operator).Select(u => u.Fullname).FirstOrDefault(),
+                                q.Count,
+                                q.AnswerCount,
+                                q.NoAnswerCount,
+                                q.RejectedCount,
+                            }).Where(q => !string.IsNullOrEmpty(q.OperatorName)).ToList();
+                            break;
+                        }
+                    #endregion
+
+                    #region DailyActivity
+                    case ReportType.DailyActivity:
+                        {
+                            if (string.IsNullOrEmpty(Operator))
+                            {
+                                MessageBox.ShowError("لطفا اپراتور مورد نظر را انتخاب نمائید");
+                                return;
+                            }
+                            var data = (from q in query
+                                        group q by q.CallTime.Date into g
+                                        orderby g.Key
+                                        select new {
+                                            Date = g.Key,
+                                            CallsCount = g.Count(),
+                                            AvailableTime = g.Max(q => q.DisconnectTime) - g.Min(q => q.CallTime),
+                                            TalkTime = (int)g.Sum(q => (q.DisconnectTime - q.CallTime).TotalSeconds),
+                                        });
+                            var data2 = data.ToList().Select(q => new {
+                                AvailableTime = q.AvailableTime.ToString(@"hh\:mm"),
+                                Date = PersianDate.ToPersianDateString(q.Date),
+                                TalkTime = new TimeSpan(0, 0, q.TalkTime),
+                                q.CallsCount,
+                            });
+
+                            if (IsChart)
+                            {
+                                LoadedData = data2.Select(q => new {
+                                    X = q.Date,
+                                    Y = (int)q.TalkTime.TotalMinutes,
+                                }).ToList();
+                            }
+                            else
+                            {
+                                LoadedData = data2.Select(q => new {
+                                    q.Date,
+                                    TalkTime = q.TalkTime.ToString(@"hh\:mm"),
+                                    q.AvailableTime,
+                                    q.CallsCount,
+                                    AverageTalkTime = (int)(q.TalkTime.TotalSeconds / q.CallsCount),
+                                }).ToList();
+                            }
+                        }
+                        break;
+                    #endregion
+
+                    #region OperatorAvailability
+                    case ReportType.OperatorAvailability:
+                        {
+                            if (string.IsNullOrEmpty(Operator))
+                            {
+                                MessageBox.ShowError("لطفا اپراتور مورد نظر را انتخاب نمائید");
+                                return;
+                            }
+                            var data = (from q in query
+                                        group q by q.CallTime.Date into g
+                                        orderby g.Key
+                                        select new {
+                                            Date = g.Key,
+                                            StartTime = g.Min(q => q.CallTime),
+                                            EndTime = g.Max(q => q.DisconnectTime),
+                                            AvailableTime = g.Max(q => q.DisconnectTime) - g.Min(q => q.CallTime),
+                                        }).ToList();
+                            if (IsChart)
+                            {
+                                LoadedData = data.Select(q => new {
+                                    X = PersianDate.ToPersianDateString(q.Date),
+                                    Y = q.AvailableTime.TotalMinutes
+                                }).ToList();
+                            }
+                            else
+                            {
+                                LoadedData = data.Select(q => new {
+                                    Date = PersianDate.ToPersianDateString(q.Date),
+                                    StartTime = q.StartTime.ToString(@"HH:mm"),
+                                    EndTime = q.EndTime.ToString(@"HH:mm"),
+                                    AvailableTime = q.AvailableTime.ToString(@"hh\:mm"),
+                                }).ToList();
+                            }
+                        }
+                        break;
+                    #endregion
+
+                    #region OperatorsActivityCompare
+                    case ReportType.OperatorsActivityCompare:
+                        {
+                            var data = (from q in query
+                                        group q by q.CalleeID into g
+                                        orderby g.Key
+                                        select new {
+                                            Operator = g.Key,
+                                            CallsCount = g.Count(),
+                                        }).ToList();
+                            var data2 = data.ToList().Select(q => new {
+                                q.Operator,
+                                OperatorName = allUsers.Where(u => u.Username == q.Operator).Select(u => u.Fullname).FirstOrDefault(),
+                                q.CallsCount,
+                            }).Where(q => !string.IsNullOrEmpty(q.OperatorName)).ToList();
+
+
+                            if (IsChart)
+                            {
+                                LoadedData = data2.Select(d => new {
+                                    X = d.OperatorName,
+                                    Y = d.CallsCount,
+                                }).OrderBy(q => q.Y).ToList();
+                            }
+                            else
+                                LoadedData = data2;
+
+                        }
+                        break;
+                    #endregion
+
+                    #region TalksInHour
+                    case ReportType.TalksInHour:
+                        {
+                            var data = (from q in query
+                                        group q by q.CalleeID into g
+                                        orderby g.Key
+                                        select new {
+                                            Operator = g.Key,
+                                            TalkHours = Math.Max(1, (g.Max(q => q.DisconnectTime) - g.Min(q => q.CallTime)).TotalHours),
+                                            CallsCount = g.Count(),
+                                        });
+                            var data2 = data.ToList().Select(q => new {
+                                q.Operator,
+                                OperatorName = allUsers.Where(u => u.Username == q.Operator).Select(u => u.Fullname).FirstOrDefault(),
+                                Count = (int)(q.CallsCount / q.TalkHours),
+                            });
+
+                            if (IsChart)
+                            {
+                                LoadedData = data2.Select(d => new {
+                                    X = d.OperatorName,
+                                    Y = d.Count
+                                }).OrderBy(d => d.Y).ToList();
+                            }
+                            else
+                            {
+                                LoadedData = data2.Where(q => !string.IsNullOrEmpty(q.OperatorName)).ToList();
+                            }
+                        }
+                        break;
+                    #endregion
+
+                    #region OperatorTalksInHour
+                    case ReportType.OperatorTalksInHour:
+                        {
+                            if (string.IsNullOrEmpty(Operator))
+                            {
+                                MessageBox.ShowError("لطفا اپراتور مورد نظر را انتخاب نمائید");
+                                return;
+                            }
+                            var data = (from q in query
+                                        group q by q.CallTime.Date into g
+                                        orderby g.Key
+                                        select new {
+                                            Date = g.Key,
+                                            TalkHours = Math.Max(1, (g.Max(q => q.DisconnectTime) - g.Min(q => q.CallTime)).TotalHours),
+                                            CallsCount = g.Count(),
+                                        });
+                            LoadedData = data.ToList().Select(q => new {
+                                Date = PersianDate.ToPersianDateString(q.Date),
+                                Count = (int)(q.CallsCount / q.TalkHours),
+                            }).ToList();
+                        }
+                        break;
+                    #endregion
+
+                    #region OperatorsCountInHour
+                    case ReportType.OperatorsCountInHour:
+                        {
+                            if (!FromTime.HasValue)
+                            {
+                                MessageBox.ShowError("لطفا روز مورد نظر برای گزارش گیری را مشخص کنید.");
+                                return;
+                            }
+                            var data = (from v in query
+                                        where v.CallTime.Date == FromTime.Value.Date
+                                        group v by new {
+                                            v.CallTime.Hour,
+                                            v.CalleeID
+                                        } into g
+                                        select new {
+                                            Hour = g.Key.Hour,
+                                            Count = g.Select(q => q.CalleeID).Distinct().Count(),
+                                        });
+
+                            var data2 = from q in data
+                                        group q by q.Hour into g
+                                        select new {
+                                            Hour = g.Key,
+                                            Count = g.Sum(q => q.Count)
+                                        };
+                            if (IsChart)
+                            {
+                                LoadedData = data2.Select(d => new {
+                                    X = d.Hour,
+                                    Y = d.Count,
+                                }).ToList();
+                            }
+                            else
+                                LoadedData = data2.ToList();
+                        }
+                        break;
+                    #endregion
+
+                    #region ChannelsDailyTraffic
+                    case ReportType.ChannelsDailyTraffic:
+                        {
+                            var data = from q in query
+                                       where q.CallTime.Date == FromTime.Value.Date && q.DisconnectTime > q.CallTime
+                                       select new {
+                                           Hour = q.CallTime.Hour,
+                                           Duration = q.DisconnectTime - q.CallTime
+                                       };
+
+                            var data2 = from q in data
+                                        group q by q.Hour into g
+                                        orderby g.Key
+                                        select new {
+                                            Hour = g.Key,
+                                            CallsCount = g.Count(),
+                                            Duration = (int)g.Sum(q => q.Duration.TotalMinutes),
+                                            Count = 1 + (int)(g.Sum(q => q.Duration.TotalSeconds) / 3600)
+                                        };
+                            if (IsChart)
+                            {
+                                LoadedData = data2.Select(d => new {
+                                    X = d.Hour,
+                                    Y = this.yProperty == "Count" ? d.Count : d.CallsCount,
+                                }).ToList();
+                            }
+                            else
+                                LoadedData = data2.ToList();
+                        }
+
+                        break;
+                    #endregion
+
+                    #region TrafficOveral
+                    default:
+                    case ReportType.TrafficOveral:
+                        {
+                            LoadedData = new List<string>();
+                        }
+
+                        break;
+                    #endregion
+
+                    #region DailyActivity
+                    case ReportType.CallsFromPrefix:
+                        {
+                            var data = (from q in query
+                                        group q by q.CallTime.Date into g
+                                        orderby g.Key
+                                        select new {
+                                            Date = g.Key,
+                                            CallsCount = g.Count(),
+                                        });
+                            LoadedData = data.Select(q => new {
+                                q.Date,
+                                q.CallsCount,
+                            }).ToList();
+                        }
+                        break;
+                    #endregion
+                }
+
+                this.Data = LoadedData;
+                Folder.Console.ShowStatusMessage("({0}) رکورد", LoadedData.Count);
+            }
+            catch (Exception ex)
+            {
+                Folder.Console.ShowStatusMessage("خطا در بازیابی اطلاعات، لطفا دوباره سعی کنید.");
+                Logger.Write(ex);
+            }
+            finally
+            {
+                Folder.Console.HideProgress();
+            }
+        }
+
+        #endregion
+
+        #region Property Data
+        private object _Data;
+        public object Data
+        {
+            get
+            {
+                return _Data;
+            }
+            set
+            {
+                _Data = value;
+                SendPropertyChanged("Data");
+            }
+        }
+        #endregion
+    }
+}

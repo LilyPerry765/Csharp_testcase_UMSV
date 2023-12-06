@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.UserControls.VoiceSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:f="clr-namespace:Folder.Audio;assembly=Folder.Audio"
+             mc:Ignorable="d"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             d:DesignHeight="109"
+             d:DesignWidth="300">
+    <GroupBox x:Name="groupBox" Header="پيام صوتی">
+        <StackPanel Margin="5" x:Name="stackPannel">
+            <RadioButton x:Name="defaultRadioButton"
+                         Checked="defaultRadioButton_Checked"
+                         Margin="0,3"
+                         IsChecked="True">پيام پيشفرض</RadioButton>
+            <RadioButton Margin="0,3"
+                         x:Name="customRadioButton"
+                         Checked="customRadioButton_Checked">پيام دلخواه</RadioButton>
+            <f:SoundControl HorizontalAlignment="Left"
+                            VoiceChanged="soundControl_VoiceChanged"
+                            IsEnabled="{Binding IsChecked, ElementName=customRadioButton}"
+                            x:Name="soundControl"  />
+        </StackPanel>
+    </GroupBox>
+</UserControl>

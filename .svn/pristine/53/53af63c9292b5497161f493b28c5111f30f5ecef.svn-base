@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Quran">
+  <DataContextMoniker Name="/QuranDataContext" />
+  <nestedChildShapes>
+    <classShape Id="fd38929b-31a1-4d73-8024-fa5af3c47fb0" absoluteBounds="5.5, 1.875, 2, 1.3862939453125">
+      <DataClassMoniker Name="/QuranDataContext/Voice" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3642e0ff-48ba-402e-8df9-f9848092ca88" absoluteBounds="5.515, 2.335, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

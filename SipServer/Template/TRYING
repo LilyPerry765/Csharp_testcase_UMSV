@@ -1,0 +1,9 @@
+SIP/2.0 100 Trying -- your call is important to us
+Via: {0}
+To: {1}
+From: {2}
+Call-ID: {3}
+CSeq: {4}
+Server: SIP Proxy Server
+Content-Length: 0
+

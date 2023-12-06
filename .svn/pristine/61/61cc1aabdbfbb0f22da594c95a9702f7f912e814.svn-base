@@ -1,0 +1,6 @@
+﻿<Menu xmlns="http://tempuri.org/Menu.xsd">
+  <MenuItem Header="مشترکین" Tab="سیستم" Group="118" Icon="Images\Search.png" Class="Pendar._118.SearchForm" />
+  <MenuItem Header="مشاغل" Tab="سیستم" Group="118" Icon="Images\Job.png" Class="Pendar._118.JobsListForm" />
+  <MenuItem Header="پیش شماره ها" Tab="سیستم" Group="118" Icon="Images\Prefix.png" Class="Pendar._118.Form.PrefixNumbersForm" />
+  <MenuItem Header="درج و ویرایش" Tab="سیستم" Group="118" Icon="Images\Type.png" Class="Pendar._118.PhonesEditForm" ViewModelClass="Pendar._118.PhonesEditFormViewModel" />
+</Menu>

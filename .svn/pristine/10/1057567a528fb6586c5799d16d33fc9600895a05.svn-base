@@ -1,0 +1,559 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Text;
+using System.Collections.ObjectModel;
+using UMSV;
+using Folder.Commands;
+using Folder;
+using System.IO;
+using System.Configuration;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Web.Security;
+using Enterprise;
+using System.Data.Linq;
+
+namespace UMS.Informing.WebInterface.WebForms
+{
+    public partial class InformingList : System.Web.UI.Page
+    {
+        #region Properties and Fields
+
+        Classes.StatusBarMessage _StatusBarMessageClass = new Classes.StatusBarMessage();
+
+        ListItem _FirstItem = new ListItem(string.Empty, string.Empty, true);
+
+        #endregion
+
+        #region Events
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+                LoadData();
+
+            System.Web.UI.Page page = HttpContext.Current.Handler as System.Web.UI.Page;
+        }
+
+        #endregion
+
+        #region Details ListView
+        private void PopulateListView1()
+        {
+            CheckUserAccess();
+            DetailsListView1.DataSource = GetInformings();
+            DetailsListView1.DataBind();
+
+            DropDownList dropDownList = (DropDownList)DetailsListView1.InsertItem.FindControl("GraphNameDropDownList");
+            dropDownList.DataSource = GetGraphs();
+            dropDownList.DataBind();
+        }
+
+        protected void DetailsListView1_ItemCommand(object sender, ListViewCommandEventArgs e)
+        {
+            CheckUserAccess();
+            switch (e.CommandName)
+            {
+                case "Export":
+                    int Id = (int)DetailsListView1.DataKeys[e.Item.DataItemIndex].Value;
+                    
+                    using (UmsDataContext context = new UmsDataContext())
+                    {
+                        UMSV.Informing informing = context.Informings.Where(t => t.ID == Id).SingleOrDefault();
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("شماره تلفن\tوضعیت\tتاریخ آخرین تماس\tزمان آخرین تماس\tزمان آخرین قطع\tتعداد دفعات تماس");
+                        foreach (var ir in informing.InformingRecords)
+                        {
+                            string date = ir.LastCallTime.HasValue ? new PersianDateTime(ir.LastCallTime.Value).ToString("yyyy/MM/dd") : "-";
+                            string callTime = ir.LastCallTime.HasValue ? ir.LastCallTime.Value.ToString("HH:mm:ss") : "-";
+                            string disconnectTime = ir.LastDisconnectedTime.HasValue ? ir.LastDisconnectedTime.Value.ToString("HH:mm:ss") : "-";
+
+                            string s = "";
+
+                            byte b = ir.Status;
+                            if (b == 0)
+                                s = "منتظر";
+                            else if (b == 1)
+                                s = "موفق";
+                            else if (b == 2)
+                                s = "ناموفق";
+                            else if (b == 3)
+                                s = "سعی برای تماس";
+                            else if (b == 4)
+                                s = "برقرار";
+                            else if (b == 5)
+                                s = "ست آپ";
+                            else
+                                s = "ناموفق";
+
+                            //sb.AppendFormat("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}\r\n", "\t", ir.Phone, Folder.Utility.GetEnumDescription((InformingStatus)ir.Status) ?? "---" , date, callTime, disconnectTime, ir.CallCount);
+                            sb.AppendFormat("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}\r\n", "\t", ir.Phone, s, date, callTime, disconnectTime, ir.CallCount);
+                        }
+
+                        try
+                        {
+                            using (StreamWriter wr = new StreamWriter(ConfigurationManager.AppSettings["Root"] + "Export.csv", false, Encoding.Unicode))
+                            {
+                                wr.Write(sb);
+                            }
+                        }
+                        catch (IOException)
+                        {
+
+                        }
+
+                        string strURL = ConfigurationManager.AppSettings["Root"] + "Export.csv";
+                        WebClient req = new WebClient();
+                        HttpResponse response = HttpContext.Current.Response;
+                        response.Clear();
+                        response.ClearContent();
+                        response.ClearHeaders();
+                        response.Buffer = true;
+                        response.AddHeader("Content-Disposition", "attachment;filename=\"" + strURL + "\"");
+                        byte[] data = req.DownloadData(strURL);
+                        response.BinaryWrite(data);
+                        response.End();
+                    }
+                    break;
+
+                case "Import":
+                    int dataKey = (int)DetailsListView1.DataKeys[e.Item.DataItemIndex].Value;
+                    using (UmsDataContext context = new UmsDataContext())
+                    {
+                        UMSV.Informing informing = context.Informings.Where(t => t.ID == dataKey).SingleOrDefault();
+
+                        FileUpload fileUpload = (FileUpload)DetailsListView1.EditItem.FindControl("CSVUploadControl");
+                        if (fileUpload.HasFile)
+                        {
+                            if (IsFileValid(fileUpload))
+                            {
+                                fileUpload.SaveAs(string.Format("{0}{1}{2}", ConfigurationManager.AppSettings["Root"], "Upload/", "Import.csv"));
+
+                                using (var txt = System.IO.File.OpenText(string.Format("{0}{1}{2}", ConfigurationManager.AppSettings["Root"], "Upload/", "Import.csv")))
+                                {
+                                    string pattern = @"^(?<phone>\d+)[;,\s]*";
+                                    var matches = Regex.Matches(txt.ReadToEnd(), pattern, RegexOptions.Multiline);
+                                    foreach (Match match in matches)
+                                    {
+                                        informing.InformingRecords.Add(new InformingRecord()
+                                        {
+                                            Phone = match.Groups["phone"].Value,
+                                            Informing1 = informing
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+
+                        }
+
+                        context.SubmitChanges();
+                    }
+
+                    break;
+
+                case "AddSchedule":
+                    int informingKey = (int)DetailsListView1.DataKeys[e.Item.DataItemIndex].Value;
+                    using (UmsDataContext context = new UmsDataContext())
+                    {
+                        UMSV.Informing informing = context.Informings.Where(t => t.ID == informingKey).SingleOrDefault();
+
+                        FileUpload fileUpload = (FileUpload)DetailsListView1.EditItem.FindControl("ScheduleUploadControl");
+                        if (IsFileValid(fileUpload))
+                        {
+                            fileUpload.SaveAs(string.Format("{0}{1}{2}", ConfigurationManager.AppSettings["Root"], "Upload/", "Schedule.csv"));
+
+                            string[] lines = System.IO.File.ReadAllLines(string.Format("{0}{1}{2}", ConfigurationManager.AppSettings["Root"], "Upload/", "Schedule.csv"));
+
+                            if (lines == null || lines.Length == 0)
+                            {
+                                ShowError(string.Format("فایل زمانبندی خالی است :{0}", informing.Subject));
+                                return;
+                            }
+
+                            foreach (string line in lines)
+                            {
+                                string[] parts = line.Split(',');
+                                if (parts == null || parts.Length < 3)
+                                {
+                                    ShowError(string.Format("زمانبندی وارد شده معتبر نیست. مثال صحیح در هر خط از فایل: 1377/7/7,8:00,22:00", informing.Subject));
+                                    return;
+                                }
+
+                                if (string.IsNullOrWhiteSpace(parts[0]) ||
+                                    !Regex.IsMatch(parts[0], @"^1[34][0-9][0-9]\/((1[0-2])|([1-9]))\/(([12][0-9])|(3[01])|[1-9])$"))
+                                {
+                                    ShowError(string.Format("تاریخ معتبر نیست: {0}", parts[0]));
+                                    return;
+                                }
+
+                                if (string.IsNullOrWhiteSpace(parts[1]) ||
+                                    !Regex.IsMatch(parts[1], @"^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"))
+                                {
+                                    ShowError(string.Format("زمان معتبر نیست: {0}", parts[1]));
+                                    return;
+                                }
+
+                                if (string.IsNullOrWhiteSpace(parts[2]) ||
+                                    !Regex.IsMatch(parts[2], @"^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"))
+                                {
+                                    ShowError(string.Format("زمان معتبر نیست: {0}", parts[2]));
+                                    return;
+                                }
+                            }
+
+                            UMSV.Schema.Schedule schedule = new UMSV.Schema.Schedule();
+                            schedule.Times = new List<UMSV.Schema.ScheduleTime>();
+                            foreach (string line in lines)
+                            {
+                                string[] parts = line.Split(',');
+                                UMSV.Schema.ScheduleTime scheduleTime = new UMSV.Schema.ScheduleTime()
+                                {
+                                    Date = Classes.Date.PersianToGregorian(parts[0]).Date,
+                                    Start = parts[1],
+                                    Finish = parts[2],
+                                };
+                                schedule.Times.Add(scheduleTime);
+                            }
+
+                            informing.CallTime = schedule.ToXElement();
+                        }
+                        else
+                        {
+
+                        }
+
+                        context.SubmitChanges();
+                    }
+                    break;
+            }
+        }
+
+        protected void DetailsListView1_DataBound(object sender, ListViewItemEventArgs e)
+        {
+            CheckUserAccess();
+            ListViewDataItem dataItem = (ListViewDataItem)e.Item;
+            // check if the list view is in edit mode
+            if (DetailsListView1.EditItem != null)
+            {
+                // check to see if this is the edit row!
+                if (dataItem.DisplayIndex == DetailsListView1.EditIndex)
+                {
+                    // find the drop down..
+                    DropDownList dropDownList = (DropDownList)e.Item.FindControl("GraphNameDropDownList");
+                    TextBox graphIdTextBox = (TextBox)e.Item.FindControl("GraphIdTextBox");
+                    dropDownList.DataSource = GetGraphs();
+                    dropDownList.DataBind();
+                    dropDownList.SelectedValue = graphIdTextBox.Text;
+                }
+            }
+        }
+
+        protected void DetailsListView1_ItemInserting(object sender, ListViewInsertEventArgs e)
+        {
+            CheckUserAccess();
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                UMSV.Informing item = new UMSV.Informing();
+                item.Type = (byte)InformingType.Graph;
+                item.Enabled = e.Values["Enabled"].ToString() == "True" ? true : false;
+
+                if (e.Values["Subject"] == null || string.IsNullOrWhiteSpace(e.Values["Subject"].ToString()))
+                {
+                    ShowError("عنوان وارد شده معتبر نیست.");
+                    return;
+                }
+                item.Subject = e.Values["Subject"].ToString();
+
+                int res;
+                if (e.Values["RetryCount"] == null || !int.TryParse(e.Values["RetryCount"].ToString(), out res) || int.Parse(e.Values["RetryCount"].ToString()) <= 0)
+                {
+                    ShowError("تعداد تلاش وارد شده معتبر نیست.");
+                    return;
+                }
+                item.RetryCount = int.Parse(e.Values["RetryCount"].ToString());
+
+                DropDownList dropDownList = (DropDownList)DetailsListView1.InsertItem.FindControl("GraphNameDropDownList");
+                item.Graph = Guid.Parse(dropDownList.SelectedValue);
+
+
+                //if (e.Values["CallDate"] == null)
+                //{
+                //    ShowError("لطفاً تاریخ وارد کنید.");
+                //    return;
+                //}
+                //if (e.Values["CallFromTime"] == null ||
+                //    e.Values["CallToTime"] == null ||
+                //    !Regex.IsMatch(e.Values["CallFromTime"].ToString(), @"^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$") ||
+                //    !Regex.IsMatch(e.Values["CallToTime"].ToString(), @"^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"))
+                //{
+                //    ShowError("زمان وارد شده معتبر نیست. مثال صحیح: 8:00");
+                //    return;
+                //}
+
+                //UMSV.Schema.ScheduleTime scheduleTime = new UMSV.Schema.ScheduleTime()
+                //{
+                //    Date = Classes.Date.PersianToGregorian(e.Values["CallDate"].ToString()).Date,
+                //    Start = e.Values["CallFromTime"].ToString(),
+                //    Finish = e.Values["CallToTime"].ToString(),
+                //};
+                //UMSV.Schema.Schedule schedule = new UMSV.Schema.Schedule();
+                //schedule.Times = new List<UMSV.Schema.ScheduleTime>();
+                //schedule.Times.Add(scheduleTime);
+
+                //item.CallTime = schedule.ToXElement();
+
+                context.Informings.InsertOnSubmit(item);
+                context.SubmitChanges();
+            }
+
+            PopulateListView1();
+
+            //StartOutcall();
+        }
+
+        private void StartOutcall()
+        {
+            //Folder.EMQ.ClientTransport.Default.Start();
+            //Folder.EMQ.ClientTransport.Default.ConnectToServer();
+            new System.Threading.Thread(delegate()
+            {
+                VoipServiceClient.Default.StartScheduledOutcall();
+            }).Start();
+        }
+
+        protected void DetailsListView1_ItemEditing(object sender, ListViewEditEventArgs e)
+        {
+            CheckUserAccess();
+            DetailsListView1.EditIndex = e.NewEditIndex;
+            PopulateListView1();
+        }
+
+        protected void DetailsListView1_ItemUpdating(object sender, ListViewUpdateEventArgs e)
+        {
+            CheckUserAccess();
+
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                UMSV.Informing item = context.Informings
+                                             .Where(t => t.ID == (int)e.Keys["ID"])
+                                             .SingleOrDefault();
+
+                item.Enabled = e.NewValues["Enabled"].ToString() == "True" ? true : false;
+
+                if (e.NewValues["Subject"] == null || string.IsNullOrWhiteSpace(e.NewValues["Subject"].ToString()))
+                {
+                    ShowError("عنوان وارد شده معتبر نیست.");
+                    return;
+                }
+                item.Subject = e.NewValues["Subject"].ToString();
+
+                int res;
+                if (e.NewValues["RetryCount"] == null || !int.TryParse(e.NewValues["RetryCount"].ToString(), out res) || int.Parse(e.NewValues["RetryCount"].ToString()) <= 0)
+                {
+                    ShowError("تعداد تلاش وارد شده معتبر نیست.");
+                    return;
+                }
+                item.RetryCount = int.Parse(e.NewValues["RetryCount"].ToString());
+
+                DropDownList dropDownList = (DropDownList)DetailsListView1.EditItem.FindControl("GraphNameDropDownList");
+                item.Graph = Guid.Parse(dropDownList.SelectedValue);
+
+                //if (e.NewValues["CallFromTime"] == null ||
+                //    e.NewValues["CallToTime"] == null ||
+                //    !Regex.IsMatch(e.NewValues["CallFromTime"].ToString(), @"^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$") ||
+                //    !Regex.IsMatch(e.NewValues["CallToTime"].ToString(), @"^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"))
+                //{
+                //    ShowError("زمان وارد شده معتبر نیست. مثال صحیح: 8:00");
+                //    return;
+                //}
+
+                //UMSV.Schema.ScheduleTime scheduleTime = new UMSV.Schema.ScheduleTime()
+                //{
+                //    Date = Classes.Date.PersianToGregorian(e.NewValues["CallDate"].ToString()).Date,
+                //    Start = e.NewValues["CallFromTime"].ToString(),
+                //    Finish = e.NewValues["CallToTime"].ToString(),
+                //};
+                //UMSV.Schema.Schedule schedule = new UMSV.Schema.Schedule();
+                //schedule.Times = new List<UMSV.Schema.ScheduleTime>();
+                //schedule.Times.Add(scheduleTime);
+
+                //item.CallTime = schedule.ToXElement();
+
+                context.SubmitChanges();
+            }
+
+            DetailsListView1.EditIndex = -1;
+            PopulateListView1();
+        }
+
+        protected void DetailsListView1_ItemDeleting(object sender, ListViewDeleteEventArgs e)
+        {
+            CheckUserAccess();
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                UMSV.Informing informing = context.Informings.Where(t => t.ID == (int)e.Keys["ID"]).SingleOrDefault();
+                context.Informings.DeleteOnSubmit(informing);
+                context.SubmitChanges();
+            }
+
+            DetailsListView1.EditIndex = -1;
+            PopulateListView1();
+        }
+
+        protected void DetailsListView1_ItemCanceling(object sender, ListViewCancelEventArgs e)
+        {
+            CheckUserAccess();
+            e.Cancel = true;
+
+            DetailsListView1.EditIndex = -1;
+            PopulateListView1();
+        }
+        #endregion
+
+        #region Methods
+
+        private void LoadData()
+        {
+            _FirstItem.Selected = true;
+            PopulateListView1();
+        }
+
+        public List<Classes.CustomInforming> GetInformings()
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                var graphs = this.GetGraphs();
+                List<UMSV.Informing> Informings =
+                                  context.Informings.Where(i => i.Type == (byte)InformingType.Graph)
+                                         .ToList();
+                if (Informings == null)
+                    return new List<Classes.CustomInforming>();
+
+                return Informings
+                                         .Where(t => graphs.Select(g => g.ID).Contains(t.Graph ?? new Guid()))
+                                         .Select(t => new Classes.CustomInforming()
+                                         {
+                                             Enabled = t.Enabled,
+                                             GraphId = t.Graph,
+                                             GraphName = context.Graphs.Any(s => s.ID == (t.Graph ?? new Guid())) ? context.Graphs.SingleOrDefault(s => s.ID == (t.Graph ?? new Guid())).Name : string.Empty,
+                                             RetryCount = t.RetryCount,
+                                             Subject = t.Subject,
+                                             CallDate = t.CallTime == null ? string.Empty : Classes.Date.GetPersianDate(UMSV.Schema.ScheduleUtility.DeserializeInforming<UMSV.Schema.Schedule>(t.CallTime.ToString()).Times.First().Date.Value.Date, Classes.Date.PersianDateStringType.Short),
+                                             CallFromTime = t.CallTime == null ? string.Empty : UMSV.Schema.ScheduleUtility.DeserializeInforming<UMSV.Schema.Schedule>(t.CallTime.ToString()).Times.First().Start.ToString(),
+                                             CallToTime = t.CallTime == null ? string.Empty : UMSV.Schema.ScheduleUtility.DeserializeInforming<UMSV.Schema.Schedule>(t.CallTime.ToString()).Times.First().Finish.ToString(),
+                                             Id = t.ID
+                                         })
+                                         .ToList();
+            }
+        }
+
+        public List<Classes.CustomSchedule> GetScheduleByInforming(object informingId)
+        {
+            List<Classes.CustomSchedule> scheduleList = new List<Classes.CustomSchedule>();
+
+            if (!(informingId is int) || informingId == null)
+                return new List<Classes.CustomSchedule> { };
+
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                UMSV.Informing informing = context.Informings.Single(t => t.ID == (int)informingId);
+
+                List<UMSV.Schema.ScheduleTime> times = UMSV.Schema.ScheduleUtility.DeserializeInforming<UMSV.Schema.Schedule>(informing.CallTime.ToString()).Times;
+
+                foreach (var time in times)
+                {
+                    scheduleList.Add(new Classes.CustomSchedule()
+                        {
+                            CallDate = Classes.Date.GetPersianDate(time.Date.Value.Date, Classes.Date.PersianDateStringType.Short),
+                            CallFromTime = time.Start.ToString(),
+                            CallToTime = time.Finish.ToString(),
+                        });
+                }
+            }
+
+            return scheduleList;
+        }
+
+        public List<UMSV.Graph> GetGraphs()
+        {
+            if (Folder.User.Current == null)
+                Response.Redirect("LoginForm.aspx");
+
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.Graphs.ToList().Where(g => Folder.User.IsInRole(g.ID)).OrderBy(g => g.Name).ToList();
+            }
+        }
+
+        public int GetInformingsCount()
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                var graphs = this.GetGraphs();
+                return context.Informings.Where(i => i.Type == (byte)InformingType.Graph)
+                                         .ToList()
+                                         .Where(t => graphs.Select(g => g.ID).Contains(t.Graph ?? new Guid()))
+                                         .Count();
+            }
+        }
+
+        private UMSV.Informing GetInformingById(int Id)
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.Informings
+                              .Where(t => t.ID == Id)
+                              .SingleOrDefault();
+            }
+        }
+
+        private bool IsFileValid(FileUpload fileUpload)
+        {
+            if (fileUpload.PostedFile.ContentLength > 0)
+            {
+                string fileExt = fileUpload.PostedFile.FileName.Substring(fileUpload.PostedFile.FileName.LastIndexOf('.') + 1).ToLower();
+                if (this.GetValidFileExtentions().IndexOf(fileExt) < 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private string GetValidFileExtentions()
+        {
+            return "csv,txt";
+        }
+
+        private void CheckUserAccess()
+        {
+            if (Folder.User.Current == null)
+                Response.Redirect("LoginForm.aspx");
+
+            if (!Folder.User.IsInRole(Guid.Parse(Classes.Constants.InformingEditinASPAccess)))
+                Response.Redirect("InformingReport.aspx");
+        }
+
+        private void ShowError(string str)
+        {
+            Response.Write("<script>alert('" + str + "');</script>");
+            //ScriptManager.RegisterStartupScript(this, typeof(Page), "Error Message", "$(document).ready(function(){EnableControls();alert('Overrides successfully Updated.');DisableControls();});", true);
+        }
+        #endregion
+    }
+}

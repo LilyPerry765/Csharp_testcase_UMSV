@@ -1,0 +1,48 @@
+D:\Develop\UMSV\SynchronizeService\bin\Release\SynchronizeService.exe.config
+D:\Develop\UMSV\SynchronizeService\bin\Release\SynchronizeService.exe
+D:\Develop\UMSV\SynchronizeService\bin\Release\SynchronizeService.XmlSerializers.dll
+D:\Develop\UMSV\SynchronizeService\bin\Release\SynchronizeService.pdb
+D:\Develop\UMSV\SynchronizeService\bin\Release\EntityFramework.dll
+D:\Develop\UMSV\SynchronizeService\bin\Release\EntityFramework.xml
+D:\Develop\UMSV\SynchronizeService\obj\Release\Windows\MainWindow.baml
+D:\Develop\UMSV\SynchronizeService\obj\Release\Windows\MainWindow.g.cs
+D:\Develop\UMSV\SynchronizeService\obj\Release\SynchronizeService_MarkupCompile.cache
+D:\Develop\UMSV\SynchronizeService\obj\Release\SynchronizeService.g.resources
+D:\Develop\UMSV\SynchronizeService\obj\Release\SynchronizeService.ProjectInstaller.resources
+D:\Develop\UMSV\SynchronizeService\obj\Release\SynchronizeService.csproj.GenerateResource.Cache
+D:\Develop\UMSV\SynchronizeService\obj\Release\SynchronizeService.exe
+D:\Develop\UMSV\SynchronizeService\obj\Release\SynchronizeService.pdb
+D:\Develop\UMSV\SynchronizeService\obj\Release\SynchronizeService.XmlSerializers.dll
+D:\Develop\118\SynchronizeService\bin\Release\SynchronizeService.exe.config
+D:\Develop\118\SynchronizeService\bin\Release\SynchronizeService.exe
+D:\Develop\118\SynchronizeService\bin\Release\SynchronizeService.XmlSerializers.dll
+D:\Develop\118\SynchronizeService\bin\Release\SynchronizeService.pdb
+D:\Develop\118\SynchronizeService\bin\Release\Logger.dll
+D:\Develop\118\SynchronizeService\bin\Release\Logger.pdb
+D:\Develop\118\SynchronizeService\obj\Release\ResolveAssemblyReference.cache
+D:\Develop\118\SynchronizeService\obj\Release\Windows\MainWindow.baml
+D:\Develop\118\SynchronizeService\obj\Release\Windows\MainWindow.g.cs
+D:\Develop\118\SynchronizeService\obj\Release\SynchronizeService_MarkupCompile.cache
+D:\Develop\118\SynchronizeService\obj\Release\SynchronizeService.g.resources
+D:\Develop\118\SynchronizeService\obj\Release\SynchronizeService.ProjectInstaller.resources
+D:\Develop\118\SynchronizeService\obj\Release\GenerateResource.read.1.tlog
+D:\Develop\118\SynchronizeService\obj\Release\GenerateResource.write.1.tlog
+D:\Develop\118\SynchronizeService\obj\Release\SynchronizeService.exe
+D:\Develop\118\SynchronizeService\obj\Release\SynchronizeService.pdb
+D:\Develop\118\SynchronizeService\obj\Release\SynchronizeService.XmlSerializers.dll
+D:\Develop\118_Test Version\118\SynchronizeService\bin\Release\SynchronizeService.exe.config
+D:\Develop\118_Test Version\118\SynchronizeService\bin\Release\SynchronizeService.exe
+D:\Develop\118_Test Version\118\SynchronizeService\bin\Release\SynchronizeService.XmlSerializers.dll
+D:\Develop\118_Test Version\118\SynchronizeService\bin\Release\SynchronizeService.pdb
+D:\Develop\118_Test Version\118\SynchronizeService\bin\Release\Logger.pdb
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\ResolveAssemblyReference.cache
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\Windows\MainWindow.baml
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\Windows\MainWindow.g.cs
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\SynchronizeService_MarkupCompile.cache
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\SynchronizeService.g.resources
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\SynchronizeService.ProjectInstaller.resources
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\GenerateResource.read.1.tlog
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\GenerateResource.write.1.tlog
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\SynchronizeService.exe
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\SynchronizeService.pdb
+D:\Develop\118_Test Version\118\SynchronizeService\obj\Release\SynchronizeService.XmlSerializers.dll

@@ -1,0 +1,74 @@
+D:\Folder\Plugin.SoftPhone.dll
+D:\Folder\Plugin.SoftPhone.pdb
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.csprojResolveAssemblyReference.cache
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\AddToBlackListWindow.baml
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\UserLoginWindow.baml
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackButton.baml
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackCheckBox.baml
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\CallAlertWindow.baml
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\TransferForm.baml
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\AddToBlackListWindow.g.cs
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\UserLoginWindow.g.cs
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackButton.g.cs
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackCheckBox.g.cs
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\CallAlertWindow.g.cs
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\SoftPhoneForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\TransferForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone_MarkupCompile.cache
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone_MarkupCompile.lref
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\SoftPhoneForm.baml
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.g.resources
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\UMSV.PortSipAdapter.resources
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\UMSV.Properties.Resources.resources
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.csproj.GenerateResource.Cache
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.dll
+D:\Develop\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.pdb
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.csprojResolveAssemblyReference.cache
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\AddToBlackListWindow.baml
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\UserLoginWindow.baml
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackButton.baml
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackCheckBox.baml
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\CallAlertWindow.baml
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\TransferForm.baml
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\AddToBlackListWindow.g.cs
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\UserLoginWindow.g.cs
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackButton.g.cs
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackCheckBox.g.cs
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\CallAlertWindow.g.cs
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\SoftPhoneForm.g.cs
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\TransferForm.g.cs
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\GeneratedInternalTypeHelper.g.cs
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone_MarkupCompile.cache
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone_MarkupCompile.lref
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\SoftPhoneForm.baml
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.g.resources
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\UMSV.PortSipAdapter.resources
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\UMSV.Properties.Resources.resources
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.csproj.GenerateResource.Cache
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.dll
+E:\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.pdb
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.csprojResolveAssemblyReference.cache
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\AddToBlackListWindow.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\UserLoginWindow.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackButton.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackCheckBox.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\CallAlertWindow.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\TransferForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\AddToBlackListWindow.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\UserLoginWindow.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackButton.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\BlackCheckBox.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\CallAlertWindow.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\SoftPhoneForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\TransferForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\GeneratedInternalTypeHelper.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone_MarkupCompile.cache
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone_MarkupCompile.lref
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Forms\SoftPhoneForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.g.resources
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\UMSV.PortSipAdapter.resources
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\UMSV.Properties.Resources.resources
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.csproj.GenerateResource.Cache
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.dll
+E:\Project\Final Project\UMSV\Plugins\Plugin.SoftPhone\obj\Debug\Plugin.SoftPhone.pdb

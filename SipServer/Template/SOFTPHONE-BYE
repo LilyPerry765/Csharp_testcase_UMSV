@@ -1,0 +1,13 @@
+BYE sip:{4}@[SipProxyAddress] SIP/2.0
+Via: SIP/2.0/UDP {5};branch=[NewBranch]
+Call-ID: {0}
+CSeq: 2 BYE
+Max-Forwards: 10
+Contact: <sip:{6}@[SipProxyAddress]>
+To: {1}
+From: {2}
+User-Agent: CallCenter
+P-hint: rr-enforced
+Route: <sip:[SipProxyAddress];ftag={3};lr=on>
+Content-Length: 0
+

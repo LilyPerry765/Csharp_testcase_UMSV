@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="Pendar._118.PhonesEditForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Folder;assembly=Folder.Common"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" FlowDirection="RightToLeft" FontFamily="Tahoma">
+    <UserControl.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <CollectionViewSource x:Key="CityList" Source="{Binding Cities}" />
+        <CollectionViewSource x:Key="JobsList" Source="{Binding Jobs}" />
+    </UserControl.Resources>
+    <DockPanel>
+        <Expander Margin="5" BorderBrush="Gray" Padding="5" IsExpanded="True" Name="FilterPanel" Background="#DDE2EB">
+            <StackPanel VerticalAlignment="Top">
+                <WrapPanel>
+                    <Label Width="100" Content="عنوان" Margin="3" />
+                    <TextBox Width="175" Margin="3" HorizontalAlignment="Left" Text="{Binding Filter.Phone.Name}" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="100" Content="شماره تلفن" Margin="3" />
+                    <TextBox Width="175" Margin="3" HorizontalAlignment="Left" Text="{Binding Filter.Phone.PhoneNumber}" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="100" Content="آدرس" Margin="3" />
+                    <TextBox Width="175" Margin="3" HorizontalAlignment="Left" Text="{Binding Filter.Phone.Address}" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="100" Content="شغل" Margin="3" />
+                    <ComboBox Width="175" IsEditable="True" ItemsSource="{Binding Jobs}" SelectedValue="{Binding Filter.Phone.JobID}" Margin="3" HorizontalAlignment="Left" DisplayMemberPath="Name" SelectedValuePath="ID" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="100" Content="شهر" Margin="3" />
+                    <ComboBox Width="175" IsEditable="True" ItemsSource="{Binding Cities}" SelectedValue="{Binding Filter.Phone.CityID}" Margin="3" HorizontalAlignment="Left" DisplayMemberPath="Name" SelectedValuePath="ID" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="100" Content="پنهان" Margin="3" />
+                    <c:BooleanControl NullPhrase="همه شماره ها" FalsePhrase="خیر" TruePhrase="بله" Margin="4" Value="{Binding Filter.Hidden}" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="100" Content="امکان جستجو با شماره" Margin="3" ToolTip="امکان جستجو با شماره" />
+                    <c:BooleanControl NullPhrase="همه شماره ها" FalsePhrase="خیر" TruePhrase="بله" Margin="4" Value="{Binding Filter.AllowSearchByPhone}" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="100" Content="از تاریخ (ویرایش)" Margin="3"  />
+                    <c:DateTimePicker Margin="3" Width="175" SelectedDate="{Binding Filter.ModifiedDateFrom, Mode=TwoWay}" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="100" Content="تا تاریخ" Margin="3"  />
+                    <c:DateTimePicker Margin="3" Width="175" SelectedDate="{Binding Filter.ModifiedDateTo}" />
+                </WrapPanel>
+                <WrapPanel Visibility="Collapsed">
+                    <Label Width="100" Content="کاربر" Margin="3" />
+                    <ComboBox Width="175" ItemsSource="{Binding ModifierList}" SelectedValue="{Binding Filter.Phone.Modifier}" Margin="3" HorizontalAlignment="Left" DisplayMemberPath="Name" SelectedValuePath="ID" />
+                </WrapPanel>
+                <Button IsDefault="True" Command="{Binding ViewCommand}" DockPanel.Dock="Top" Width="75" Height="23" Content="مشاهده" HorizontalAlignment="Left" Margin="10" />
+            </StackPanel>
+        </Expander>
+        <DataGrid Name="dataGrid" PreviewKeyDown="dataGrid_PreviewKeyDown" InitializingNewItem="dataGrid_InitializingNewItem" RowEditEnding="dataGrid_RowEditEnding" BorderBrush="Gray" ItemsSource="{Binding Data}">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="PhoneColumn"  Header="تلفن" Binding="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridComboBoxColumn Header="شهر" SelectedValueBinding="{Binding CityID, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedValuePath="ID" ItemsSource="{Binding Source={StaticResource CityList}}" />
+                <DataGridComboBoxColumn Header="شغل" SelectedValueBinding="{Binding JobID, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedValuePath="ID" ItemsSource="{Binding Source={StaticResource JobsList}}" />
+                <DataGridTextColumn Header="عنوان" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="آدرس" Binding="{Binding Address, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridCheckBoxColumn Header="قابل جستجو با تلفن" Binding="{Binding AllowSearchByPhone, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridCheckBoxColumn Header="مخفی" Binding="{Binding Hidden, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="توضیحات" Binding="{Binding Descriptions, UpdateSourceTrigger=PropertyChanged}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

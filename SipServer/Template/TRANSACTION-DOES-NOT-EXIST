@@ -1,0 +1,8 @@
+SIP/2.0 481 Call/Transaction does not exist
+CSeq: 2 {4}
+To: {0}
+Via: {1}
+From: {2}
+Call-ID: {3}
+Content-Length: 0
+

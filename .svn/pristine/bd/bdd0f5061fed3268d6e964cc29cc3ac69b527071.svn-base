@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B92D3025-C749-4AC4-A8A2-ED9D858F4273}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UMSV</RootNamespace>
+    <AssemblyName>UMSV.SipServer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>D:\Folder\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MINA|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\Folder\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MINA</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\..\Folder\UMSV.SipServer.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Folder.Audio, Version=3.7.6.21870, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Folder\Folder.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="Folder.Common, Version=3.5.1.19138, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Folder\Folder.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Logger, Version=4.6.0.24176, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Folder\Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DialogNotFoundException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SessionManager.cs" />
+    <Compile Include="Sip\Constants.cs" />
+    <Compile Include="DivertTarget.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RtpNet.cs" />
+    <Compile Include="Sip\SipService_Fax.cs" />
+    <Compile Include="Sip\SipService_Public.cs" />
+    <Compile Include="Sip\SipDialog.cs" />
+    <Compile Include="Sip\SipNet.cs" />
+    <Compile Include="Sip\SipMessage.cs" />
+    <Compile Include="Sip\SipService.cs" />
+    <Compile Include="VoiceFileManager.cs" />
+    <Compile Include="Sip\SipService_Templates.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Template\ACK" />
+    <EmbeddedResource Include="Template\ACK-2" />
+    <EmbeddedResource Include="Template\BusyHere" />
+    <EmbeddedResource Include="Template\BYE" />
+    <EmbeddedResource Include="Template\CANCEL" />
+    <EmbeddedResource Include="Template\INVITE" />
+    <EmbeddedResource Include="Template\REFER" />
+    <EmbeddedResource Include="Template\REGISTER" />
+    <EmbeddedResource Include="Template\TRYING" />
+    <EmbeddedResource Include="Template\OK" />
+    <EmbeddedResource Include="Template\SOFTPHONE-INVITE" />
+    <EmbeddedResource Include="Template\SOFTPHONE-OK" />
+    <EmbeddedResource Include="Template\SOFTPHONE-BYE" />
+    <EmbeddedResource Include="Template\NOTIFY" />
+    <EmbeddedResource Include="Template\FAXREINVITE" />
+    <EmbeddedResource Include="Template\TRANSACTION-DOES-NOT-EXIST" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{59C84D10-FC24-4FD3-8D47-4091DDE4CA38}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IGraphAddin\IGraphAddin.csproj">
+      <Project>{7B73AE74-B22A-4DBA-BAB5-1BDD2DEAAE19}</Project>
+      <Name>IGraphAddin</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Template\FAXOK" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Template\PASSTHROUGH-FAXOK" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.JumpNode"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             mc:Ignorable="d"
+             d:DesignHeight="162"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider  x:Key="Group"
+                          IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup Description="انتقال به گره"
+                           Tag="JumpNode"
+                           xmlns="http://tempuri.org/VoiceGraph.xsd"
+                           StartNode="JumpNodes[0]"
+                           LastNode="JumpNodes[0]">
+                    <JumpNode ID="0"
+                              ClearDigits="true" />
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+    </UserControl.Resources>
+    <StackPanel>
+        <uc:CommonArea />
+        <Label>گره بعدی:</Label>
+        <uc:TargetSelector SelectedTarget="{Binding  NodeData.JumpNodes[0].TargetNode}" />
+    </StackPanel>
+</UserControl>

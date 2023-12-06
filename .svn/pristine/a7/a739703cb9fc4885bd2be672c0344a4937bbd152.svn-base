@@ -1,0 +1,408 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="UMSV" Class="UmsDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=192.168.0.2\pendarsql;Initial Catalog=UMSV;User ID=sa" SettingsObjectName="UMSV.Properties.Settings" SettingsPropertyName="UMSVConnectionString2" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Voice" Member="Voices">
+    <Type Name="Voice">
+      <Column Name="ID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="VoiceGroup" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" IsDelayLoaded="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CodeStatus" Member="CodeStatus">
+    <Type Name="CodeStatus">
+      <Column Name="ID" Type="System.Int16" DbType="SmallInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Subject" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Association Name="CodeStatus_CodeStatusRecord" Member="CodeStatusRecords" ThisKey="ID" OtherKey="CodeStatus" Type="CodeStatusRecord" />
+      <Association Name="CodeStatus_CodeStatusVoiceMessage" Member="CodeStatusVoiceMessages" ThisKey="ID" OtherKey="CodeStatus" Type="CodeStatusVoiceMessage" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CodeStatusRecord" Member="CodeStatusRecords">
+    <Type Name="CodeStatusRecord">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CodeStatus" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Association Name="CodeStatus_CodeStatusRecord" Member="CodeStatus1" ThisKey="CodeStatus" OtherKey="ID" Type="CodeStatus" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CodeStatusVoiceMessage" Member="CodeStatusVoiceMessages">
+    <Type Name="CodeStatusVoiceMessage">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CodeStatus" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="Voice" Type="System.Byte[]" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Association Name="CodeStatus_CodeStatusVoiceMessage" Member="CodeStatus1" ThisKey="CodeStatus" OtherKey="ID" Type="CodeStatus" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Informing" Member="Informings">
+    <Type Name="Informing">
+      <Column Name="ID" Type="System.Int16" DbType="SmallInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Subject" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Enabled" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CallTime" Type="System.Xml.Linq.XElement" DbType="Xml" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="RetryCount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Graph" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="MaxConcurrentCalls" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Links" Type="System.Xml.Linq.XElement" DbType="Xml" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="Informing_InformingRecord" Member="InformingRecords" ThisKey="ID" OtherKey="Informing" Type="InformingRecord" />
+    </Type>
+  </Table>
+  <Table Name="dbo.InfoTable" Member="InfoTables">
+    <Type Name="InfoTable">
+      <Column Name="ID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Subject" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Association Name="InfoTable_InfoTableRecord" Member="InfoTableRecords" ThisKey="ID" OtherKey="InfoTable" Type="InfoTableRecord" />
+    </Type>
+  </Table>
+  <Table Name="dbo.InfoTableRecord" Member="InfoTableRecords">
+    <Type Name="InfoTableRecord">
+      <Column Name="InfoTable" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ID" Type="System.String" DbType="VarChar(15) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Data" Type="System.String" DbType="VarChar(500) NOT NULL" CanBeNull="false" />
+      <Association Name="InfoTable_InfoTableRecord" Member="InfoTable1" ThisKey="InfoTable" OtherKey="ID" Type="InfoTable" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MailboxMessage" Member="MailboxMessages">
+    <Type Name="MailboxMessage">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="BoxNo" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Column Name="Sender" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="ReceiveTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="Image" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="FollowupCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ExpireDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Mailbox_MailboxMessage" Member="Mailbox" ThisKey="BoxNo" OtherKey="BoxNo" Type="Mailbox" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SpecialPhone" Member="SpecialPhones">
+    <Type Name="SpecialPhone">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Number" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RegisterTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Session" Member="Sessions">
+    <Type Name="Session">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="StartTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="SipID" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="MachineAddress" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ExplicitEnd" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Call" Member="Calls">
+    <Type Name="Call">
+      <Column Name="ID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DialogID" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="CallerID" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CalleeID" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CallTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="AnswerTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DisconnectTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="DisconnectCause" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="GraphID" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Extension" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="LastNodeID" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="LastNodeName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="GraphTrack" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="QueueEnterTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AddressBook" Member="AddressBooks">
+    <Type Name="AddressBook">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Number" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="DisplayName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Mailbox" Member="Mailboxes">
+    <Type Name="Mailbox">
+      <Column Name="BoxNo" Type="System.String" DbType="VarChar(15) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ActivationDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ExpirationDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CodedPassword" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="MaxNewMessage" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MaxArchiveMessage" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="WelcomeMessages" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="AutoDequeueFullMailbox" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PagingEnable" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PagingSchedule" Type="System.Xml.Linq.XElement" DbType="Xml" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="EmailNewMessages" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="FollowupCodeStart" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FollowupCodeEnd" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MessageNewExpirePeriod" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MessageAskExpirePeriod" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MessageAnswerExpirePeriod" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MessageArchiveExpirePeriod" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AutoArchive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PlayCallerIDBeforeMessage" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CallerID" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="PagingPhone" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BirthDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PostalAddress" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="PostalCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="GraduateLevel" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="GraduateField" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="FatherName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="IdentityNo" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="WorkAddress" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Job" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Gender" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="SocialNumber" Type="System.String" DbType="Char(12)" CanBeNull="true" />
+      <Column Name="AccessId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="Mailbox_MailboxMessage" Member="MailboxMessages" ThisKey="BoxNo" OtherKey="BoxNo" Type="MailboxMessage" />
+    </Type>
+  </Table>
+  <Table Name="dbo.InformingRecord" Member="InformingRecords">
+    <Type Name="InformingRecord">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Phone" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="LastCallTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Informing" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="CallCount" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Data" Type="System.Xml.Linq.XElement" DbType="Xml" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="LastDisconnectedTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Informing_InformingRecord" Member="Informing1" ThisKey="Informing" OtherKey="ID" Type="Informing" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FacsimileTemplate" Member="FacsimileTemplates">
+    <Type Name="FacsimileTemplate">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Template" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Poll" Member="Polls">
+    <Type Name="Poll">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PollTitle" Type="System.String" DbType="NVarChar(250) NOT NULL" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Poll_PollQuestion" Member="PollQuestions" ThisKey="Id" OtherKey="PollId" Type="PollQuestion" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PollAnswer" Member="PollAnswers">
+    <Type Name="PollAnswer">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Answer" Type="System.String" DbType="NVarChar(250) NOT NULL" CanBeNull="false" />
+      <Column Name="PollQuestionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="PollAnswer_PollInfo" Member="PollInfos" ThisKey="Id" OtherKey="PollAnswerId" Type="PollInfo" />
+      <Association Name="PollQuestion_PollAnswer" Member="PollQuestion" ThisKey="PollQuestionId" OtherKey="Id" Type="PollQuestion" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PollQuestion" Member="PollQuestions">
+    <Type Name="PollQuestion">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Question" Type="System.String" DbType="NVarChar(250) NOT NULL" CanBeNull="false" />
+      <Column Name="PollId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="PollQuestion_PollAnswer" Member="PollAnswers" ThisKey="Id" OtherKey="PollQuestionId" Type="PollAnswer" />
+      <Association Name="PollQuestion_PollInfo" Member="PollInfos" ThisKey="Id" OtherKey="PollQuestionId" Type="PollInfo" />
+      <Association Name="Poll_PollQuestion" Member="Poll" ThisKey="PollId" OtherKey="Id" Type="Poll" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Graph" Member="Graphs">
+    <Type Name="Graph">
+      <Column Name="ID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Code" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Enable" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Data" Type="System.Xml.Linq.XElement" DbType="Xml NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="[Assembly]" Member="Assembly" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="Graph_UserData" Member="UserDatas" ThisKey="ID" OtherKey="GraphID" Type="UserData" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserData" Member="UserDatas">
+    <Type Name="UserData">
+      <Column Name="ID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CalleeID" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="CallerID" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Data" Type="System.String" DbType="NVarChar(1000) NOT NULL" CanBeNull="false" />
+      <Column Name="CallTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="DialogID" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="GraphID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="Graph_UserData" Member="Graph" ThisKey="GraphID" OtherKey="ID" Type="Graph" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PollInfo" Member="PollInfos">
+    <Type Name="PollInfo">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CallerId" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CalleeId" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="DateAnswered" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="PollQuestionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PollAnswerId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DialogId" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="PollAnswer_PollInfo" Member="PollAnswer" ThisKey="PollAnswerId" OtherKey="Id" Type="PollAnswer" IsForeignKey="true" />
+      <Association Name="PollQuestion_PollInfo" Member="PollQuestion" ThisKey="PollQuestionId" OtherKey="Id" Type="PollQuestion" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Temp" Member="Temps">
+    <Type Name="Temp">
+      <Column Name="DialogId" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="URL" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Function Name="dbo.CalculateExpireDate" Method="CalculateExpireDate" IsComposable="true">
+    <Parameter Name="BoxNo" Parameter="boxNo" Type="System.String" DbType="VarChar(15)" />
+    <Parameter Name="MessageType" Parameter="messageType" Type="System.Byte" DbType="TinyInt" />
+    <Return Type="System.DateTime" />
+  </Function>
+  <Function Name="dbo.MailboxBatchCreate" Method="MailboxBatchCreate" IsComposable="true">
+    <Parameter Name="StartBoxNo" Parameter="startBoxNo" Type="System.Int32" DbType="Int" />
+    <Parameter Name="EndBoxNo" Parameter="endBoxNo" Type="System.Int32" DbType="Int" />
+    <Parameter Name="ExistedBoxes" Parameter="existedBoxes" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Parameter Name="MaxArchiveMessage" Parameter="maxArchiveMessage" Type="System.Int32" DbType="Int" />
+    <Parameter Name="MaxNewMessage" Parameter="maxNewMessage" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="NVarChar(200)" />
+    <Parameter Name="ActivationDate" Parameter="activationDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="ExpirationDate" Parameter="expirationDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="AutoDequeueFullMailbox" Parameter="autoDequeueFullMailbox" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="MessageNewExpirePeriod" Parameter="messageNewExpirePeriod" Type="System.Int32" DbType="Int" />
+    <Parameter Name="MessageAskExpirePeriod" Parameter="messageAskExpirePeriod" Type="System.Int32" DbType="Int" />
+    <Parameter Name="MessageAnswerExpirePeriod" Parameter="messageAnswerExpirePeriod" Type="System.Int32" DbType="Int" />
+    <Parameter Name="BoxNoAsCallerID" Parameter="boxNoAsCallerID" Type="System.Boolean" DbType="Bit" />
+    <Return Type="object" />
+  </Function>
+  <Function Name="dbo.MailboxUpdateOwnerInfo" Method="MailboxUpdateOwnerInfo">
+    <Parameter Name="BoxNo" Parameter="boxNo" Type="System.String" DbType="VarChar(15)" />
+    <Parameter Name="Name" Parameter="name" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="Password" Parameter="password" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="PagingPhone" Parameter="pagingPhone" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="Email" Parameter="email" Type="System.String" DbType="VarChar(200)" />
+    <Parameter Name="Mobile" Parameter="mobile" Type="System.String" DbType="NChar(20)" />
+    <Parameter Name="PostalAddress" Parameter="postalAddress" Type="System.String" DbType="NVarChar(500)" />
+    <Parameter Name="EmailNewMessages" Parameter="emailNewMessages" Type="System.Boolean" DbType="Bit" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.MailboxMessageDeleteFirstMessage" Method="MailboxMessageDeleteFirstMessage">
+    <Parameter Name="BoxNo" Parameter="boxNo" Type="System.String" DbType="VarChar(15)" />
+    <Parameter Name="Type" Parameter="type" Type="System.Byte" DbType="TinyInt" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.MailboxMessageDeleteMessage" Method="MailboxMessageDeleteMessage">
+    <Parameter Name="ID" Parameter="iD" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.MailboxMessageGetAskMessageResult" Method="MailboxMessageGetAskMessageResult">
+    <Parameter Name="BoxNo" Parameter="boxNo" Type="System.String" DbType="VarChar(15)" />
+    <Parameter Name="FollowupCode" Parameter="followupCode" Type="System.Int32" DbType="Int" />
+    <Parameter Name="AnswerMessageId" Parameter="answerMessageId" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Parameter Name="AskMessageId" Parameter="askMessageId" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.MailboxMessageGetDataByBoxNoAndType" Method="MailboxMessageGetDataByBoxNoAndType">
+    <Parameter Name="BoxNo" Parameter="boxNo" Type="System.String" DbType="VarChar(15)" />
+    <Parameter Name="Type" Parameter="type" Type="System.Byte" DbType="TinyInt" />
+    <ElementType Name="MailboxMessageGetDataByBoxNoAndTypeResult">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BoxNo" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Column Name="ReceiveTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Sender" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="FollowupCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.MailboxMessageGetNewMessages" Method="MailboxMessageGetNewMessages">
+    <Parameter Name="BoxNo" Parameter="boxNo" Type="System.String" DbType="VarChar(15)" />
+    <ElementType Name="MailboxMessageGetNewMessagesResult">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BoxNo" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Column Name="ReceiveTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Sender" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="FollowupCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.MailboxMessageGetNextArchivedMessage" Method="MailboxMessageGetNextArchivedMessage">
+    <Parameter Name="BoxNo" Parameter="boxNo" Type="System.String" DbType="VarChar(15)" />
+    <Parameter Name="LatestID" Parameter="latestID" Type="System.Int32" DbType="Int" />
+    <ElementType Name="MailboxMessageGetNextArchivedMessageResult">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BoxNo" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Column Name="Sender" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="ReceiveTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="Image" CanBeNull="true" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="FollowupCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ExpireDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.MailboxMessageGetVoice" Method="MailboxMessageGetVoice">
+    <Parameter Name="ID" Parameter="iD" Type="System.Int32" DbType="Int" />
+    <ElementType Name="MailboxMessageGetVoiceResult">
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="Image" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.MailboxSelectByBoxNo" Method="MailboxSelectByBoxNo">
+    <Parameter Name="BoxNo" Parameter="boxNo" Type="System.String" DbType="VarChar(15)" />
+    <ElementType Name="MailboxSelectByBoxNoResult">
+      <Column Name="BoxNo" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ActivationDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ExpirationDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CodedPassword" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="MaxNewMessage" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MaxArchiveMessage" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="WelcomeMessages" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" />
+      <Column Name="AutoDequeueFullMailbox" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PagingEnable" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PagingSchedule" Type="System.Xml.Linq.XElement" DbType="Xml" CanBeNull="true" />
+      <Column Name="EmailNewMessages" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="FollowupCodeStart" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FollowupCodeEnd" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MessageNewExpirePeriod" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MessageAskExpirePeriod" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MessageAnswerExpirePeriod" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MessageArchiveExpirePeriod" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AutoArchive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PlayCallerIDBeforeMessage" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CallerID" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="PagingPhone" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BirthDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PostalAddress" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="PostalCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="GraduateLevel" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="GraduateField" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="FatherName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="IdentityNo" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="WorkAddress" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Job" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Gender" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="SocialNumber" Type="System.String" DbType="Char(12)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+</Database>

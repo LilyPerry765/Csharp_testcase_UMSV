@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Plugin.Poll
+{
+    public class PollInfo
+    {
+        public string CallerId { get; set; }
+
+        public string CalleeId { get; set; }
+
+        public string Answer { get; set; }
+
+        public DateTime DateAnswered { get; set; }
+
+        //public string URL { get; set; }
+    }
+}

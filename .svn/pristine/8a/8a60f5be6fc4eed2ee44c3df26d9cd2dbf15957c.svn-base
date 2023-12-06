@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Data;
+
+namespace Pendar._118
+{
+    /// <summary>
+    /// Interaction logic for punchist.xaml
+    /// </summary>
+    public partial class punchist : UserControl
+    {
+
+        public punchist()
+        {
+            InitializeComponent();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            datagridInput.ItemsSource = new List<Phone>();
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            using (Voip118DataContext dc=new Voip118DataContext())
+            {
+                //datagridInput.ItemsSource.Cast<Phone>().Aggregate(a => a.UniqueID = new Guid());
+                dc.Phones.InsertAllOnSubmit(datagridInput.ItemsSource.Cast<Phone>());
+                dc.SubmitChanges();
+            }
+        }
+    }
+}

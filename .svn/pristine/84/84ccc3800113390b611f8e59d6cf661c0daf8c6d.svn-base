@@ -1,0 +1,902 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.ServiceProcess;
+using System.Text;
+using Enterprise;
+using System.Threading;
+using UMSV;
+using System.Xml.Linq;
+using Microsoft.Win32;
+using System.Xml;
+using System.ServiceModel;
+using System.ServiceModel.Security;
+
+namespace DebtNotificationWindowsService
+{
+    public partial class DebtNotificationWindowsService : ServiceBase
+    {
+        Timer dataTimer;
+        Timer acknowledgementsTimer;
+        const string billServiceUsername = "zaheri";
+        const string billServicePassword = "123";
+        public BillServiceClient BillServiceInstance
+        {
+            get
+            {
+                XmlDictionaryReaderQuotas readerQuotas = new XmlDictionaryReaderQuotas()
+                {
+                    MaxDepth = 32,
+                    MaxStringContentLength = 8192,
+                    MaxArrayLength = 16384,
+                    MaxBytesPerRead = 4096,
+                    MaxNameTableCharCount = 16384
+                };
+
+                OptionalReliableSession reliableSession = new OptionalReliableSession()
+                {
+                    Ordered = true,
+                    InactivityTimeout = new TimeSpan(23, 25, 00),
+                    Enabled = true
+                };
+
+
+                HttpTransportSecurity transport = new HttpTransportSecurity()
+                {
+                    ClientCredentialType = HttpClientCredentialType.Windows,
+                    ProxyCredentialType = HttpProxyCredentialType.None,
+                    Realm = ""
+                };
+                NonDualMessageSecurityOverHttp message = new NonDualMessageSecurityOverHttp()
+                {
+                    ClientCredentialType = MessageCredentialType.Windows,
+                    NegotiateServiceCredential = true,
+                    EstablishSecurityContext = true
+                };
+                WSHttpSecurity security = new WSHttpSecurity()
+                {
+                    Mode = SecurityMode.None,
+                    Transport = transport,
+                    Message = message
+                };
+
+                WSHttpBinding binding = new WSHttpBinding()
+                {
+                    Name = "BasicHttpBinding_IBillService",
+                    CloseTimeout = new TimeSpan(0, 1, 0),
+                    ReceiveTimeout = new TimeSpan(0, 10, 0),
+                    SendTimeout = new TimeSpan(0, 1, 0),
+                    BypassProxyOnLocal = false,
+                    TransactionFlow = false,
+                    HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                    MaxBufferPoolSize = /*524288*/20000000,
+                    MaxReceivedMessageSize = /*65536*/20000000,
+                    MessageEncoding = WSMessageEncoding.Text,
+                    TextEncoding = Encoding.UTF8,
+                    UseDefaultWebProxy = true,
+                    AllowCookies = false,
+                    ReaderQuotas = readerQuotas,
+                    ReliableSession = reliableSession,
+                    Security = security
+                };
+
+                string bindingAddress = string.Empty;
+                switch (DebtNotificationWindowsService.GetCurrentLocation())
+                {
+                    case Location.Rasht:
+                        bindingAddress = "http://192.168.209.50:85/Host/BillService.svc";
+                        break;
+
+                    case Location.Yazd:
+                        bindingAddress = "http://172.16.3.173:83/Host/BillService.svc";
+                        break;
+
+                    case Location.Kerman:
+                        bindingAddress = "http://80.191.160.183:83/Host/BillService.svc";
+                        break;
+
+                    case Location.Semnan:
+                        bindingAddress = "http://se-db-abon.semnan.itc:83/Host/BillService.svc";
+                        break;
+
+                    case Location.Unknown:
+                        bindingAddress = string.Empty;
+                        break;
+
+                    default:
+                        bindingAddress = string.Empty;
+                        break;
+                }
+
+                EndpointAddress endpointAddress = new EndpointAddress(bindingAddress);
+
+                BillServiceClient billServiceClient = new BillServiceClient(binding, endpointAddress);
+
+
+                bool loginStatus = billServiceClient.Login(billServiceUsername, billServicePassword);
+
+                if (loginStatus)
+                {
+                    return billServiceClient;
+                }
+
+                throw new LoginException();
+            }
+        }
+
+        public Abonman.Data.BillServiceClient SemnanBillServiceClient
+        {
+            get
+            {
+                XmlDictionaryReaderQuotas readerQuotas = new XmlDictionaryReaderQuotas()
+                {
+                    MaxDepth = 32,
+                    MaxStringContentLength = 8192,
+                    MaxArrayLength = 16384,
+                    MaxBytesPerRead = 4096,
+                    MaxNameTableCharCount = 16384
+                };
+
+                HttpTransportSecurity transport = new HttpTransportSecurity()
+                {
+                    ClientCredentialType = HttpClientCredentialType.Windows,
+                    ProxyCredentialType = HttpProxyCredentialType.None,
+                    Realm = ""
+                };
+
+                BasicHttpMessageSecurity message = new BasicHttpMessageSecurity()
+                {
+                    ClientCredentialType = BasicHttpMessageCredentialType.UserName,
+                    AlgorithmSuite = SecurityAlgorithmSuite.Default
+                };
+
+                BasicHttpSecurity security = new BasicHttpSecurity()
+                {
+                    Mode = BasicHttpSecurityMode.None,
+                    Transport = transport,
+                    Message = message,
+
+                };
+
+                BasicHttpBinding binding = new BasicHttpBinding()
+                {
+                    Name = "BasicHttpBinding_IBillService",
+                    CloseTimeout = new TimeSpan(0, 1, 0),
+                    OpenTimeout = new TimeSpan(0, 1, 0),
+                    ReceiveTimeout = new TimeSpan(0, 10, 0),
+                    SendTimeout = new TimeSpan(0, 1, 0),
+                    AllowCookies = false,
+                    BypassProxyOnLocal = false,
+                    HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                    MaxBufferSize = 20000000,
+                    MaxBufferPoolSize = /*524288*/20000000,
+                    MaxReceivedMessageSize = /*65536*/20000000,
+                    MessageEncoding = WSMessageEncoding.Text,
+                    TextEncoding = Encoding.UTF8,
+                    TransferMode = System.ServiceModel.TransferMode.Buffered,
+                    UseDefaultWebProxy = true,
+                    ReaderQuotas = readerQuotas,
+                    Security = security
+                };
+
+                string bindingAddress = string.Empty;
+
+                bindingAddress = "http://se-db-abon.semnan.itc:83/Host/BillService.svc";
+
+                EndpointAddress endpointAddress = new EndpointAddress(bindingAddress);
+
+                Abonman.Data.BillServiceClient billServiceClient = new Abonman.Data.BillServiceClient(binding, endpointAddress);
+
+                return billServiceClient;
+            }
+        }
+
+        private void PreparePaymentAcknowledgementDataSemnan()
+        {
+            try
+            {
+                Guid graphId = Guid.Empty;
+                string startTime = string.Empty;
+                string endTime = string.Empty;
+
+                if (!ProcessRegistryKey("PaymentAcknowledgement.Graph", out graphId, out startTime, out endTime))
+                    return;
+
+                if (TimeSpan.Parse(startTime) > DateTime.Now.TimeOfDay)
+                {
+                    Logger.WriteInfo("Payment ack start time is greater than current time of day. waiting for all receipt details until {0}", startTime);
+                    return;
+                }
+
+                string date = string.Format("{0}-{1}-{2}", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
+                List<InformingRecord> informingRecords = new List<InformingRecord>();
+
+                using (UmsDataContext context = new UmsDataContext())
+                {
+
+                    Informing thisInforming = context.Informings.FirstOrDefault(i => i.Subject.Contains(date) && i.Subject.Contains("تشکر"));
+                    if (thisInforming == null)
+                    {
+                        thisInforming = new Informing();
+
+                        UMSV.Schema.Schedule schedule = new UMSV.Schema.Schedule();
+                        schedule.Times = new List<UMSV.Schema.ScheduleTime>();
+
+                        UMSV.Schema.ScheduleTime scheduleTime = new UMSV.Schema.ScheduleTime()
+                        {
+                            Date = DateTime.Now,
+                            Start = startTime,
+                            Finish = endTime,
+                        };
+                        schedule.Times.Add(scheduleTime);
+
+                        thisInforming.Subject = "تشکر از پرداخت" + " | " + date;
+                        thisInforming.Enabled = true;
+                        thisInforming.CallTime = schedule.ToXElement();
+                        thisInforming.RetryCount = 3;
+                        thisInforming.Type = 1;
+                        thisInforming.Graph = graphId;
+
+                        context.Informings.InsertOnSubmit(thisInforming);
+                        context.SubmitChanges();
+
+                        Logger.WriteInfo("Saved ew Informing.");
+                    }
+                    else
+                    {
+                        Logger.WriteInfo("Payment acknowledgement: a record for today already exists in database.");
+                    }
+
+                    
+                    //Informing informing = new Informing();
+
+
+
+                    //if (context.Informings.Where(t => t.Subject.Contains(date) && t.Subject.Contains("تشکر")).Any())
+                    //{
+                    //    Logger.WriteInfo("Payment acknowledgement: a record for today already exists in database.");
+
+                    //    //return;
+                    //}
+                    //else
+                    //{
+                    //    UMSV.Schema.Schedule schedule = new UMSV.Schema.Schedule();
+                    //    schedule.Times = new List<UMSV.Schema.ScheduleTime>();
+
+                    //    UMSV.Schema.ScheduleTime scheduleTime = new UMSV.Schema.ScheduleTime()
+                    //    {
+                    //        Date = DateTime.Now,
+                    //        Start = startTime,
+                    //        Finish = endTime,
+                    //    };
+                    //    schedule.Times.Add(scheduleTime);
+
+                    //    informing.Subject = "تشکر از پرداخت" + " | " + date;
+                    //    informing.Enabled = true;
+                    //    informing.CallTime = schedule.ToXElement();
+                    //    informing.RetryCount = 3;
+                    //    informing.Type = 1;
+                    //    informing.Graph = graphId;
+
+                    //    //Informing informing = new Informing()
+                    //    //{
+                    //    //    Subject = "تشکر از پرداخت" + " | " + date,
+                    //    //    Enabled = true,
+                    //    //    CallTime = schedule.ToXElement(),
+                    //    //    RetryCount = 3,
+                    //    //    Type = 1,
+                    //    //    Graph = graphId,
+                    //    //};
+
+                    //    context.Informings.InsertOnSubmit(informing);
+                    //    context.SubmitChanges();
+
+                    //    Logger.WriteInfo("Saved ew Informing.");
+                    //}
+
+                    Logger.WriteInfo("After check Informings");
+
+
+
+
+                Abonman.Data.BillServiceClient service = SemnanBillServiceClient;
+                    Logger.WriteInfo("BillServiceInstance is {0}", service.ToString());
+
+                    int firstReceiptId = service.GetFirstReceiptID(DateTime.Now, false);
+                    Logger.WriteInfo("firstReceiptId is {0}", firstReceiptId.ToString());
+
+                    int todayReceiptsCount = service.GetCountOfReceipt(DateTime.Now, false);
+                    Logger.WriteInfo("todayReceiptsCount is {0}", todayReceiptsCount.ToString());
+
+                    int pageNumber = 0;
+
+                    while (informingRecords.Count % 1000 == 0)
+                    {
+                        var newPage = service.GetAllReceiptDetails(firstReceiptId, todayReceiptsCount, false).ToList();
+                        Logger.WriteInfo("newPage is {0}", newPage.Count.ToString());
+
+                        if (newPage.Count == 0)
+                            break;
+
+                        foreach (var item in newPage)
+                        {
+                            informingRecords.Add(new InformingRecord()
+                            {
+                                Phone = item.PhoneNo.Length > 8 ? item.PhoneNo.Substring(item.PhoneNo.Length - 8, 8) : item.PhoneNo,
+                                Status = (byte)InformingStatus.Queued,
+                                Informing = thisInforming.ID,
+                                CallCount = 0
+                            });
+                        }
+
+                        pageNumber++;
+                    }
+                    context.InformingRecords.InsertAllOnSubmit(informingRecords);
+                    context.SubmitChanges();
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("An Error occurred while preparing data for payment acknowledgement.");
+                Logger.Write(ex);
+            }
+
+        }
+
+        public DebtNotificationWindowsService()
+        {
+            InitializeComponent();
+
+           
+        }
+
+        protected override void OnStart(string[] args)
+        {
+            try
+            {
+                Logger.WriteImportant("0- Debt Notification Windows Service Started Successfully...");
+
+                dataTimer = new Timer(PrepareData, null, new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0));
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                Logger.WriteInfo("An exception occurred while starting Debt Notification Windows Service...");
+            }
+        }
+
+        protected override void OnStop()
+        {
+            Logger.WriteImportant("1- Debt Notification Windows Service STOPPED!");
+        }
+
+        private void PrepareData(object state)
+        {
+            switch (GetCurrentLocation())
+            {
+                case Location.Rasht:
+                    //PrepareSuspensionWarningData();
+                    //PrepareCreditWarningData();
+                    //PrepareDebtWarningData();
+                    PreparePaymentAcknowledgementData();
+                    break;
+
+                case Location.Yazd:
+                    PrepareCreditWarningData();
+                    break;
+
+                case Location.Kerman:
+                    break;
+
+                case Location.Semnan :
+                    PreparePaymentAcknowledgementDataSemnan();
+                    break;
+
+                case Location.Unknown:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void PrepareSuspensionWarningData()
+        {
+            try
+            {
+                Guid graphId = Guid.Empty;
+                string startTime = string.Empty;
+                string endTime = string.Empty;
+
+                if (!ProcessRegistryKey("SuspensionWarning.Graph", out graphId, out startTime, out endTime))
+                    return;
+
+                string date = string.Format("{0}-{1}-{2}", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
+                List<InformingRecord> informingRecords = new List<InformingRecord>();
+
+                using (UmsDataContext context = new UmsDataContext())
+                {
+                    if (context.Informings.Where(t => t.Subject.Contains(date) && t.Subject.Contains("تعلیق")).Any())
+                    {
+                        Logger.WriteInfo("Suspension warning: a record for today already exists in database.");
+                        return;
+                    }
+
+                    UMSV.Schema.Schedule schedule = new UMSV.Schema.Schedule();
+                    schedule.Times = new List<UMSV.Schema.ScheduleTime>();
+
+                    UMSV.Schema.ScheduleTime scheduleTime = new UMSV.Schema.ScheduleTime()
+                    {
+                        Date = DateTime.Now,
+                        Start = startTime,
+                        Finish = endTime,
+                    };
+                    schedule.Times.Add(scheduleTime);
+
+                    Informing informing = new Informing()
+                    {
+                        Subject = "هشدار تعلیق" + " | " + date,
+                        Enabled = false,
+                        CallTime = schedule.ToXElement(),
+                        RetryCount = 3,
+                        Type = 1,
+                        Graph = graphId,
+                    };
+                    context.Informings.InsertOnSubmit(informing);
+                    context.SubmitChanges();
+
+                    BillServiceClient service = BillServiceInstance;
+                    int pageNumber = 0;
+
+                    while (informingRecords.Count % 1000 == 0)
+                    {
+                        var newPage = service.GetSuspensionWarning(pageNumber).ToList();
+
+                        if (newPage.Count == 0)
+                            break;
+
+                        foreach (var item in newPage)
+                        {
+                            informingRecords.Add(new InformingRecord()
+                            {
+                                Phone = item.PhoneNo.Length > 8 ? item.PhoneNo.Substring(item.PhoneNo.Length - 8, 8) : item.PhoneNo,
+                                Status = (byte)InformingStatus.Queued,
+                                Informing = informing.ID,
+                                CallCount = 0
+                            });
+                        }
+
+                        pageNumber++;
+                    }
+                    context.InformingRecords.InsertAllOnSubmit(informingRecords);
+                    context.SubmitChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("An Error occurred while preparing data for suspension warning.");
+                Logger.Write(ex);
+            }
+
+        }
+
+        private void PrepareCreditWarningData()
+        {
+            try
+            {
+                Guid graphId = Guid.Empty;
+                string startTime = string.Empty;
+                string endTime = string.Empty;
+
+                if (!ProcessRegistryKey("CreditWarning.Graph", out graphId, out startTime, out endTime))
+                    return;
+
+                if (TimeSpan.Parse(startTime) > DateTime.Now.TimeOfDay)
+                {
+                    Logger.WriteInfo("Credit warning start time is greater than current time of day. waiting for all credit warnings until {0}", startTime);
+                    return;
+                }
+
+                string date = string.Format("{0}-{1}-{2}", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
+                List<InformingRecord> informingRecords = new List<InformingRecord>();
+
+                using (UmsDataContext context = new UmsDataContext())
+                {
+                    if (context.Informings.Where(t => t.Subject.Contains(date) && t.Subject.Contains("اعتبار")).Any())
+                    {
+                        Logger.WriteInfo("Credit warning: a record for today already exists in database.");
+                        return;
+                    }
+
+                    UMSV.Schema.Schedule schedule = new UMSV.Schema.Schedule();
+                    schedule.Times = new List<UMSV.Schema.ScheduleTime>();
+
+                    UMSV.Schema.ScheduleTime scheduleTime = new UMSV.Schema.ScheduleTime()
+                    {
+                        Date = DateTime.Now,
+                        Start = startTime,
+                        Finish = endTime,
+                    };
+                    schedule.Times.Add(scheduleTime);
+
+                    Informing informing = new Informing()
+                    {
+                        Subject = "هشدار اعتبار" + " | " + date,
+                        Enabled = true,
+                        CallTime = schedule.ToXElement(),
+                        RetryCount = 3,
+                        Type = 1,
+                        Graph = graphId,
+                    };
+                    context.Informings.InsertOnSubmit(informing);
+                    context.SubmitChanges();
+
+                    BillServiceClient service = BillServiceInstance;
+                    int pageNumber = 0;
+
+                    while (informingRecords.Count % 1000 == 0)
+                    {
+                        var newPage = service.GetCreditWarning(pageNumber).ToList();
+
+                        if (newPage.Count == 0)
+                            break;
+
+                        foreach (var item in newPage)
+                        {
+                            informingRecords.Add(new InformingRecord()
+                            {
+                                Phone = item.PhoneNo.Length > 8 ? item.PhoneNo.Substring(item.PhoneNo.Length - 8, 8) : item.PhoneNo,
+                                Status = (byte)InformingStatus.Queued,
+                                Informing = informing.ID,
+                                CallCount = 0
+                            });
+                        }
+
+                        pageNumber++;
+                    }
+
+                    context.InformingRecords.InsertAllOnSubmit(informingRecords);
+                    context.SubmitChanges();
+                    Logger.WriteInfo("{0} credit warnings added to db...", informingRecords.Count);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("An Error occurred while preparing data for credit warning.");
+                Logger.Write(ex);
+            }
+
+        }
+
+        private void PrepareDebtWarningData()
+        {
+            //            try
+            //            {
+            //                Guid graphId = Guid.Empty;
+            //                string startTime = string.Empty;
+            //                string endTime = string.Empty;
+
+            //                if (!ProcessRegistryKey("DebtWarning.Graph", out graphId, out startTime, out endTime))
+            //                    return;
+
+            //                string date = string.Format("{0}-{1}-{2}", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
+            //                List<InformingRecord> informingRecords = new List<InformingRecord>();
+
+            //                using (UmsDataContext context = new UmsDataContext())
+            //                {
+            //                    if (context.Informings.Where(t => t.Subject.Contains(date) && t.Subject.Contains("بدهی")).Any())
+            //                    {
+            //                        Logger.WriteInfo("Debt warning: a record for today already exists in database.");
+            //                        return;
+            //                    }
+
+            //                    string xmlTemplate = @"<Schedule xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns=""http://tempuri.org/Informing.xsd"" Priodic=""false"">
+            //                                         <Time Date=""" + date + @"T00:00:00"" Start=""" + startTime + @""" Finish=""" + endTime + @""" />
+            //                                       </Schedule>";
+            //                    Informing informing = new Informing()
+            //                    {
+            //                        Subject = "هشدار بدهی" + " | " + date,
+            //                        Enabled = false,
+            //                        CallTime = XElement.Parse(xmlTemplate),
+            //                        RetryCount = 3,
+            //                        Type = 1,
+            //                        Graph = graphId,
+            //                    };
+            //                    context.Informings.InsertOnSubmit(informing);
+            //                    context.SubmitChanges();
+
+            //                    using (BillService service = new BillService())
+            //                    {
+            //                        int pageNumber = 0;
+
+            //                        while (informingRecords.Count % 1000 == 0)
+            //                        {
+            //                            var newPage = service.GetDebtWarning(pageNumber, true).ToList();
+
+            //                            if (newPage.Count == 0)
+            //                                break;
+
+            //                            foreach (var item in newPage)
+            //                            {
+            //                                informingRecords.Add(new InformingRecord()
+            //                                {
+            //                                    Phone = item.PhoneNo.Length > 8 ? item.PhoneNo.Substring(item.PhoneNo.Length - 8, 8) : item.PhoneNo,
+            //                                    Status = (byte)InformingStatus.Queued,
+            //                                    Informing = informing.ID,
+            //                                    CallCount = 0
+            //                                });
+            //                            }
+
+            //                            pageNumber++;
+            //                        }
+            //                    }
+            //                    context.InformingRecords.InsertAllOnSubmit(informingRecords);
+            //                    context.SubmitChanges();
+            //                }
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                Logger.WriteError("An Error occurred while preparing data for credit warning.");
+            //                Logger.Write(ex);
+            //            }
+
+        }
+
+        private void PreparePaymentAcknowledgementData()
+        {
+            try
+            {
+                Guid graphId = Guid.Empty;
+                string startTime = string.Empty;
+                string endTime = string.Empty;
+
+                if (!ProcessRegistryKey("PaymentAcknowledgement.Graph", out graphId, out startTime, out endTime))
+                    return;
+
+                Logger.WriteInfo("Start Time is {0}", startTime);
+                Logger.WriteInfo("End Time is {0}", endTime );
+
+                if (TimeSpan.Parse(startTime) > DateTime.Now.TimeOfDay)
+                {
+                    Logger.WriteInfo("Payment ack start time is greater than current time of day. waiting for all receipt details until {0}", startTime);
+                    return;
+                }
+
+                string date = string.Format("{0}-{1}-{2}", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
+                List<InformingRecord> informingRecords = new List<InformingRecord>();
+
+                using (UmsDataContext context = new UmsDataContext())
+                {
+                    Informing informing = new Informing();
+
+                    if (context.Informings.Where(t => t.Subject.Contains(date) && t.Subject.Contains("تشکر")).Any())
+                    {
+                        Logger.WriteInfo("Payment acknowledgement: a record for today already exists in database.");
+
+                        //return;
+                    }
+                    else
+                    {
+                        UMSV.Schema.Schedule schedule = new UMSV.Schema.Schedule();
+                        schedule.Times = new List<UMSV.Schema.ScheduleTime>();
+
+                        UMSV.Schema.ScheduleTime scheduleTime = new UMSV.Schema.ScheduleTime()
+                        {
+                            Date = DateTime.Now,
+                            Start = startTime,
+                            Finish = endTime,
+                        };
+                        schedule.Times.Add(scheduleTime);
+
+                        informing.Subject = "تشکر از پرداخت" + " | " + date;
+                        informing.Enabled = true;
+                        informing.CallTime = schedule.ToXElement();
+                        informing.RetryCount = 3;
+                        informing  .Type = 1;
+                        informing.Graph = graphId;
+
+                        //Informing informing = new Informing()
+                        //{
+                        //    Subject = "تشکر از پرداخت" + " | " + date,
+                        //    Enabled = true,
+                        //    CallTime = schedule.ToXElement(),
+                        //    RetryCount = 3,
+                        //    Type = 1,
+                        //    Graph = graphId,
+                        //};
+
+                        context.Informings.InsertOnSubmit(informing);
+                        context.SubmitChanges();
+
+                        Logger.WriteInfo("Saved ew Informing.");
+                    }
+
+                    Logger.WriteInfo("After check Informings");
+
+
+
+
+                    BillServiceClient service = BillServiceInstance;
+                    Logger.WriteInfo("BillServiceInstance is {0}", service.ToString());
+
+                    int firstReceiptId = service.GetFirstReceiptID(DateTime.Now, false);
+                    Logger.WriteInfo("firstReceiptId is {0}", firstReceiptId.ToString());
+
+                    int todayReceiptsCount = service.GetCountOfReceipt(DateTime.Now, false);
+                    Logger.WriteInfo("todayReceiptsCount is {0}", todayReceiptsCount.ToString());
+
+                    int pageNumber = 0;
+
+                    while (informingRecords.Count % 1000 == 0)
+                    {
+                        var newPage = service.GetAllReceiptDetails(firstReceiptId, todayReceiptsCount, false).ToList();
+                        Logger.WriteInfo("newPage is {0}", newPage.Count.ToString());
+
+                        if (newPage.Count == 0)
+                            break;
+
+                        foreach (var item in newPage)
+                        {
+                            informingRecords.Add(new InformingRecord()
+                            {
+                                Phone = item.PhoneNo.Length > 8 ? item.PhoneNo.Substring(item.PhoneNo.Length - 8, 8) : item.PhoneNo,
+                                Status = (byte)InformingStatus.Queued,
+                                Informing = informing.ID,
+                                CallCount = 0
+                            });
+                        }
+
+                        pageNumber++;
+                    }
+                    context.InformingRecords.InsertAllOnSubmit(informingRecords);
+                    context.SubmitChanges();
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("An Error occurred while preparing data for payment acknowledgement.");
+                Logger.Write(ex);
+            }
+
+        }
+
+       
+
+        public static Location GetCurrentLocation()
+        {
+            try
+            {
+                using (RegistryKey key = RegistryHelper.GetRegistryKey("SOFTWARE\\Enterprise"))
+                {
+                    if (key == null)
+                    {
+                        Logger.WriteImportant("Registry KEY is NULL...");
+                        return Location.Unknown;
+                    }
+
+                    string value = (string)key.GetValue("NotificationService.CurrentLocation");
+
+                    switch (value.ToLower())
+                    {
+                        case "rasht":
+                            return Location.Rasht;
+
+                        case "yazd":
+                            return Location.Yazd;
+
+                        case "kerman":
+                            return Location.Kerman;
+
+                        case "semnan":
+                            return Location.Semnan;
+
+                        default:
+                            return Location.Unknown;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return Location.Unknown;
+            }
+        }
+
+        private bool ProcessRegistryKey(string value, out Guid graphId, out string startTime, out string endTime)
+        {
+            using (RegistryKey key = RegistryHelper.GetRegistryKey("SOFTWARE\\Enterprise"))
+            {
+                if (key == null)
+                {
+                    Logger.WriteImportant("Registry KEY is NULL...");
+                    graphId = Guid.Empty;
+                    startTime = string.Empty;
+                    endTime = string.Empty;
+                    return false;
+                }
+
+                string val = (string)key.GetValue(value);
+                if (!Guid.TryParse(val, out graphId))
+                {
+                    Logger.WriteImportant("{0} graph id could not be parsed.", val);
+                    startTime = string.Empty;
+                    endTime = string.Empty;
+                    return false;
+                }
+
+                if (value.ToLower().Contains("warning"))
+                {
+                    val = (string)key.GetValue("Warnings.StartTime");
+                    TimeSpan res;
+                    if (!TimeSpan.TryParse(val, out res))
+                    {
+                        Logger.WriteImportant("{0} warning start time could not be parsed.", val);
+                        startTime = string.Empty;
+                        endTime = string.Empty;
+                        return false;
+                    }
+                    startTime = val;
+
+                    val = (string)key.GetValue("Warnings.EndTime");
+                    if (!TimeSpan.TryParse(val, out res))
+                    {
+                        Logger.WriteImportant("{0} warning end time could not be parsed.", val);
+                        endTime = string.Empty;
+                        return false;
+                    }
+                    endTime = val;
+                }
+                else
+                {
+                    val = (string)key.GetValue("Acknowledgements.StartTime");
+                    TimeSpan res;
+                    if (!TimeSpan.TryParse(val, out res))
+                    {
+                        Logger.WriteImportant("{0} ack start time could not be parsed.", val);
+                        startTime = string.Empty;
+                        endTime = string.Empty;
+                        return false;
+                    }
+                    startTime = val;
+
+                    val = (string)key.GetValue("Acknowledgements.EndTime");
+                    if (!TimeSpan.TryParse(val, out res))
+                    {
+                        Logger.WriteImportant("{0} ack end time could not be parsed.", val);
+                        endTime = string.Empty;
+                        return false;
+                    }
+                    endTime = val;
+                }
+            }
+            return true;
+        }
+    }
+
+    public enum Location
+    {
+        Rasht,
+        Yazd,
+        Kerman,
+        Semnan,
+        Unknown
+    }
+
+    public class LoginException : Exception
+    {
+        public override string Message
+        {
+            get
+            {
+                return "An Exception occurred in Bill Service Login... " + base.Message;
+            }
+        }
+    }
+}

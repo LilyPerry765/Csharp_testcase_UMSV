@@ -1,0 +1,386 @@
+﻿using System;
+using System.Diagnostics;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using Ozeki.Media;
+using Ozeki.Media.MediaHandlers;
+using Ozeki.Network.Nat;
+using Ozeki.VoIP;
+using Ozeki.VoIP.Media;
+using Ozeki.VoIP.SDK;
+using Ozeki.Common;
+using Ozeki.Network;
+using System.Threading;
+using Folder;
+using MessageBox = System.Windows.MessageBox;
+
+namespace Plugin.OzPhone
+{
+    public partial class PhoneUserControl : UserControl, IFolderForm
+    {
+        ISoftPhone softPhone;
+        IPhoneLine phoneLine;
+        IPhoneCall call;
+        private Microphone microphone = Microphone.GetDefaultDevice();
+        private Speaker speaker = Speaker.GetDefaultDevice();
+        MediaConnector connector = new MediaConnector();
+        PhoneCallAudioSender mediaSender = new PhoneCallAudioSender();
+        PhoneCallAudioReceiver mediaReceiver = new PhoneCallAudioReceiver();
+        int currentDtmfSignal;
+
+        public PhoneUserControl()
+        {
+            this.Resources.MergedDictionaries.Add(new ResourceDictionary()
+            {
+                Source = new Uri("pack://application:,,,/Plugin.OzPhone;component/Resources/AppResources.xaml")
+            });
+
+            InitializeComponent();
+            //some devices are missing
+            string message = String.Empty;
+
+            if (microphone == null)
+                message += "You have no microphone attached to your computer, please note that your partner will not hear your voice.\n";
+            if (speaker == null)
+                message += "You have no speaker attached to your computer, please note that you will not hear your partner.\n";
+
+            if (message != String.Empty)
+                MessageBox.Show(message, "Some devices are missing", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            InitializeSoftPhone();
+        }
+
+        #region Ozeki VoIP-SIP SDK's events
+
+        /// <summary>
+        /// Occurs when phone linde state has changed.
+        /// </summary>
+        private void phoneLine_PhoneLineStateChanged(object sender, VoIPEventArgs<PhoneLineState> e)
+        {
+            InvokeGUIThread(() =>
+            {
+                textBlockIdentifier.Text = ((IPhoneLine)sender).SIPAccount.RegisterName;
+                if (e.Item == PhoneLineState.RegistrationSucceeded)
+                {
+                    textBlockRegStatus.Text = "Online";
+                    textBlockCallStateInfo.Text = "Registration succeeded";
+                }
+                else
+                    textBlockCallStateInfo.Text = e.Item.ToString();
+            });
+        }
+
+        /// <summary>
+        /// Occurs when an incoming call request has received.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void softPhone_IncomingCall(object sender, VoIPEventArgs<IPhoneCall> e)
+        {
+            var incomingCall = e.Item as IPhoneCall;
+            if (call != null)
+            {
+                incomingCall.Reject();
+                return;
+            }
+
+            call = incomingCall;
+            SubscribeToCallEvents(call);
+
+            InvokeGUIThread(() => textBlockDialingNumber.Text = String.Format("Incoming call from {0}", e.Item.DialInfo.UserName));
+        }
+
+        /// <summary>
+        /// Occurs when the phone call state has changed.
+        /// Example: Ringing, Incall, Completed, Cancelled ...
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void call_CallStateChanged(object sender, VoIPEventArgs<CallState> e)
+        {
+            InvokeGUIThread(() => { textBlockCallStateInfo.Text = e.Item.ToString(); });
+
+            if (e.Item == CallState.InCall)
+            {
+                if (microphone != null)
+                    microphone.Start();
+
+                if (speaker != null)
+                    speaker.Start();
+
+                mediaSender.AttachToCall(call);
+                mediaReceiver.AttachToCall(call);
+            }
+
+            if (e.Item.IsCallEnded())
+            {
+                if (microphone != null)
+                    microphone.Stop();
+
+                if (speaker != null)
+                    speaker.Stop();
+
+                mediaSender.Detach();
+                mediaReceiver.Detach();
+
+                UnsubscribeFromCallEvents(sender as IPhoneCall);
+                call = null;
+
+                InvokeGUIThread(() => { textBlockDialingNumber.Text = string.Empty; });
+            }
+        }
+
+        /// <summary>
+        /// Display DTMF signals.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void call_DtmfReceived(object sender, VoIPEventArgs<DtmfInfo> e)
+        {
+            DtmfSignal signal = e.Item.Signal;
+            InvokeGUIThread(() => textBlockCallStateInfo.Text = String.Format("DTMF signal received: {0} ", signal.Signal));
+        }
+
+        /// <summary>
+        /// There are certain situations when the call cannot be created, for example the dialed number is not available 
+        /// or maybe there is no endpoint to the dialed PBX, or simply the telephone line is busy. 
+        /// This event handling is for displaying these events.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void call_CallErrorOccured(object sender, VoIPEventArgs<CallError> e)
+        {
+            InvokeGUIThread(() => textBlockCallStateInfo.Text = e.Item.ToString());
+        }
+
+        #endregion
+
+        #region Helper Functions
+        /// <summary>
+        /// It initializes a softphone object with a SIP BPX, and it is for requisiting a SIP account that is nedded for a SIP PBX service. It registers this SIP
+        /// account to the SIP PBX through an ’IphoneLine’ object which represents the telephoneline. 
+        /// If the telephone registration is successful we have a call ready softphone. In this example the softphone can be reached by dialing the number 891.
+        /// </summary>
+        private void InitializeSoftPhone()
+        {
+            try
+            {
+                softPhone = SoftPhoneFactory.CreateSoftPhone(15000, 15500, 5060);
+                softPhone.IncomingCall += softPhone_IncomingCall;
+                phoneLine = softPhone.CreatePhoneLine(new SIPAccount(true, "858", "858", "858", "858", "192.168.0.41", 5060), TransportType.Udp);
+                phoneLine.PhoneLineStateChanged += phoneLine_PhoneLineStateChanged;
+
+                softPhone.RegisterPhoneLine(phoneLine);
+
+                ConnectMedia();
+            }
+            catch (Exception ex)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("Error while initializing softphone.");
+                sb.AppendLine();
+                sb.AppendLine("Exception:");
+                sb.AppendLine(ex.Message);
+                sb.AppendLine();
+                if (ex.InnerException != null)
+                {
+                    sb.AppendLine("Inner Exception:");
+                    sb.AppendLine(ex.InnerException.Message);
+                    sb.AppendLine();
+                }
+                sb.AppendLine("StackTrace:");
+                sb.AppendLine(ex.StackTrace);
+
+                MessageBox.Show(String.Format("{0}", sb), "Ozeki WPF Softphone Sample", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Connects the microphone and speaker to the call sender and receiver.
+        /// </summary>
+        private void ConnectMedia()
+        {
+            if (speaker != null)
+                connector.Connect(mediaReceiver, speaker);
+
+            if (microphone != null)
+                connector.Connect(microphone, mediaSender);
+        }
+
+        /// <summary>
+        /// Disconnects the microphone and speaker from the call sender and receiver.
+        /// </summary>
+        private void DisconnectMedia()
+        {
+            if (speaker != null)
+                connector.Disconnect(mediaReceiver, speaker);
+
+            if (microphone != null)
+                connector.Disconnect(microphone, mediaSender);
+        }
+
+        /// <summary>
+        /// Subscribes to the necessary events of a call transact.
+        /// </summary>
+        private void SubscribeToCallEvents(IPhoneCall call)
+        {
+            if (call == null)
+                return;
+
+            call.CallStateChanged += (call_CallStateChanged);
+            call.DtmfReceived += (call_DtmfReceived);
+            call.CallErrorOccured += (call_CallErrorOccured);
+        }
+
+        /// <summary>
+        /// Unsubscribes from the necessary events of a call transact.
+        /// </summary>
+        private void UnsubscribeFromCallEvents(IPhoneCall call)
+        {
+            if (call == null)
+                return;
+
+            call.CallStateChanged -= (call_CallStateChanged);
+            call.DtmfReceived -= (call_DtmfReceived);
+            call.CallErrorOccured -= (call_CallErrorOccured);
+        }
+
+        /// <summary>
+        /// The controls of the Windows Form applications can only be modified on the GUI thread. This method grants access to the GUI thread.
+        /// </summary>
+        private void InvokeGUIThread(Action action)
+        {
+            Dispatcher.Invoke(action, null);
+        }
+
+        #endregion
+
+        #region Keypad events
+
+        /// <summary>
+        /// Starts a call with the dialed number or in case of an incoming call accepts it.
+        /// </summary>
+        private void buttonPickUp_Click(object sender, RoutedEventArgs e)
+        {
+            // accept incoming call
+            if (call != null && call.IsIncoming)
+            {
+                call.Accept();
+                return;
+            }
+
+            // dial
+            if (call != null)
+                return;
+
+            if (string.IsNullOrEmpty(textBlockDialingNumber.Text))
+                return;
+
+            if (phoneLine.RegisteredInfo != PhoneLineState.RegistrationSucceeded && phoneLine.RegisteredInfo != PhoneLineState.NoRegNeeded)
+            {
+                MessageBox.Show("Phone line must be registered!");
+                return;
+            }
+
+            call = softPhone.CreateCallObject(phoneLine, textBlockDialingNumber.Text);
+            SubscribeToCallEvents(call);
+            call.Start();
+        }
+
+        /// <summary>
+        /// In case of a call is in progress, it breaks the call.
+        /// </summary>
+        private void buttonHangUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (call != null)
+            {
+                if (call.IsIncoming && call.CallState.IsRinging())
+                {
+                    call.Reject();
+                }
+                else
+                {
+                    call.HangUp();
+                }
+
+                call = null;
+            }
+            textBlockDialingNumber.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// If there is a call in progress it sends a DTMF signal according to the RFC 2833 standard else it makes the dialing number.
+        /// </summary>
+        private void buttonKeyPadButton_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn == null)
+                return;
+
+            if (call != null)
+                return;
+
+            textBlockDialingNumber.Text += btn.Content.ToString().Trim();
+        }
+
+        private void buttonKeyPad_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (call == null)
+                return;
+
+            if (!call.CallState.IsInCall())
+                return;
+
+            var btn = sender as Button;
+            int dtmfSignal = GetDtmfSignalFromButtonTag(btn);
+            if (dtmfSignal == -1)
+                return;
+
+            currentDtmfSignal = dtmfSignal;
+            call.StartDTMFSignal((DtmfNamedEvents)dtmfSignal);
+        }
+
+        private void buttonKeyPad_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (call == null)
+                return;
+
+            if (!call.CallState.IsInCall())
+                return;
+
+            call.StopDTMFSignal((DtmfNamedEvents)currentDtmfSignal);
+        }
+
+        private int GetDtmfSignalFromButtonTag(Button button)
+        {
+            if (button == null)
+                return -1;
+
+            if (button.Tag == null)
+                return -1;
+
+            int signal;
+            if (int.TryParse(button.Tag.ToString(), out signal))
+                return signal;
+
+            return -1;
+        }
+
+        #endregion
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            helper.Closing += new EventHandler<FormClosingEventArgs>(helper_Closing);
+        }
+
+        void helper_Closing(object sender, FormClosingEventArgs e)
+        {
+            softPhone.Close();
+        }
+    }
+}

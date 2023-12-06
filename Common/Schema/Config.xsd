@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Config"
+    targetNamespace="http://tempuri.org/Config.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/Config.xsd"
+    xmlns:mstns="http://tempuri.org/Config.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="Config">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Timeout"  minOccurs="0" maxOccurs="unbounded" >
+          <xs:complexType>
+            <xs:attribute name="DialogStatus" type="DialogStatus" use="required" />
+            <xs:attribute name="Value" type="xs:int" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Dial" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <!--فاصله زمانی بین دو تماس-->
+            <xs:attribute name="DialInterval" type="xs:int" use="optional" default="1000" />
+            <!--زمان مجاز شماره گیری-->
+            <xs:attribute name="DialTimeout" type="xs:int" use="optional" default="60" />
+            <!--آخرین ساعت تماس با مشترک-->
+            <xs:attribute name="MaxFinishTime" type="xs:string" use="optional" default="22:00:00" />
+            <!--اولین ساعت تماس با مشترک-->
+            <xs:attribute name="MinStartTime" type="xs:string" use="optional" default="07:00:00" />
+            <!--تاخیر تا سعی مجدد برای تماس-->
+            <xs:attribute name="RetryDelay" type="xs:int" default="30" use="optional" />
+            <!--شماره Caller ID سیستم-->
+            <xs:attribute name="SystemCallerID" type="xs:string" use="optional" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="GsmModem" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="Port" type="xs:string" default="COM1" use="optional" />
+            <xs:attribute name="SimPin" type="xs:string" use="optional" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="SipNetSocketStartRetryTimes" type="xs:int" default="5" />
+      <xs:attribute name="SoftPhoneMaxConcurrentCalls" type="xs:int" default="1" />
+      <xs:attribute name="SipNetSocketStartRetryInterval" type="xs:int" default="2000" />
+      <xs:attribute name="SipProxyPort" type="xs:int" use="optional" default="5060" />
+      <xs:attribute name="SipProxyAddress" type="xs:string" use="optional" />
+      <xs:attribute name="SoftPhoneRegistrationDomain" type="xs:string" use="optional" />
+      <xs:attribute name="OnlyAcceptEmbeddedSoftPhoneRegistration" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="SoftPhoneLocalPortFrom" type="xs:int" use="optional" default="4000" />
+      <xs:attribute name="SoftPhoneLocalPortTo" type="xs:int" use="optional" default="5000" />
+      <xs:attribute name="RingingTimeout" type="xs:int" use="optional" default="30" />
+      <xs:attribute name="AllowRegisterAnonymousAccount" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="OutcallPrefix" type="xs:string" use="optional" default="199"/>
+      <xs:attribute name="InformingRetryInterval" type="xs:int" use="optional" default="60"/>
+      <xs:attribute name="InformingConcurrentCalls" type="xs:int" use="optional"/>
+      <xs:attribute name="RtpLocalPortFrom" type="xs:int" use="optional" default="5000" />
+      <xs:attribute name="RtpLocalPortTo" type="xs:int" use="optional" default="25000" />
+      <xs:attribute name="DefaultExpireSeconds" type="xs:int" use="optional" default="3600" />
+      <xs:attribute name="CityCode" type="xs:string" use="optional" />
+      <xs:attribute name="MonitoringRefreshRate" type="xs:int" use="optional" default="1" />
+      <xs:attribute name="AcceptCallFromNotRegisterUser" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="CheckMessagesTimeoutsInterval" type="xs:int" use="optional" default="100" />
+      <xs:attribute name="CheckAccountsTimeoutsInterval" type="xs:int" use="optional" default="1000" />
+      <xs:attribute name="LogChangeStatusMessage" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="LogSipMessage" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="DivertWaitGraph" type="xs:string" use="optional" />
+      <xs:attribute name="AnnounceOperatorUserIDOnAnswer" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="AnnounceOperatorUserIDOnEnd" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="NodeTimeoutCheckInterval" type="xs:int" use="optional" default="100" />
+      <xs:attribute name="OperatorIncommingCallWelcomeVoiceFormat" type="xs:string" use="optional" default="@ ({0})" />
+      <xs:attribute name="DefaultGraph" type="xs:token" use="required" />
+      <xs:attribute name="OperatorDivertInterval" type="xs:int" use="optional" default="1000" />
+      <xs:attribute name="OperatorMaxAllowedNoAnswerCalls" type="xs:int" use="optional" default="3" />
+      <xs:attribute name="TalkingMinimumValidTimeToSave" type="xs:int" use="optional" default="500" />
+      <xs:attribute name="LoopedInvokeMaxTimes" type="xs:int" use="optional" default="5" />
+      <xs:attribute name="LoopedInvokeMinInterval" type="xs:int" use="optional" default="2000" />
+      <xs:attribute name="VoiceDirectory" type="xs:string" use="optional" default="D:\Voice" />
+      <xs:attribute name="FaxDirectory" type="xs:string" use="optional" default="D:\Fax" />
+      <xs:attribute name="FaxRepository" type="xs:string" use="optional" default="D:\FaxRepository" />
+      <xs:attribute name="AssumeSessionUserAsSoftPhoneUser" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="OperatorsMonitoringRefreshInterval" type="xs:int" use="optional" default="5000" />
+      <xs:attribute name="SoftPhoneShowIncommingCallCallerID" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="DefaultPlaybackVolume" type="xs:unsignedShort" use="optional" default="48000" />
+      <xs:attribute name="ClientRegisterPeriod" type="xs:int" use="optional" default="60000" />
+      <xs:attribute name="HardDiskFreeSpaceRadio" type="xs:int" use="optional" default="10" />
+      <xs:attribute name="VoiceFilesMaxArchiveDays" type="xs:int" use="optional" default="15" />
+      <xs:attribute name="ReportsCommandTimeout" type="xs:int" use="optional" default="60" />
+      <xs:attribute name="TransferMode" type="TransferMode" use="optional" default="Attended" />
+      <xs:attribute name="ContinueOnRtpReceiveSocketError" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="DtmfDetectionInterval" type="xs:int" use="optional" default="200" />
+      <xs:attribute name="SessionStatusFlushInterval" type="xs:int" use="optional" default="600000" />
+      <xs:attribute name="SessionTimeout" type="xs:int" use="optional" default="300000" />
+      <xs:attribute name="RequestStaticInfoFromServerTimerInterval" type="xs:int" use="optional" default="60000" />
+      <xs:attribute name="TalkingVoiceRecordMode" type="TalkingVoiceRecordMode" use="optional" default="Merged" />
+      <xs:attribute name="RecordPlayedTelephoneNumber" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="ClientLoginMode" type="ClientLoginMode" use="optional" default="Multiple" />
+      <xs:attribute name="SingleSoftwareLogin" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="SendCallToDnd" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="DashboardMonitorServerSystemParams" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="DashboardMonitorLinksCount" type="xs:boolean" use="optional" default="true" />
+      <xs:attribute name="StatusCodeOnDndRejection" type="xs:int" use="optional" default="490" />
+      <xs:attribute name="DisconnectCauseOnDndRejection" type="xs:int" use="optional" default="21" />
+      <xs:attribute name="LogRtp" type="xs:boolean" use="optional" default="false" />
+      <xs:attribute name="QueueTransferIfNoOnlineAccount" type="xs:boolean" use="optional" default="false" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="ClientLoginMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Multiple" />
+      <xs:enumeration value="SingleMachine" />
+      <xs:enumeration value="SingleAddress" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TalkingVoiceRecordMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Merged" />
+      <xs:enumeration value="NoRecord" />
+      <xs:enumeration value="Separately" />
+      <xs:enumeration value="All" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TransferMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Auto" />
+      <xs:enumeration value="Blind" />
+      <xs:enumeration value="Attended" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DialogStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Connect" />
+      <xs:enumeration value="Recording" />
+      <xs:enumeration value="Refering" />
+      <xs:enumeration value="Disconnected" />
+      <xs:enumeration value="Invite" />
+      <xs:enumeration value="InviteWaitForAck" />
+      <xs:enumeration value="FaxOKWaitForAck" />
+      <xs:enumeration value="Hold" />
+      <xs:enumeration value="Dialing" />
+      <xs:enumeration value="Ringing" />
+      <xs:enumeration value="ByingWaitForOk" />
+      <xs:enumeration value="UserBusySentWaitForAck" />
+      <xs:enumeration value="CancelingWaitForAck" />
+      <xs:enumeration value="RejectWaitForAck" />
+      <xs:enumeration value="WaitForDiverting" />
+      <xs:enumeration value="ReferingWaitForAccept" />
+      <xs:enumeration value="Transferring" />
+      <xs:enumeration value="DivertingWaitForTargetResponse" />
+      <xs:enumeration value="DivertingFailed" />
+      <xs:enumeration value="Talking" />
+      <xs:enumeration value="DialingWaitForOk" />
+      <xs:enumeration value="ReInvitingForFax" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

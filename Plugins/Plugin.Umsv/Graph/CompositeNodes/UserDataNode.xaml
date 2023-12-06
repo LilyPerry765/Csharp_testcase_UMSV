@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.UserDataNode"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+             xmlns:e="clr-namespace:Folder;assembly=Folder.Common"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             mc:Ignorable="d"
+             d:DesignHeight="498"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider  x:Key="Group"
+                          IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup Description="دریافت و ثبت کد"
+                           StartNode="PlayNodes[0]"
+                           LastNode="InvokeNodes[1]"
+                           xmlns="http://tempuri.org/VoiceGraph.xsd"
+                           Tag="UserData">
+                    <PlayNode ID="2"
+                              ClearDigits="true"
+                              TargetNode="3"
+                              IgnoreKeyPress="false">
+                        <Voice />
+                    </PlayNode>
+                    <GetKeyNode ID="3"
+                                ClearDigits="false"
+                                Timeout="15"
+                                TimeoutNode="7"
+                                MaxDigits="1"
+                                MaxDigitsNode="7"
+                                EndKey="*"
+                                MinDigits="1" />
+                    <InvokeNode ID="7"
+                                ClearDigits="true"
+                                Function="SaveLineDigits">
+                        <NodeResult TargetNode="4" />
+                    </InvokeNode>
+                    <PlayNode ID="4"
+                              ClearDigits="true"
+                              TargetNode="5"
+                              IgnoreKeyPress="true">
+                        <Voice Name="Entered Code"
+                               Type="0" />
+                        <Voice Name="[PlayCode]"
+                               Type="0" />
+                        <Voice Name="mibashad"
+                               Type="0" />
+                        <Voice Name="Gerefatn Tayeed"
+                               Type="0" />
+                    </PlayNode>
+                    <GetKeyNode ID="5"
+                                ClearDigits="true"
+                                MaxDigits="1"
+                                MinDigits="1">
+                        <NodeResult Value="1"
+                                    TargetNode="6" />
+                        <NodeResult Value="2"
+                                    TargetNode="2" />
+                    </GetKeyNode>
+                    <InvokeNode ID="6"
+                                ClearDigits="true"
+                                Function="SaveUserData">
+                        <NodeResult TargetNode="Bye" />
+                    </InvokeNode>
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+    </UserControl.Resources>
+    <StackPanel>
+        <uc:CommonArea />
+        <Label>گره بعدی:</Label>
+        <uc:TargetSelector SelectedTarget="{Binding  NodeData.InvokeNodes[1].NodeResult[0].TargetNode}" />
+        <Label>پيام صوتی:</Label>
+        <uc:VoiceSelector SelectedVoice="{Binding NodeData.PlayNodes[0].Voice[0]}"
+                          ShowOptions="False" />
+        <StackPanel x:Name="keyStackPanel"
+                    DataContext="{Binding NodeData.GetKeyNodes[0]}">
+            <Label>حداقل تعداد ارقام:</Label>
+            <e:NumericUpDown HorizontalAlignment="Left"
+                             Value="{Binding MinDigits}"
+                             Width="100" />
+            <Label>حداکثر تعداد ارقام:</Label>
+            <e:NumericUpDown  HorizontalAlignment="Left"
+                              Value="{Binding MaxDigits}"
+                              Width="100" />
+            <Label>حداکثر زمان انتظار:</Label>
+            <e:NumericUpDown  HorizontalAlignment="Left"
+                              Value="{Binding Timeout}"
+                              Width="100" />
+            <Label>کليد پايان:</Label>
+            <ComboBox HorizontalAlignment="Left"
+                      Width="100"
+                      SelectedValuePath="Content"
+                      SelectedValue="{Binding EndKey}">
+                <ComboBoxItem>#</ComboBoxItem>
+                <ComboBoxItem>*</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

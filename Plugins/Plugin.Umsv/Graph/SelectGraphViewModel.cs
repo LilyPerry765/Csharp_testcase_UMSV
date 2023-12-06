@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UMSV;
+using Folder.Commands;
+
+namespace UMSV.ViewModels
+{
+    public class SelectGraphViewModel : InformingViewModel
+    {
+        public SelectGraphViewModel(int informingID)
+        {
+            this.informingID = informingID;
+        }
+
+        protected override bool OnSave()
+        {
+            return true;
+        }
+
+        private int informingID;
+        public int InformingID
+        {
+            get
+            {
+                return informingID;
+            }
+        }
+
+        GraphsListViewModel graphsListViewModel = new GraphsListViewModel();
+        public IEnumerable<Graph> GraphsList
+        {
+            get
+            {
+                
+                return graphsListViewModel.Graphs;
+            }
+        }
+
+        public Guid? SelectedGraphIDForInforming
+        {
+            get;
+            set;
+        }
+
+        private DelegateCommand commitGraphCommand;
+        public DelegateCommand CommitGraphCommand
+        {
+            get
+            {
+                if (commitGraphCommand == null)
+                {
+                    commitGraphCommand = new DelegateCommand(delegate
+                    {
+                        if (OnSave())
+                        {
+                            if (SelectedGraphIDForInforming != null)
+                            {
+                                Graph graph = DB.Graphs.SingleOrDefault(g => g.ID == SelectedGraphIDForInforming.Value);
+                                if (graph != null)
+                                {
+                                    Informing informing = DB.Informings.Where(t => t.ID == InformingID).SingleOrDefault();
+                                    informing.Graph = graph.ID;
+                                    DB.SubmitChanges();
+                                }
+                            }
+
+                            DialogResult = true;
+                            SendPropertyChanged("DialogResult");
+                        }
+                    });
+                }
+                return commitGraphCommand;
+            }
+        }
+    }
+}

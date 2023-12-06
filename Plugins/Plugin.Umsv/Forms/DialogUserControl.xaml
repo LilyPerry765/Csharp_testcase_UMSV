@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="UMSV.DialogUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             Margin="5" Height="180" Width="130">
+    <StackPanel>
+        <Image Source="..\Images\Dialogs.png" Width="100" Height="100" />
+        <Label FlowDirection="LeftToRight" Name="TitleBlock" HorizontalAlignment="Left" />
+    </StackPanel>
+</UserControl>

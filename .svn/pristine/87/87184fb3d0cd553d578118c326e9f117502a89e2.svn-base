@@ -1,0 +1,119 @@
+﻿<Window x:Class="Pendar._118.KeyboardHelpForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        SizeToContent="WidthAndHeight" FontFamily="Tahoma" FlowDirection="RightToLeft" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True" WindowStyle="None" Focusable="False" ShowInTaskbar="False" ShowActivated="False" IsEnabled="True" BorderBrush="Black">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="2" />
+        </Style>
+    </Window.Resources>
+    <StackPanel Orientation="Horizontal">
+        <StackPanel Margin="10">
+            <TextBlock Text="پاک کردن عنوان جستجو" />
+            <TextBlock Text="مرور صفحه بالاتر" />
+            <TextBlock Text="مرور صفحه پایینتر" />
+            <TextBlock Text="انتخاب گزینه قبلی" />
+            <TextBlock Text="انتخاب گزینه بعدی" />
+            <TextBlock Text="انتخاب قسمت بعدی" />
+            <TextBlock Text="انتخاب قسمت قبلی" />
+            <TextBlock Text="رفتن به قسمت عنوان" />
+            <TextBlock Text="" />
+            <TextBlock Text="" />
+            <TextBlock Text="کم کردن صدا" />
+            <TextBlock Text="زیاد کردن صدا" />
+        </StackPanel>
+        <StackPanel Margin="10">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock Text="Enter" />
+            <TextBlock Text="Page Up" />
+            <TextBlock Text="Page Down" />
+            <TextBlock Text="Up" />
+            <TextBlock Text="Down" />
+            <TextBlock Text="Tab" />
+            <TextBlock Text="Alt + Tab" />
+            <TextBlock Text="Esc" />
+            <TextBlock Text="" />
+            <TextBlock Text="" />
+            <TextBlock Text="Volume Down" />
+            <TextBlock Text="Volume Up" />
+        </StackPanel>
+        <Separator />
+        <StackPanel Margin="10">
+            <TextBlock Text="قطع تماس" />
+            <TextBlock Text="Hold / UnHold" />
+            <TextBlock Text="مزاحمی" />
+            <TextBlock Text="عدم وجود شماره تلفن" />
+            <TextBlock Text="" />
+            <TextBlock Text="راهنمای مشاغل" />
+            <TextBlock Text="جستجوی کامل" />
+            <TextBlock Text="پخش شماره تلفن" />
+            <TextBlock Text="راهنما" />
+            <TextBlock Text="خروج از سیستم" />
+            <TextBlock Text="کوچک کردن صفحه" />
+            <TextBlock Text="بزرگ کردن صفحه" />
+        </StackPanel>
+        <StackPanel Margin="10">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock Text="F1" />
+            <TextBlock Text="F2" />
+            <TextBlock Text="F3" />
+            <TextBlock Text="F4" />
+            <TextBlock Text="F5" />
+            <TextBlock Text="F6" />
+            <TextBlock Text="F7" />
+            <TextBlock Text="F8" />
+            <TextBlock Text="F9" />
+            <TextBlock Text="F10" />
+            <TextBlock Text="F11" />
+            <TextBlock Text="F12" />
+        </StackPanel>
+        <Separator />
+        <StackPanel Margin="10">
+            <TextBlock Text="ثبت مشترک جدید" />
+            <TextBlock Text="ویرایش مشترک" />
+            <TextBlock Text="حذف مشترک" />
+            <TextBlock Text="فرم تنظیمات صدا" />
+            <TextBlock Text="" />
+            <TextBlock Text="" />
+            <TextBlock Text="تغییر مرتب سازی ستونها" />
+            <TextBlock Text="" />
+            <TextBlock Text="" />
+            <TextBlock Text="" />
+            <TextBlock Text="" />
+            <TextBlock Text="" />
+        </StackPanel>
+        <StackPanel Margin="10">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock Text="Ctrl + F1" />
+            <TextBlock Text="Ctrl + F2" />
+            <TextBlock Text="Ctrl + F3" />
+            <TextBlock Text="Ctrl + F4" />
+            <TextBlock Text="Ctrl + F5" />
+            <TextBlock Text="Ctrl + F6" />
+            <TextBlock Text="Ctrl + F7" />
+            <TextBlock Text="Ctrl + F8" />
+            <TextBlock Text="Ctrl + F9" />
+            <TextBlock Text="Ctrl + F10" />
+            <TextBlock Text="Ctrl + F11" />
+            <TextBlock Text="Ctrl + F12" />
+        </StackPanel>
+    </StackPanel>
+</Window>

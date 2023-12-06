@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.UserControls.MailBoxInputBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             FlowDirection="RightToLeft"
+             mc:Ignorable="d"
+             d:DesignHeight="66"
+             d:DesignWidth="300">
+    <StackPanel>
+        <Label>شماره صندوق :</Label>
+        <TextBox x:Name="boxNoTextBox"
+                 TextChanged="boxNoTextBox_TextChanged"
+                 PreviewTextInput="boxNoTextBox_TextInput" />
+    </StackPanel>
+</UserControl>

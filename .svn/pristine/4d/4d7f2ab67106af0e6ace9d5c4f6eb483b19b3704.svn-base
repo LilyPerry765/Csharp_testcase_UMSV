@@ -1,0 +1,87 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Windows.Controls;
+
+namespace Plugin.Poll
+{
+    public class PollElement : INotifyPropertyChanged
+    {
+        private readonly ObservableCollection<PollElement> _children = new ObservableCollection<PollElement>();
+        public ObservableCollection<PollElement> Children
+        {
+            get { return _children; }
+        }
+
+        public static PollElement Root { get; private set; }
+
+        private static int IdPointer = 0;
+        public static int _IdPointer
+        {
+            get
+            {
+                return IdPointer;
+            }
+        }
+        public PollElement Parent { get; private set; }
+
+        private string name;
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+                SendPropertyChanged("Name");
+            }
+        }
+
+        public int Id { get; private set; }
+        public PollElement(PollElement parent, string title)
+        {
+            this.Parent = parent;
+            this.Name = title;
+            this.Id = IdPointer;
+
+            if (this.Id == 0)
+                Root = this;
+            else
+            {
+                this.Parent._children.Add(this);
+            }
+
+            IdPointer++;
+        }
+
+        public static void ClearIdPointer()
+        {
+            IdPointer = 0;
+        }
+
+        public void RemoveChild(PollElement child)
+        {
+            this.Children.Remove(child);
+            Root.SendPropertyChanged("Children");
+        }
+        public bool HasChildren
+        {
+            get
+            {
+                return _children.Count > 0;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void SendPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}

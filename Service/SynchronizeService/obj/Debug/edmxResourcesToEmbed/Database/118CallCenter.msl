@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="CallCenterModelStoreContainer" CdmEntityContainer="myCallCenter">
+    <EntitySetMapping Name="ChangeLogs">
+      <EntityTypeMapping TypeName="CallCenterModel.ChangeLog">
+        <MappingFragment StoreEntitySet="ChangeLog">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ChangeTypeID" ColumnName="ChangeTypeID" />
+          <ScalarProperty Name="WebServiceID" ColumnName="WebServiceID" />
+          <ScalarProperty Name="CenterID" ColumnName="CenterID" />
+          <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+          <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+          <ScalarProperty Name="SetupDate" ColumnName="SetupDate" />
+          <ScalarProperty Name="SubscriberTypeID" ColumnName="SubscriberTypeID" />
+          <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="LocalCounter" ColumnName="LocalCounter" />
+          <ScalarProperty Name="DomecticCounter" ColumnName="DomecticCounter" />
+          <ScalarProperty Name="InternationalCounter" ColumnName="InternationalCounter" />
+          <ScalarProperty Name="OldPhoneNo" ColumnName="OldPhoneNo" />
+          <ScalarProperty Name="OldLocalCounter" ColumnName="OldLocalCounter" />
+          <ScalarProperty Name="OldDomecticCounter" ColumnName="OldDomecticCounter" />
+          <ScalarProperty Name="OldInternationalCounter" ColumnName="OldInternationalCounter" />
+          <ScalarProperty Name="Trust" ColumnName="Trust" />
+          <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+          <ScalarProperty Name="IsConfirmed" ColumnName="IsConfirmed" />
+          <ScalarProperty Name="IsApplied" ColumnName="IsApplied" />
+          <ScalarProperty Name="IsAutomaticLog" ColumnName="IsAutomaticLog" />
+          <ScalarProperty Name="IsFoxProExport" ColumnName="IsFoxProExport" />
+          <ScalarProperty Name="Elka_FI_CODE" ColumnName="Elka_FI_CODE" />
+          <ScalarProperty Name="IsAppied118" ColumnName="IsAppied118" />
+          <ScalarProperty Name="ViewIn118" ColumnName="ViewIn118" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ChangeTypes">
+      <EntityTypeMapping TypeName="CallCenterModel.ChangeType">
+        <MappingFragment StoreEntitySet="ChangeType">
+          <ScalarProperty Name="ElkaTable" ColumnName="ElkaTable" />
+          <ScalarProperty Name="CostTypeID" ColumnName="CostTypeID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Pendar._118
+{
+    class Constants
+    {
+        public const string _118ConfigFile = "118.Config";
+        public static Guid Role_Panchist = new Guid("638128c4-4c08-4455-8a2e-365969498f96");
+        public const int StartSearchDelay = 700;
+        public const string RemoveNumberConfirmMessage = "آیا نسبت به حذف شماره تلفن جاری مطمئن میباشید؟";
+        public const int PlayNumberWaitForResultTimeout = 2000;
+        public const string Result_NoNumber = "NoNumber";
+    }
+}

@@ -1,0 +1,228 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Pendar._118.ViewModel;
+using Enterprise;
+using Pendar._118.ConstantsAndStructure;
+using Folder;
+using System.Data.Linq;
+using Pendar._118.ConstantsAndStructures;
+using UMSV;
+
+namespace Pendar._118.CodeFiles
+{
+    class DirectServer
+    {
+        Voip118_EMQ_ViewModel DB_Service = new Voip118_EMQ_ViewModel();
+        private int operatorHiddenLevel = Constants.HiddenLevel_Operator;
+
+        int? ResultCount = null;
+
+        public DirectServer()
+        {
+
+        }
+
+        #region Remote Methods
+        public List<Phone> Search(TokenForSearch token)
+        {
+            if (ResultCount == null)
+            {
+                ResultCount = GetResultCountByUser(User.Current.ID);
+            }
+            if (ResultCount == 0)
+            {
+                Logger.WriteInfo("You aren't a currect user for 118-Center ");
+                return null;
+            }
+            Logger.WriteInfo("Search Initiating...");
+            if (TokenManager.IsNumeric(token.Title))
+            {
+            }
+            token = TokenManager.seperateJobAsToken(token);
+            if (token.Job_Abbreviation != string.Empty)
+            {
+                token.Job_pAbbreviation = TokenManager.PrepareString(token.Job_Abbreviation);
+                token.Job_ID = DB_Service.GetJobsByAbbreviation(token.Job_pAbbreviation);
+                Logger.WriteInfo("Server searching with Job:'{0}=>{1}' for Title:'{2}' in Address:'{3}'", token.Job_Abbreviation, token.Job_ID, token.Title, token.Address);
+            }
+            else
+                Logger.WriteInfo("Server searching people with Title:'{0}' in Address:'{1}'", token.Title, token.Address);
+
+            token.TitlePrepared = TokenManager.PrepareString(token.Title);
+            token.AddressPrepared = TokenManager.PrepareString(token.Address);
+
+            token.TitleFullText = TokenManager.MakeFullTextToken(token.TitlePrepared);
+            token.AddressFullText = TokenManager.MakeFullTextToken(token.AddressPrepared);
+
+            if (token.Job_ID == null || token.Job_ID==-1) token.Job_ID = 1;//The search on people phones
+
+            Logger.WriteInfo("Search Starting...");
+            List<Phone> PhoneResult = DB_Service.GetPhonesByToken(token, ResultCount,operatorHiddenLevel);
+            if (PhoneResult != null)
+                Logger.WriteInfo("Search Finished.{0}", PhoneResult.Count());
+            else
+                Logger.WriteInfo("Search Finished Without Any Result!");
+            return PhoneResult;
+        }
+
+        public List<City> GetAllCities()
+        {
+            if (ResultCount == null)
+            {
+                ResultCount = GetResultCountByUser(User.Current.ID);
+            }
+            if (ResultCount == 0)
+            {
+                Logger.WriteInfo("You aren't a currect user for 118-Center ");
+                return null;
+            }
+            Logger.WriteInfo("Fetching All Cities...");
+            List<City> CitiesResult = DB_Service.GetAllCities();
+            if (CitiesResult != null)
+                Logger.WriteInfo("Fetch Finished.{0}", CitiesResult.Count());
+            else
+                Logger.WriteInfo("Fetch Finished Without Any Result!");
+            return CitiesResult;
+        }
+
+        public string GetOperatorLevel(Guid userID)
+        {
+            FolderDataContext FDC = new FolderDataContext();
+            User CurrentUser = FDC.Users.FirstOrDefault(u => u.ID == userID);
+
+            EntitySet<UserRole> userLevel = CurrentUser.UserRoles;
+
+            foreach (UserRole roleLevel in userLevel)
+            {
+                if (roleLevel.RoleID == Constants.Role_Operator)
+                {
+                    ResultCount = Constants.ResultCount_Operator;
+                    operatorHiddenLevel = Constants.HiddenLevel_Operator;
+                    return Constants.Level_Operator;
+                }
+                if (roleLevel.RoleID == Constants.Role_SuperVisor)
+                {
+                    ResultCount = Constants.ResultCount_Supervisor;
+                    operatorHiddenLevel = Constants.HiddenLevel_Supervisor;
+                    return Constants.Level_Supervisor;
+                }
+                if (roleLevel.RoleID == Constants.Role_Manager)
+                {
+                    ResultCount = Constants.ResultCount_Manager;
+                    operatorHiddenLevel = Constants.HiddenLevel_Manager;
+                    return Constants.Level_Manager;
+                }
+                if (roleLevel.RoleID == Constants.Role_Pendar)
+                {
+                    ResultCount = Constants.ResultCount_Pendar;
+                    operatorHiddenLevel = Constants.HiddenLevel_Pendar;
+                    return Constants.Level_Pendar;
+                }
+            }
+            ResultCount = Constants.ResultCount_Operator;
+            operatorHiddenLevel = Constants.HiddenLevel_Operator;
+            return Constants.Level_Operator;
+        }
+
+        public List<Job> GetAllJobsAbbreviation()
+        {
+            Logger.WriteInfo("Fetching All Jobs Abbreviation...");
+            List<Job> JobsAbbreviationResult = DB_Service.GetAllJobsAbbreviation();
+            
+            if (JobsAbbreviationResult != null)
+                Logger.WriteInfo("Fetch Finished.{0}", JobsAbbreviationResult.Count());
+            else
+                Logger.WriteInfo("Fetch Finished Without Any Result!");
+            
+            return JobsAbbreviationResult;
+            
+        }
+
+
+        #endregion
+        #region User Methods
+        /// <summary>
+        /// Define how many records user can see in result.
+        /// </summary>
+        /// <param name="userID">UserID in Guid type</param>
+        /// <returns></returns>
+        private int GetResultCountByUser(Guid userID)
+        {
+            FolderDataContext FDC = new FolderDataContext();
+            User CurrentUser = FDC.Users.FirstOrDefault(u => u.ID == userID);
+
+            EntitySet<UserRole> userLevel = CurrentUser.UserRoles;
+
+            foreach (UserRole roleLevel in userLevel)
+            {
+                if (roleLevel.RoleID == Constants.Role_Operator)
+                    return Constants.ResultCount_Operator;
+                if (roleLevel.RoleID == Constants.Role_SuperVisor)
+                    return Constants.ResultCount_Supervisor;
+                if (roleLevel.RoleID == Constants.Role_Manager)
+                    return Constants.ResultCount_Manager;
+                if (roleLevel.RoleID == Constants.Role_Pendar)
+                    return Constants.ResultCount_Pendar;
+            }
+
+            return 0;
+        }
+        #endregion
+
+        public void PlayNumber(string[] phones, string callID)
+        {
+            Results.Add(callID, phones);
+            //Results[callID] = phones;
+        }
+
+        private SafeDictionary<string, string[]> Results
+        {
+            get
+            {
+                if (!Folder.Console.Application.ContainsKey("118.Results"))
+                    Folder.Console.Application["118.Results"] = new SafeDictionary<string, string[]>();
+
+                return (SafeDictionary<string, string[]>)Folder.Console.Application["118.Results"];
+            }
+        }
+
+        internal string GetCityIDByCallerID(string cityCode, string cityPrefix)
+        {
+            string CityID=DB_Service.GetCityCodeByCallerID(cityCode, cityPrefix);
+            return CityID;
+        }
+
+        internal void SetInBlackList(string callerID,Guid userID)
+        {
+            UmsDataContext dc = new UmsDataContext();
+            SpecialPhone blackNumber = new SpecialPhone();
+            blackNumber.Comment = "118 Annoying";
+            blackNumber.Number = callerID;
+            blackNumber.Type = SpecialPhone.SpecialType.BlackList;
+            blackNumber.UserID = userID;
+            blackNumber.RegisterTime = DateTime.Now;
+
+
+            dc.SpecialPhones.InsertOnSubmit(blackNumber);
+            dc.SubmitChanges();
+        }
+
+        internal int GetOperatorHidden(string OLevel)
+        {
+            if (OLevel == Constants.Level_Operator)
+                return Constants.HiddenLevel_Operator;
+            if (OLevel == Constants.Level_Supervisor)
+                return Constants.HiddenLevel_Supervisor;
+            if (OLevel == Constants.Level_Manager)
+                return Constants.HiddenLevel_Manager;
+            if (OLevel == Constants.Level_Pendar)
+                return Constants.HiddenLevel_Pendar;
+            return 0;
+        }
+
+    }
+
+}
+

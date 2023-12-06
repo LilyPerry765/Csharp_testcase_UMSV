@@ -1,0 +1,61 @@
+﻿<Window x:Class="UMSV.SmsSendView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:Pendar.Ums.Model.Converters;assembly=UMS.Model"
+        xmlns:f="clr-namespace:Folder;assembly=Folder.Common"
+        xmlns:c="clr-namespace:UMSV"
+        FlowDirection="RightToLeft"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Tahoma"
+        Title="ارسال پيام کوتاه"
+        f:DialogResultHelper.DialogResult="{Binding DialogResult}"
+        Height="460"
+        Width="616">
+    <Window.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Common;Component/Resources/DefaultTheme.xaml" />
+    </Window.Resources>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top"
+                   Margin="5,10">
+            <TextBlock DockPanel.Dock="Left"
+                       Margin="3">عنوان:</TextBlock>
+            <TextBox Margin="3"
+                     Text="{Binding Informing.Subject}" />
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Bottom"
+                   Margin="5"
+                   Height="27">
+            <DockPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="DockPanel.Dock"
+                            Value="Right" />
+                    <Setter Property="Margin"
+                            Value="3" />
+                    <Setter Property="Width"
+                            Value="75" />
+                </Style>
+            </DockPanel.Resources>
+            <Button  Command="{Binding SaveCommand}">اعمال</Button>
+            <Button IsCancel="True">انصراف</Button>
+            <Button Command="{Binding OKCommand}"
+                    IsDefault="True">تاييد</Button>
+            <CheckBox VerticalAlignment="Center"
+                      IsChecked="{Binding Informing.Enabled}"
+                      Margin="10,5">فعال</CheckBox>
+        </DockPanel>
+        <TabControl Margin="5"
+                    SelectedIndex="{Binding SelectedTabIndex}">
+            <TabItem Header="متن پيام کوتاه">
+                <TextBox Text="{Binding Informing.Description}" AcceptsReturn="True"
+                         AcceptsTab="True" 
+                         Margin="10"/>
+            </TabItem>
+            <TabItem Header="شماره های تماس">
+                <c:InformingRecordsGrid />
+            </TabItem>
+            <TabItem Header="زمان بندی">
+                <c:SchedulePanel />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

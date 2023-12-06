@@ -1,0 +1,155 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UMSV;
+using System.Transactions;
+
+namespace Plugin.Poll.DB
+{
+    internal static class PollDB
+    {
+        internal static List<UMSV.Poll> SearchPoll(string pollTitle)
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.Polls.Where(t => (string.IsNullOrEmpty(pollTitle) || t.PollTitle.Contains(pollTitle))) .ToList();
+            }
+        }
+        internal static int SavePollElements(PollElement parentElement, int previousPollId)
+        {
+            UMSV.Poll poll = null;
+            using (TransactionScope scope = new TransactionScope())
+            {
+                if (previousPollId != 0)
+                {
+                    using (UmsDataContext context = new UmsDataContext())
+                    {
+                        UMSV.Poll PreviousPoll = context.Polls.Single(t => t.Id == previousPollId);
+                        List<PollQuestion> PreviousQuestions = context.PollQuestions.Where(t => t.PollId == PreviousPoll.Id).ToList();
+                        List<PollAnswer> PreviousAnswers = null;
+                        if (PreviousQuestions != null)
+                            PreviousAnswers = context.PollAnswers.Where(t => PreviousQuestions.Select(s => s.Id).Contains(t.PollQuestionId)).ToList();
+
+                        if (PreviousAnswers != null)
+                            context.PollAnswers.DeleteAllOnSubmit(PreviousAnswers);
+                        context.PollQuestions.DeleteAllOnSubmit(PreviousQuestions);
+                        context.Polls.DeleteOnSubmit(PreviousPoll);
+
+                        context.SubmitChanges();
+                    }
+                }
+
+                if (parentElement != null)
+                {
+                    using (UmsDataContext context = new UmsDataContext())
+                    {
+                        poll = new UMSV.Poll()
+                        {
+                            PollTitle = parentElement.Name,
+                        };
+
+                        context.Polls.InsertOnSubmit(poll);
+                        context.SubmitChanges();
+
+                        foreach (var question in parentElement.Children)
+                        {
+                            PollQuestion pollQuestion = new PollQuestion()
+                            {
+                                PollId = poll.Id,
+                                Question = question.Name
+                            };
+
+                            context.PollQuestions.InsertOnSubmit(pollQuestion);
+                            context.SubmitChanges();
+
+                            foreach (var answer in question.Children)
+                            {
+                                PollAnswer pollAnswer = new PollAnswer()
+                                {
+                                    PollQuestionId = pollQuestion.Id,
+                                    Answer = answer.Name
+                                };
+
+                                context.PollAnswers.InsertOnSubmit(pollAnswer);
+                                context.SubmitChanges();
+                            }
+                        }
+                    }
+                }
+                scope.Complete();
+            }
+
+            return poll == null ? -1 : poll.Id;
+        }
+        internal static void EditPollElements(PollElement parentElement, int pollId)
+        {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                using (UmsDataContext context = new UmsDataContext())
+                {
+                    UMSV.Poll poll = context.Polls.Single(t => t.Id == pollId);
+                    poll.PollTitle = parentElement.Name;
+                    context.SubmitChanges();
+
+                    List<PollQuestion> PreviousQuestions = context.PollQuestions.Where(t => t.PollId == poll.Id).ToList();
+                    List<PollAnswer> PreviousAnswers = null;
+                    if (PreviousQuestions != null)
+                        PreviousAnswers = context.PollAnswers.Where(t => PreviousQuestions.Select(s => s.Id).Contains(t.PollQuestionId)).ToList();
+
+                    if (PreviousAnswers != null)
+                        context.PollAnswers.DeleteAllOnSubmit(PreviousAnswers);
+                    context.PollQuestions.DeleteAllOnSubmit(PreviousQuestions);
+
+                    context.SubmitChanges();
+
+                    foreach (var question in parentElement.Children)
+                    {
+                        PollQuestion pollQuestion = new PollQuestion()
+                        {
+                            PollId = poll.Id,
+                            Question = question.Name
+                        };
+
+                        context.PollQuestions.InsertOnSubmit(pollQuestion);
+                        context.SubmitChanges();
+
+                        foreach (var answer in question.Children)
+                        {
+                            PollAnswer pollAnswer = new PollAnswer()
+                            {
+                                PollQuestionId = pollQuestion.Id,
+                                Answer = answer.Name
+                            };
+
+                            context.PollAnswers.InsertOnSubmit(pollAnswer);
+                            context.SubmitChanges();
+                        }
+                    }
+                }
+                scope.Complete();
+            }
+        }
+        internal static UMSV.Poll GetPollById(int pollId)
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.Polls.SingleOrDefault(t => t.Id == pollId);
+            }
+        }
+        internal static List<PollQuestion> GetPollQuestionsByPollId(int pollId)
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.PollQuestions.Where(t => t.PollId == pollId).ToList();
+            }
+        }
+        internal static List<PollAnswer> GetPollAnswersByPollQuestionId(int pollQuestionId)
+        {
+            using (UmsDataContext context = new UmsDataContext())
+            {
+                return context.PollAnswers.Where(t => t.PollQuestionId == pollQuestionId).ToList();
+            }
+        }
+    }
+}

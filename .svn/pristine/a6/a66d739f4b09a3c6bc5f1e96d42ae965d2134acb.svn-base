@@ -1,0 +1,441 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder;
+using Folder.Commands;
+
+namespace Pendar._118
+{
+    public class PhonesEditFormViewModel : ViewModelBase, IFolderForm
+    {
+        #region Property Name
+        private string _Name;
+        public string Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                _Name = value;
+                SendPropertyChanged("Name");
+            }
+        }
+        #endregion
+
+        #region Property PhoneNumber
+        private string _PhoneNumber;
+        public string PhoneNumber
+        {
+            get
+            {
+                return _PhoneNumber;
+            }
+            set
+            {
+                _PhoneNumber = value;
+                SendPropertyChanged("PhoneNumber");
+            }
+        }
+        #endregion
+
+        #region Property Address
+        private string _Address;
+        public string Address
+        {
+            get
+            {
+                return _Address;
+            }
+            set
+            {
+                _Address = value;
+                SendPropertyChanged("Address");
+            }
+        }
+        #endregion
+
+        #region Property Hidden
+        private bool? _Hidden;
+        public bool? Hidden
+        {
+            get
+            {
+                return _Hidden;
+            }
+            set
+            {
+                _Hidden = value;
+                SendPropertyChanged("Hidden");
+            }
+        }
+        #endregion
+
+        #region Property AllowSearchByPhone
+        private bool? _AllowSearchByPhone;
+        public bool? AllowSearchByPhone
+        {
+            get
+            {
+                return _AllowSearchByPhone;
+            }
+            set
+            {
+                _AllowSearchByPhone = value;
+                SendPropertyChanged("AllowSearchByPhone");
+            }
+        }
+        #endregion
+
+        #region Property ModifiedDateFrom
+        private DateTime? _ModifiedDateFrom;
+        public DateTime? ModifiedDateFrom
+        {
+            get
+            {
+                return _ModifiedDateFrom;
+            }
+            set
+            {
+                _ModifiedDateFrom = value;
+                SendPropertyChanged("ModifiedDateFrom");
+            }
+        }
+        #endregion
+
+        #region Property ModifiedDateTo
+        private DateTime? _ModifiedDateTo;
+        public DateTime? ModifiedDateTo
+        {
+            get
+            {
+                return _ModifiedDateTo;
+            }
+            set
+            {
+                _ModifiedDateTo = value;
+                SendPropertyChanged("ModifiedDateTo");
+            }
+        }
+        #endregion
+
+        #region Property Modifier
+        private Guid? _Modifier;
+        public Guid? Modifier
+        {
+            get
+            {
+                return _Modifier;
+            }
+            set
+            {
+                _Modifier = value;
+                SendPropertyChanged("Modifier");
+            }
+        }
+        #endregion
+
+        #region Property ModifierList
+        private List<User> _ModifierList;
+        public List<User> ModifierList
+        {
+            get
+            {
+                return _ModifierList;
+            }
+            set
+            {
+                _ModifierList = value;
+                SendPropertyChanged("ModifierList");
+            }
+        }
+        #endregion
+
+        #region Property Jobs
+        private List<Job> _Jobs;
+        public List<Job> Jobs
+        {
+            get
+            {
+                return _Jobs;
+            }
+            set
+            {
+                _Jobs = value;
+                SendPropertyChanged("Jobs");
+            }
+        }
+        #endregion
+
+        #region Property Cities
+        private List<City> _Cities;
+        public List<City> Cities
+        {
+            get
+            {
+                return _Cities;
+            }
+            set
+            {
+                _Cities = value;
+                SendPropertyChanged("Cities");
+            }
+        }
+        #endregion
+
+        #region Property Data
+        private List<Phone> _Data;
+        public List<Phone> Data
+        {
+            get
+            {
+                if (_Data == null)
+                    _Data = new List<Pendar._118.Phone>();
+                return _Data;
+            }
+            set
+            {
+                _Data = value;
+                SendPropertyChanged("Data");
+            }
+        }
+        #endregion
+
+        #region Property Filter
+        private PhoneFilter _Filter = new PhoneFilter() {
+            Phone = new Phone(),
+        };
+        public PhoneFilter Filter
+        {
+            get
+            {
+                return _Filter;
+            }
+            set
+            {
+                _Filter = value;
+                SendPropertyChanged("Filter");
+            }
+        }
+        #endregion
+
+        #region Command View
+        private DelegateCommand _ViewCommand;
+        public DelegateCommand ViewCommand
+        {
+            get
+            {
+                if (_ViewCommand == null)
+                    _ViewCommand = new DelegateCommand(View);
+                return _ViewCommand;
+            }
+        }
+
+        void View()
+        {
+            if (string.IsNullOrEmpty(Filter.Phone.Name) &&
+                string.IsNullOrEmpty(Filter.Phone.PhoneNumber) && 
+                !Filter.ModifiedDateFrom.HasValue)
+            {
+                Data = new List<Pendar._118.Phone>();
+                return;
+            }
+
+            var result = dc.Phones.AsQueryable();
+
+            if (Filter.Phone.CityID.HasValue)
+                result = result.Where(p => p.CityID == Filter.Phone.CityID);
+
+            if (Filter.Phone.JobID.HasValue)
+                result = result.Where(p => p.JobID == Filter.Phone.JobID);
+
+            var name = TokenManager.PrepareString(Filter.Phone.Name).Replace(" ", "");
+            if (!string.IsNullOrWhiteSpace(Filter.Phone.Name))
+                result = result.Where(a => a.NamePrepared.Contains(name));
+
+            var address = TokenManager.PrepareString(Filter.Phone.Address).Replace(" ", "");
+            if (!string.IsNullOrWhiteSpace(Filter.Phone.Address))
+                result = result.Where(a => a.AddressPrepared.Contains(address));
+
+            if (Filter.ModifiedDateFrom.HasValue)
+                result = result.Where(a => a.ModifiedDate > Filter.ModifiedDateFrom);
+
+            if (Filter.ModifiedDateTo.HasValue)
+                result = result.Where(a => a.ModifiedDate < Filter.ModifiedDateTo);
+
+            if (!string.IsNullOrWhiteSpace(Filter.Phone.PhoneNumber))
+                result = result.Where(a => a.PhoneNumber.StartsWith(Filter.Phone.PhoneNumber));
+
+            if (Filter.Hidden.HasValue)
+                result = result.Where(a => a.Hidden == Filter.Hidden);
+
+            if (Filter.AllowSearchByPhone.HasValue)
+                result = result.Where(a => a.AllowSearchByPhone == Filter.AllowSearchByPhone);
+
+            result = result.Take(2000).OrderBy(phone => phone.Name);
+            Data = result.ToList();
+        }
+
+        #endregion
+
+        public PhonesEditFormViewModel()
+        {
+            using (FolderDataContext dc = new FolderDataContext())
+            {
+                ModifiedDateFrom = dc.GetDate().Value.Date;
+            }
+
+
+        }
+
+        Voip118DataContext dc = new Voip118DataContext();
+
+        #region IFolderForm Members
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            Jobs = dc.Jobs.ToList();
+            Cities = dc.Cities.ToList();
+        }
+
+        #endregion
+
+        bool isNewPhone = false;
+
+        internal void OnNewItemInsert(Phone phone)
+        {
+            isNewPhone = true;
+        }
+
+        internal bool OnEditEnded(Phone phone)
+        {
+            phone.AllowSearchByPhone = false;
+            phone.Hidden = false;
+            phone.ModifiedDate = new FolderDataContext().GetDate().Value;
+            phone.Name = phone.Name ?? string.Empty;
+            phone.Address = phone.Address ?? string.Empty;
+
+            if (isNewPhone)
+            {
+                if (dc.Phones.Any(p => p.PhoneNumber == phone.PhoneNumber))
+                {
+                    var phones = from p in dc.Phones
+                                 where p.PhoneNumber == phone.PhoneNumber
+                                 select p;
+
+                    string alreadyPhones = string.Join("\r\n", phones.ToList()
+                        .Select(p => string.Format("عنوان: {0}، آدرس: {1}", p.Name, p.Address)));
+                    if (MessageBox.ShowQuestion("اطلاعات برای شماره تلفن وارد شده قبلا در سیستم ثبت شده است:\r\n{0}\r\nاطلاعات جدید ثبت شود؟", alreadyPhones) != System.Windows.MessageBoxResult.Yes)
+                    {
+                        return false;
+                    }
+                }
+
+                if (phone.Name == string.Empty)
+                {
+                    MessageBox.ShowError("عنوان مشترک وارد نشده است.");
+                    return false;
+                }
+
+                dc.Phones.InsertOnSubmit(phone);
+                isNewPhone = false;
+            }
+
+            phone.NamePrepared = TokenManager.PrepareString(phone.Name).Replace(" ", "");
+            phone.AddressPrepared = TokenManager.PrepareString(phone.Address).Replace(" ", "");
+            dc.SubmitChanges();
+            return true;
+        }
+
+        internal void OnDeleteItem(Phone phone)
+        {
+            dc.Phones.DeleteOnSubmit(phone);
+            dc.SubmitChanges();
+        }
+    }
+
+    public class PhoneFilter : ViewModelBase
+    {
+        #region Property Phone
+        private Phone _Phone;
+        public Phone Phone
+        {
+            get
+            {
+                return _Phone;
+            }
+            set
+            {
+                _Phone = value;
+                SendPropertyChanged("Phone");
+            }
+        }
+        #endregion
+
+        #region Property ModifiedDateFrom
+        private DateTime? _ModifiedDateFrom;
+        public DateTime? ModifiedDateFrom
+        {
+            get
+            {
+                return _ModifiedDateFrom;
+            }
+            set
+            {
+                _ModifiedDateFrom = value;
+                SendPropertyChanged("ModifiedDateFrom");
+            }
+        }
+        #endregion
+
+        #region Property ModifiedDateTo
+        private DateTime? _ModifiedDateTo;
+        public DateTime? ModifiedDateTo
+        {
+            get
+            {
+                return _ModifiedDateTo;
+            }
+            set
+            {
+                _ModifiedDateTo = value;
+                SendPropertyChanged("ModifiedDateTo");
+            }
+        }
+        #endregion
+
+        #region Property Hidden
+        private bool? _Hidden;
+        public bool? Hidden
+        {
+            get
+            {
+                return _Hidden;
+            }
+            set
+            {
+                _Hidden = value;
+                SendPropertyChanged("Hidden");
+            }
+        }
+        #endregion
+
+        #region Property AllowSearchByPhone
+        private bool? _AllowSearchByPhone;
+        public bool? AllowSearchByPhone
+        {
+            get
+            {
+                return _AllowSearchByPhone;
+            }
+            set
+            {
+                _AllowSearchByPhone = value;
+                SendPropertyChanged("AllowSearchByPhone");
+            }
+        }
+        #endregion
+    }
+}

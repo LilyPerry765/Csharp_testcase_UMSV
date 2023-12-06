@@ -1,0 +1,207 @@
+﻿
+<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/MainMaster.Master"
+    AutoEventWireup="true" CodeBehind="InformingList.aspx.cs" Inherits="UMS.Informing.WebInterface.WebForms.InformingList" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadPlaceHolder" runat="server">
+    <link href="/Content/body.css" rel="stylesheet" type="text/css" />
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="BodyPlaceHolder" runat="server">
+    <div id="container">
+        <div id="body-items">
+            <table class="custom_background">
+                <asp:ListView ID="DetailsListView1" runat="server" InsertItemPosition="LastItem"
+                    DataKeyNames="ID" OnItemInserting="DetailsListView1_ItemInserting" OnItemEditing="DetailsListView1_ItemEditing"
+                    OnItemCanceling="DetailsListView1_ItemCanceling" OnItemDeleting="DetailsListView1_ItemDeleting"
+                    OnItemUpdating="DetailsListView1_ItemUpdating" OnItemDataBound="DetailsListView1_DataBound" OnItemCommand="DetailsListView1_ItemCommand">
+                    <LayoutTemplate>
+                        <tr>
+                            <td class="controls right" >
+                                <fieldset style="padding: 2px; width: 950px;">
+                                    <legend>لیست ارسال پیام</legend>
+                                    <table class="datalist" style="width: 100%; font-size: 8pt;">
+                                        <tr>
+                                            <th class="center" style="width: 40px">
+                                                شناسه
+                                            </th>
+                                            <th class="center" style="width: 40px">
+                                                فعال
+                                            </th>
+                                            <th class="cell-date   right">
+                                                عنوان
+                                            </th>
+                                            <th class="cell-date   right">
+                                                عنوان درختواره
+                                            </th>
+                                            <th class="cell-text   right">
+                                                دفعات تلاش
+                                            </th>
+                                            <th class="cell-text   right">
+                                                تاریخ ارسال
+                                            </th>
+                                            <th class="cell-text   right">
+                                                از ساعت
+                                            </th>
+                                            <th class="cell-text   right">
+                                                تا ساعت
+                                            </th>
+                                            <th class="cell-text   right">
+                                                عملیات
+                                            </th>
+                                        </tr>
+                                        <asp:PlaceHolder ID="itemPlaceHolder" runat="server" />
+                                    </table>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </LayoutTemplate>
+                    <ItemTemplate>
+                        <tr class='<%# (Container.DataItemIndex % 2 == 0) ? "even" : "odd" %>'>
+                            <td class="right">
+                                <%# Eval("Id") %>
+                            </td>
+                            <td class="right">
+                                <%# (bool)Eval("Enabled") ? "فعال" : "غیرفعال"%>
+                            </td>
+                            <td class="right">
+                                <%# Eval("Subject")%>
+                            </td>
+                            <td class="right">
+                                <%# Eval("GraphName") %>
+                            </td>
+                            <td class="hidden">
+                                <%# Eval("GraphId") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("RetryCount") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallDate") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallFromTime") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallToTime") %>
+                            </td>
+                            <td class="right">
+                                <asp:LinkButton ID="EditButton" runat="server" CommandName="Edit"><img alt="ویرایش" src="/images/edit-1.gif" /></asp:LinkButton>
+                                <asp:LinkButton ID="ExportButton" runat="server" CommandName="Export"><img alt="استخراج" src="/images/eye.png" /></asp:LinkButton>
+                            </td>
+                        </tr>
+                    </ItemTemplate>
+                    <EditItemTemplate>
+                        <tr class='<%# (Container.DataItemIndex % 2 == 0) ? "even" : "odd" %>'>
+                            <td class="right">
+                                <asp:Label ID="IdLabel" runat="server" Text='<%# Bind("Id") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:CheckBox ID="EnabledCheckBox" runat="server" Checked='<%# Bind("Enabled") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox ID="SubjectTextBox" runat="server" Text='<%# Bind("Subject") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:DropDownList ID="GraphNameDropDownList" DataTextField="Name" DataValueField="ID"
+                                    runat="server" Height="16px"/>
+                            </td>
+                            <td class="hidden">
+                                <asp:TextBox ID="GraphIdTextBox" runat="server" Text='<%# Bind("GraphId") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox ID="RetryCountTextBox" runat="server" Text='<%# Bind("RetryCount") %>' />
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallDate") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallFromTime") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallToTime") %>
+                            </td>
+                            <%--<td class="right">
+                                <asp:TextBox ID="CallDateTextBox" ReadOnly="true" runat="server" Text='<%# Bind("CallDate") %>' onclick="ShowDateTimePicker(this.id);" />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox ID="CallFromTimeTextBox" runat="server" Text='<%# Bind("CallFromTime") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox ID="CallToTimeTextBox" runat="server" Text='<%# Bind("CallToTime") %>' />
+                            </td>--%>
+                            <td class="right">
+                                <asp:LinkButton ID="InsertButton" runat="server" CommandName="Update"><img alt="بروزرسانی" src="/images/disk_blue.png" /></asp:LinkButton>
+                                <asp:LinkButton ID="LinkButton1" runat="server" CommandName="Delete" OnClientClick="return confirm('آيا مطمئن هستيد؟')"><img alt="حدف" src="/images/delete2.png" /></asp:LinkButton>
+                                <asp:LinkButton ID="CancelButton" runat="server" CommandName="Cancel"><img alt="انصراف" src="/images/undo.png" /></asp:LinkButton>
+                                <br />
+                                <br />
+                                <asp:LinkButton ID="AddSchedule" runat="server" CommandName="AddSchedule"><img alt="اضافه کردن زمانبندی" src="/images/clock1.png" /></asp:LinkButton>
+                                <a style="color:black">فایل زمانبندی:</a>
+                                <asp:FileUpload ID="ScheduleUploadControl" runat="server" />
+                                <br />
+                                <br />
+                                <asp:LinkButton ID="ImportButton" runat="server" CommandName="Import"><img alt="دریافت" src="/images/document.png" /></asp:LinkButton>
+                                <a style="color:black">فایل شماره تلفن:</a>
+                                <asp:FileUpload ID="CSVUploadControl" runat="server" />
+                            </td>
+                        </tr>
+                    </EditItemTemplate>
+                    <InsertItemTemplate>
+                        <tr class="footer-row">
+                            <td class="right">
+                                <asp:Label ID="IdLabel" runat="server" Text='<%# Bind("Id") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:CheckBox ID="EnabledCheckBox" runat="server" Checked='<%# Bind("Enabled") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox ID="SubjectTextBox" runat="server" Text='<%# Bind("Subject") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:DropDownList ID="GraphNameDropDownList" DataTextField="Name" DataValueField="ID"
+                                    runat="server" Height="16px" />
+                            </td>
+                            <td class="hidden">
+                                <asp:TextBox ID="GraphIdTextBox" runat="server" Text='<%# Bind("GraphId") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox ID="RetryCountTextBox" runat="server" Text='<%# Bind("RetryCount") %>' />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox  style="visibility:collapse" runat="server" />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox style="visibility:collapse" runat="server" />
+                            </td>
+                            <td class="right">
+                                <asp:TextBox style="visibility:collapse" runat="server"/>
+                            </td>
+                            <td class="right">
+                                <asp:LinkButton ID="InsertButton" runat="server" CommandName="Insert"><img alt="اضافه" src="/images/disk_blue.png" /></asp:LinkButton>
+                                <asp:LinkButton ID="CancelButton" runat="server" CommandName="Cancel"><img alt="انصراف" src="/images/undo.png" /></asp:LinkButton>
+                            </td>
+                        </tr>
+                    </InsertItemTemplate>
+                </asp:ListView>
+            </table>
+        </div>
+    </div>
+    <script src="../scripts/calendar/calendar.js" type="text/javascript"></script>
+    <script src="../scripts/calendar/calendar2.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function popItUp(ticketid, rowindex) {
+            try {
+                window.open('TicketForm.aspx?ticketid=' + ticketid);
+                var gridView = document.getElementById("SearchResultGridView");
+                gridView.rows[rowindex + 1].style.color = "Black";
+            }
+            catch (error) {
+                window.status = error.Message;
+            }
+        }
+
+        $('.readonly:checkbox').click(function (e) {
+            e.preventDefault();
+        });
+    </script>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="FooterPlaceHolder" runat="server" />

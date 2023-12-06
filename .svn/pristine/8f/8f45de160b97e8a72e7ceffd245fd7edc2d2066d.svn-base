@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.AskNode"
+             FlowDirection="RightToLeft"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+             xmlns:f="clr-namespace:Folder;assembly=Folder.Common"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             mc:Ignorable="d"
+             d:DesignHeight="401"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider   x:Key="Group"
+                           IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup  Description="پرسش"
+                            Tag="Ask"
+                            StartNode="InvokeNodes[0]"
+                            LastNode="PlayNodes[2]"
+                            xmlns="http://tempuri.org/VoiceGraph.xsd">
+                    <InvokeNode ID="1"
+                                ClearDigits="true"
+                                Function="AskCheckMailbox">
+                        <Arg Name="boxNo" />
+                        <NodeResult Value="true"
+                                    TargetNode="6" />
+                        <NodeResult Value="false"
+                                    TargetNode="7" />
+                    </InvokeNode>
+                    <PlayNode ID="6"
+                              ClearDigits="true"
+                              TargetNode="5"
+                              IgnoreKeyPress="false">
+                        <Voice Name="AskMessage"
+                               Type="0" />
+                    </PlayNode>
+                    <PlayNode ID="7"
+                              ClearDigits="true"
+                              TargetNode="Bye"
+                              IgnoreKeyPress="false">
+                        <Voice Name="mailboxFull"
+                               Type="0" />
+                    </PlayNode>
+                    <PlayNode ID="2"
+                              ClearDigits="true"
+                              TargetNode="Bye"
+                              IgnoreKeyPress="false">
+                        <Voice Name="YourFollowupCodeIs"
+                               Type="0" />
+                        <Voice Name="[FollowUpCode]"
+                               Type="0" />
+                        <Voice Name="mibashad"
+                               Type="0" />
+                    </PlayNode>
+                    <InvokeNode ID="3"
+                                ClearDigits="true"
+                                Function="RecordQuestion">
+                        <Arg Name="boxNo" />
+                        <NodeResult TargetNode="2" />
+                    </InvokeNode>
+                    <RecordNode ID="5"
+                                ClearDigits="true"
+                                Timeout="120"
+                                StopKey="*"
+                                TargetNode="3"
+                                CancelOnDisconnect="false" />
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+    </UserControl.Resources>
+    <StackPanel>
+        <uc:CommonArea />
+        <Label>گره بعدی:</Label>
+        <uc:TargetSelector SelectedTarget="{Binding NodeData.PlayNodes[2].TargetNode}"
+                           Margin="0,0,0,5" />
+        <uc:VoiceSelector SelectedVoice="{Binding NodeData.PlayNodes[0].Voice[0]}" />
+        <uc:MailBoxInputBox x:Name="boxNoInputBox"
+                            HorizontalAlignment="Left"
+                            Width="100">
+            <uc:MailBoxInputBox.Text>
+                <MultiBinding Converter="{conv:UniformMultiConverter}">
+                    <Binding Path="NodeData.InvokeNodes[0].Arg[0].Value"
+                             UpdateSourceTrigger="PropertyChanged" />
+                    <Binding Path="NodeData.InvokeNodes[1].Arg[0].Value"
+                             UpdateSourceTrigger="PropertyChanged" />
+                </MultiBinding>
+            </uc:MailBoxInputBox.Text>
+        </uc:MailBoxInputBox>
+        <Label>مدت ضبط پيام:</Label>
+        <f:NumericUpDown x:Name="durationTextBox"
+                         Value="{Binding NodeData.RecordNodes[0].Timeout, UpdateSourceTrigger=PropertyChanged}"
+                         HorizontalAlignment="Left"
+                         Width="100" />
+    </StackPanel>
+</UserControl>

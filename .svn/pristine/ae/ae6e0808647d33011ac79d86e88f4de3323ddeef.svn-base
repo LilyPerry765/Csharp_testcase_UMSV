@@ -1,0 +1,519 @@
+﻿using Plugin.Poll.DB;
+using Plugin.Poll.Tree;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using UMSV.Schema;
+
+namespace Plugin.Poll.Forms
+{
+    public partial class PollForm : Window
+    {
+        public int LoadedPollId { get; private set; }
+        private int PreviousPollId = 0;
+        private int CurrentId = 0;
+        public PollForm()
+        {
+            InitializeComponent();
+        }
+
+        public PollForm(int pollId)
+        {
+            InitializeComponent();
+            LoadData(pollId);
+            LoadedPollId = pollId;
+        }
+
+        private void LoadData(int pollId)
+        {
+            try
+            {
+                UMSV.Poll poll = PollDB.GetPollById(pollId);
+                List<UMSV.PollQuestion> pollQuestions = PollDB.GetPollQuestionsByPollId(pollId);
+                List<UMSV.PollAnswer> pollAnswers = null;
+
+                var parent = new PollElement(null, "root");
+                var pollElement = new PollElement(parent, poll.PollTitle);
+
+                foreach (var pollQuestion in pollQuestions)
+                {
+                    pollAnswers = PollDB.GetPollAnswersByPollQuestionId(pollQuestion.Id);
+                    PollElement question = new PollElement(pollElement, pollQuestion.Question);
+
+                    foreach (var pollAnswer in pollAnswers)
+                    {
+                        new PollElement(question, pollAnswer.Answer);
+                    }
+                }
+
+                _treeView.ItemsSource = PollElement.Root.Children;
+            }
+            catch (Exception ex)
+            {
+                PollElement.ClearIdPointer();
+            }
+        }
+
+        private void AddChild(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ElementNameTextBox.Text.Trim()))
+            {
+                Folder.MessageBox.ShowInfo("لطفاً عنوان مورد نظر را وارد نمایید.");
+                return;
+            }
+
+            var children = (_treeView.ItemsSource as ObservableCollection<PollElement>);
+            if (children == null || children.Count == 0)
+            {
+                var parent = new PollElement(null, "root");
+                var pollElement = new PollElement(parent, ElementNameTextBox.Text.Trim());
+                _treeView.ItemsSource = parent.Children;
+            }
+            else
+            {
+                var element = _treeView.SelectedItem as PollElement;
+                switch (GetLevel(element))
+                {
+                    case PollLevel.Poll:
+                        var pollQuestion = new PollElement(element, ElementNameTextBox.Text.Trim());
+                        _treeView.ItemsSource = PollElement.Root.Children;
+                        break;
+
+                    case PollLevel.Question:
+                        var pollAnswer = new PollElement(element, ElementNameTextBox.Text.Trim());
+                        _treeView.ItemsSource = PollElement.Root.Children;
+                        break;
+
+                    case PollLevel.Answer:
+                        break;
+
+                    case PollLevel.Root:
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private PollLevel GetLevel(PollElement element)
+        {
+            if (element == null)
+                return PollLevel.Root;
+
+            if (element.Parent.Parent == null)
+                return PollLevel.Poll;
+
+            if (element.Parent.Parent.Parent == null)
+                return PollLevel.Question;
+
+            if (element.Parent.Parent.Parent.Parent == null)
+                return PollLevel.Answer;
+
+            return PollLevel.Root;
+        }
+
+        private void _treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (_treeView.SelectedItem == null)
+                return;
+
+            var element = (_treeView.SelectedItem as PollElement);
+            ElementNameTextBox.Text = element.Name;
+
+            switch (GetLevel(element))
+            {
+                case PollLevel.Poll:
+                    ElementNameLabel.Content = "عنوان نظرسنجی:";
+                    break;
+                case PollLevel.Question:
+                    ElementNameLabel.Content = "عنوان سؤال:";
+                    break;
+                case PollLevel.Answer:
+                    ElementNameLabel.Content = "پاسخ:";
+                    break;
+                case PollLevel.Root:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void EditChild(object sender, RoutedEventArgs e)
+        {
+            if (_treeView.SelectedItem == null)
+                return;
+
+            var element = _treeView.SelectedItem as PollElement;
+            element.Name = ElementNameTextBox.Text.Trim();
+
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            PollElement.ClearIdPointer();
+        }
+
+        private void SavePollElements(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (PollElement.Root != null && PollElement.Root.HasChildren)
+                {
+                    AddButton.IsEnabled = false;
+                    EditButton.IsEnabled = false;
+                    SaveButton.IsEnabled = false;
+
+                    if (this.LoadedPollId <= 0)
+                        this.LoadedPollId = PollDB.SavePollElements(PollElement.Root.Children[0], this.PreviousPollId);
+                    else
+                        PollDB.EditPollElements(PollElement.Root.Children[0], LoadedPollId);
+
+                    AddButton.IsEnabled = true;
+                    EditButton.IsEnabled = true;
+                    SaveButton.IsEnabled = true;
+
+                    Folder.MessageBox.ShowInfo("نظرسنجی با موفقیت ذخیره شد.");
+                }
+                else if (this.PreviousPollId != 0 && this.LoadedPollId <= 0)
+                {
+                    this.LoadedPollId = PollDB.SavePollElements(null, this.PreviousPollId);
+                    this.PreviousPollId = 0;
+
+                    Folder.MessageBox.ShowInfo("نظرسنجی با موفقیت ذخیره شد.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Folder.MessageBox.ShowError("خطا در ذخیره نظرسنجی");
+
+                AddButton.IsEnabled = true;
+                EditButton.IsEnabled = true;
+                SaveButton.IsEnabled = true;
+            }
+        }
+
+        private void RemoveChild(object sender, RoutedEventArgs e)
+        {
+            if (_treeView.SelectedItem == null)
+                return;
+
+            var element = _treeView.SelectedItem as PollElement;
+            if (GetLevel(element) == PollLevel.Poll)
+            {
+                PollElement.ClearIdPointer();
+                this.PreviousPollId = this.LoadedPollId;
+                this.LoadedPollId = 0;
+            }
+
+            element.Parent.Children.Remove(element);
+        }
+
+        private void ConvertToGraph(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MessageBoxResult result = Folder.MessageBox.ShowQuestion("نظرسنجی به صورت اپراتوری ذخیره گردد؟");
+
+                SavePollElements(null, null);
+                List<int> questionIds = PollDB.GetPollQuestionsByPollId(LoadedPollId).Select(t => t.Id).ToList();
+                UMSV.Schema.Graph graphSchema = CreateGraphSchema(questionIds, result == MessageBoxResult.Yes);
+
+                GraphDB.SaveGraph(graphSchema, PollElement.Root.Children[0].Name);
+
+                Folder.MessageBox.ShowInfo("عملیات تبدیل با موفقیت به پایان رسید.");
+            }
+            catch (Exception ex)
+            {
+                Folder.MessageBox.ShowError("خطا در تبدیل نظرسنجی به درختواره IVR.");
+            }
+        }
+
+        public UMSV.Schema.Graph CreateGraphSchema(List<int> questionIds, bool agentMode = false)
+        {
+            if (PollElement.Root == null || !PollElement.Root.HasChildren)
+                return null;
+
+            UMSV.Schema.Graph graph = new UMSV.Schema.Graph();
+            graph.StartNode = string.Format("#{0}", PollElement.Root.Children[0].Children[0].Id);
+            graph.Description = PollElement.Root.Children[0].Name;
+
+            string failNodeId = string.Empty;
+            string successNodeId = string.Empty;
+            string invalidNodeId = string.Empty;
+
+            #region Default Nodes
+            graph.Items.Add(new PlayNode()
+            {
+                ID = "Bye",
+                TargetNode = "DisconnectCall",
+            });
+            graph.Items.Add(new InvokeNode()
+            {
+                ID = "DisconnectCall",
+                Function = "DisconnectCall"
+            });
+            graph.PlayNodes[0].Voice.Add(new UMSV.Schema.Voice()
+            {
+                Name = "Bye",
+                Type = 0,
+                Group = 0
+            });
+            #endregion
+
+            #region Poll Default Nodes
+            failNodeId = string.Format("#{0}", GetMaxElementId());
+            graph.Items.Add(new NodeGroup()
+            {
+                Description = "پیغام Failed",
+                Tag = "Play",
+                StartNode = failNodeId,
+                LastNode = failNodeId
+            });
+            graph.NodeGroups[0].Items.Add(new PlayNode()
+            {
+                ID = failNodeId,
+                ClearDigits = true,
+                IgnoreKeyPress = false,
+                TargetNode = "Bye"
+            });
+
+            invalidNodeId = string.Format("#{0}", GetMaxElementId());
+            graph.Items.Add(new NodeGroup()
+            {
+                Description = "پیغام Invalid",
+                Tag = "Play",
+                StartNode = invalidNodeId,
+                LastNode = invalidNodeId
+            });
+            graph.NodeGroups[1].Items.Add(new PlayNode()
+            {
+                ID = invalidNodeId,
+                ClearDigits = true,
+                IgnoreKeyPress = false,
+                TargetNode = "Bye"
+            });
+
+            successNodeId = string.Format("#{0}", GetMaxElementId());
+            graph.Items.Add(new NodeGroup()
+            {
+                Description = "پیغام Success",
+                Tag = "Play",
+                StartNode = successNodeId,
+                LastNode = successNodeId
+            });
+            graph.NodeGroups[2].Items.Add(new PlayNode()
+            {
+                ID = successNodeId,
+                ClearDigits = true,
+                IgnoreKeyPress = false,
+                TargetNode = "Bye"
+            });
+            #endregion
+
+
+            int nodeGroupsIndex = graph.NodeGroups.Count();
+            string currentNodeId = string.Empty;
+            string destinationNodeId = string.Empty;
+            int successfulNodeId = 0;
+            string currentInvokeNodeId = string.Empty;
+            int currentGroupId = 0;
+
+
+
+            for (int i = 0; i < PollElement.Root.Children[0].Children.Count; i++)
+            {
+                currentNodeId = string.Format("#{0}", PollElement.Root.Children[0].Children[i].Id);
+
+                destinationNodeId = string.Format("#{0}", GetMaxElementId(3));
+
+                currentInvokeNodeId = string.Format("#{0}", GetMaxElementId(3));
+                currentGroupId = GetMaxElementId();
+                successfulNodeId = currentGroupId + 2;
+                graph.Items.Add(new NodeGroup()
+                {
+                    Description = PollElement.Root.Children[0].Children[i].Name,
+                    Tag = "Play",
+                    StartNode = currentNodeId,
+                    LastNode = currentNodeId
+                });
+
+                graph.NodeGroups[nodeGroupsIndex].Items.Add(new PlayNode()
+                {
+                    ID = currentNodeId,
+                    ClearDigits = true,
+                    IgnoreKeyPress = false,
+                    TargetNode = destinationNodeId
+                });
+                graph.NodeGroups[nodeGroupsIndex].Items.Add(new NodeGroup()
+                {
+                    Description = "عملیات داخلی",
+                    Tag = "Invoke",
+                    StartNode = destinationNodeId,
+                    LastNode = currentInvokeNodeId
+                });
+                graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].Items.Add(new GetKeyNode()
+                {
+                    ID = destinationNodeId,
+                    ClearDigits = false,
+                    Timeout = 5,
+                    TimeoutNode = currentInvokeNodeId,
+                    MaxDigits = 1,
+                    MaxDigitsNode = currentInvokeNodeId,
+                    EndKey = "#",
+                    MinDigits = 1
+                });
+                graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].Items.Add(new InvokeNode()
+                {
+                    ID = currentInvokeNodeId,
+                    ClearDigits = true,
+                    Function = "SavePoll",
+                    NodeResult = GetNodeResults(currentGroupId),
+                    Arg = GetArguments(questionIds[i], agentMode)
+
+                });
+                graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].Items.Add(new NodeGroup()
+                {
+                    StartNode = string.Format("#{0}", currentGroupId),
+                    LastNode = string.Format("#{0}", currentGroupId),
+                    Description = "انتقال به گره",
+                    Tag = "JumpNode"
+                });
+                graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].NodeGroups[0].Items.Add(new JumpNode()
+                {
+                    ID = string.Format("#{0}", currentGroupId),
+                    ClearDigits = true,
+                    TargetNode = invalidNodeId
+                });
+                graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].Items.Add(new NodeGroup()
+                {
+                    StartNode = string.Format("#{0}", currentGroupId + 1),
+                    LastNode = string.Format("#{0}", currentGroupId + 1),
+                    Description = "انتقال به گره",
+                    Tag = "JumpNode"
+                });
+                graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].NodeGroups[1].Items.Add(new JumpNode()
+                {
+                    ID = string.Format("#{0}", currentGroupId + 1),
+                    ClearDigits = true,
+                    TargetNode = failNodeId
+                });
+
+                graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].Items.Add(new NodeGroup()
+                {
+                    Description = "انتقال به گره",
+                    Tag = "JumpNode",
+                    StartNode = string.Format("#{0}", currentGroupId + 2),
+                    LastNode = string.Format("#{0}", currentGroupId + 2),
+                });
+
+                if (i == PollElement.Root.Children[0].Children.Count - 1)
+                {
+
+                    graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].NodeGroups[2].Items.Add(new JumpNode()
+                    {
+                        ID = string.Format("#{0}", currentGroupId + 2),
+                        ClearDigits = true,
+                        TargetNode = successNodeId
+                    });
+                    break;
+                }
+                else
+                {
+                    graph.NodeGroups[nodeGroupsIndex].NodeGroups[0].NodeGroups[2].Items.Add(new JumpNode()
+                    {
+                        ID = string.Format("#{0}", currentGroupId + 2),
+                        ClearDigits = true,
+                        TargetNode = string.Format("#{0}", PollElement.Root.Children[0].Children[i + 1].Id)
+                    });
+                }
+
+                nodeGroupsIndex++;
+            }
+
+            return graph;
+        }
+
+        private List<NodeResult> GetNodeResults(int currentGroupId)
+        {
+            List<NodeResult> nodeResults = new List<NodeResult>();
+            nodeResults.Add(new NodeResult()
+            {
+                TargetNode = "DisconnectCall"
+            });
+            nodeResults.Add(new NodeResult()
+            {
+                Value = "Invalid",
+                TargetNode = string.Format("#{0}", currentGroupId)
+            });
+            nodeResults.Add(new NodeResult()
+            {
+                Value = "Failed",
+                TargetNode = string.Format("#{0}", (currentGroupId + 1))
+            });
+            nodeResults.Add(new NodeResult()
+            {
+                Value = "Success",
+                TargetNode = string.Format("#{0}", (currentGroupId + 2))
+            });
+            return nodeResults;
+        }
+
+        private List<InvokeNodeArg> GetArguments(int questionId, bool agentMode)
+        {
+            List<InvokeNodeArg> arguments = new List<InvokeNodeArg>();
+            arguments.Add(new InvokeNodeArg()
+            {
+                Name = "questionId",
+                Value = questionId.ToString()
+            });
+
+
+            arguments.Add(new InvokeNodeArg()
+            {
+                Name = "agentMode",
+                Value = agentMode.ToString()
+            });
+
+            return arguments;
+        }
+
+        private int GetMaxElementId()
+        {
+            if (CurrentId == 0)
+            {
+                CurrentId = PollElement._IdPointer;
+                CurrentId += 1;
+                return CurrentId;
+            }
+
+            CurrentId += 1;
+            return CurrentId;
+        }
+
+        private int GetMaxElementId(int i)
+        {
+            if (CurrentId == 0)
+            {
+                CurrentId = PollElement._IdPointer;
+                CurrentId += i;
+                return CurrentId;
+            }
+
+            CurrentId += i;
+            return CurrentId;
+        }
+    }
+
+}

@@ -1,0 +1,53 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Folder;
+
+namespace UMSV
+{
+    /// <summary>
+    /// Interaction logic for OperatorsActivityDailyReport.xaml
+    /// </summary>
+    public partial class GridReport : UserControl, IDataGridForm
+    {
+        public GridReport()
+        {
+            InitializeComponent();
+        }
+
+        #region IDataGridForm Members
+
+        public DataGrid DataGrid
+        {
+            get
+            {
+                return this.dataGrid;
+            }
+        }
+
+        #endregion
+
+        void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            
+            var model = dataGrid.DataContext as ReportSchemaReport;
+            var column = model.Columns.FirstOrDefault(c => c.PropertyName == e.PropertyName);
+            if (column == null)
+                e.Cancel = true;
+            else
+            {
+                e.Column.Header = column.Title;
+            }
+        }
+    }
+}

@@ -1,0 +1,112 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Enterprise;
+using Folder;
+
+namespace Pendar._118
+{
+    /// <summary>
+    /// Interaction logic for EditPhoneWindow.xaml
+    /// </summary>
+    public partial class EditPhoneWindow : Window
+    {
+        public string selectedCity;
+        private Voip118DataContext searchDataContext = new Voip118DataContext();
+        public EditPhoneWindow()
+        {
+            InitializeComponent();
+            CityCombo.ItemsSource = searchDataContext.Cities;
+            JobCombo.ItemsSource = searchDataContext.Jobs;
+            JobCombo.SelectedIndex = 0;
+            DateTP.SelectedDate = DateTime.Now;
+        }
+
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            ((Phone)this.DataContext).Deleted = false;
+            ((Phone)this.DataContext).CityID =(CityCombo.SelectedItem as City).ID;
+            ((Phone)this.DataContext).JobID = (JobCombo.SelectedItem as Job).ID;
+            ((Phone)this.DataContext).ModifiedDate = DateTime.Now;
+            ((Phone)this.DataContext).Deleted = false;
+
+            Close();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            NameTextBox.Focus();
+            //if (!string.IsNullOrEmpty(selectedCity))
+            //    CityCombo.SelectedValue =selectedCity;
+            //else
+            //    CityCombo.SelectedIndex = 0;
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Close();
+            if (e.Key == Key.Enter)
+                OkButton_Click(null, null);
+        }
+            //        try
+            //{
+            //    using (Voip118DataContext dc = new Voip118DataContext())
+            //    {
+            //        var phone = this.DataContext as Phone;
+            //        if (phone.ModifiedDate == DateTime.MinValue)
+            //        {
+            //            dc.Phones.InsertOnSubmit(phone);
+            //        }
+            //        phone.ModifiedDate = new FolderDataContext().GetDate().Value;
+            //        dc.SubmitChanges();
+            //    }
+
+            //    //if (DataContext == null)
+            //    //{
+            //    //    dc.PhoneInsert(
+            //    //        NameTokenManager.Prepare(NameTextBox.Text),
+            //    //        NameTextBox.Text + PhysicalSetupDate.Text,
+            //    //        PhoneTextBox.Text,
+            //    //        AddressTextbox.Text,
+            //    //        HiddenCheckBox.IsChecked,
+            //    //        SearchByPhoneCheckBox.IsChecked,
+            //    //        User.Current.ID, null);
+            //    //}
+            //    //else
+            //    //{
+            //    //    dc.PhoneUpdate(
+            //    //        (DataContext as Phone).UniqueID,
+            //    //        NameTokenManager.Prepare(NameTextBox.Text),
+            //    //        NameTextBox.Text + PhysicalSetupDate.Text,
+            //    //        PhoneTextBox.Text,
+            //    //        AddressTextbox.Text,
+            //    //        HiddenCheckBox.IsChecked,
+            //    //        SearchByPhoneCheckBox.IsChecked,
+            //    //        User.Current.ID, null);
+            //    //}
+            //    Close();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.Write(ex);
+            //}
+
+    }
+}

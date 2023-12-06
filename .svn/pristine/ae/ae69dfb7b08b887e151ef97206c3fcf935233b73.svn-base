@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections></configSections>
+  <connectionStrings>
+    <add name="Pendar._118.Properties.Settings._118ConnectionString" connectionString="Data Source=server;Initial Catalog=Kalak.118;Persist Security Info=True;User ID=sa;Password=pendar" providerName="System.Data.SqlClient" />
+    <add name="Entities" connectionString="metadata=res://*/Panchist.Model.csdl|res://*/Panchist.Model.ssdl|res://*/Panchist.Model.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=server;initial catalog=Kalak.118;persist security info=True;user id=sa;password=pendar;multipleactiveresultsets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />
+  </connectionStrings>
+</configuration>

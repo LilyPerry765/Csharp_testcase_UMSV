@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+    </configSections>
+    <connectionStrings>
+        <add name="UMSV.Properties.Settings.UMSVConnectionString" connectionString="Data Source=server;Initial Catalog=Umsv;User ID=sa;Password=mina"
+            providerName="System.Data.SqlClient" />
+    </connectionStrings>
+</configuration>

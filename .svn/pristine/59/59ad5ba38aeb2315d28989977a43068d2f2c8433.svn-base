@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder;
+using Enterprise;
+using System.Reflection;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+
+namespace UMSV
+{
+    public class Global : PluginGlobal
+    {
+        //public Image TalkingImage;
+        public static Global Default;
+
+        public Global()
+        {
+            Default = this;
+        }
+
+        public override void SessionEnd()
+        {
+            //Folder.Console.RemoveStatusBarElement(TalkingImage);
+        }
+
+        public override void SessionStart()
+        {
+            Ozeki.VoIP.SDK.Protection.LicenseManager.Instance.SetLicense("OZSDK-PEN128CALL-120710-EB3DC53A", "TUNDOjEyOCxNUEw6MTI4LEc3Mjk6dHJ1ZSxNU0xDOjEyOCxNRkM6MTI4LFVQOjIwMTMuMDcuMTAsUDoyMTk5LjAxLjAxfHhndWhNUDh1Z3ZFVUl1Y2tYcFhDeXgrMCtEa0l3aWx2WHVrZ3JlWjJTOVpDNmFoWXozTnNObjFTY1VnOHhSOFA1OWkyY3FGalVuOUFzZVp5dnRXRmJRPT0=");
+            Logger.WriteImportant("License was set successfully...");
+
+            //TalkingImage = new Image() {
+            //    Width = 24,
+            //    Height = 24,
+            //    Visibility = System.Windows.Visibility.Hidden,
+            //    Source = new BitmapImage(new Uri(Constants.TalkingImage, UriKind.RelativeOrAbsolute)),
+            //};
+            //Folder.Console.AddStatusBarElement(TalkingImage);
+        }
+    }
+}
+

@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using Folder.EMQ;
+
+namespace UMS.Informing.WebInterface
+{
+    [ServiceModule("UMSV", ServiceModuleSide.Client)]
+    public class VoipServiceClient : ServiceModuleClient
+    {
+        public static VoipServiceClient Default;
+
+        static VoipServiceClient()
+        {
+            Default = ServiceModule.InstantiateServiceModule<VoipServiceClient>();
+        }
+
+        public void StartScheduledOutcall()
+        {
+            Call("StartScheduledOutcall");
+        }
+
+        public void StopScheduledOutcall()
+        {
+            Call("StopScheduledOutcall");
+        }
+
+    }
+}

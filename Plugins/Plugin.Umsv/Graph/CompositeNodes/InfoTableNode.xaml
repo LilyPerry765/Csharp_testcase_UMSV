@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.InfoTableNode"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+             DataContextChanged="UserControl_DataContextChanged"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             mc:Ignorable="d"
+             d:DesignHeight="420"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider  x:Key="Group"
+                          IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup Description="جدول اطلاعات گویا"
+                           StartNode="InvokeNodes[0]"
+                           LastNode="PlayNodes[2]"
+                           xmlns="http://tempuri.org/VoiceGraph.xsd"
+                           Tag="InfoTable">
+                    <InvokeNode ID="1"
+                                ClearDigits="true"
+                                Function="CheckAuthentication">
+                        <Arg Name="AuthenticationType" Value="CallerID"/>
+                        <Arg Name="InfoTable" />
+                        <Arg Name="Repeat" Value="False"/>
+                        <NodeResult Value="RecordFound"
+                                    TargetNode="2" />
+                        <NodeResult Value="RecordNotFound"
+                                    TargetNode="3" />
+                        <NodeResult Value="AskForCode"
+                                    TargetNode="4" />
+                    </InvokeNode>
+                    <PlayNode ID="3"
+                              ClearDigits="true"
+                              TargetNode="Bye"
+                              IgnoreKeyPress="false">
+                        <Voice Name="PlayRecordNotFound"
+                               Type="0" />
+                    </PlayNode>
+                    <PlayNode ID="4"
+                              ClearDigits="true"
+                              TargetNode="6"
+                              IgnoreKeyPress="false">
+                        <Voice Name="EnterYourCode"
+                               Type="0" />
+                    </PlayNode>
+                    <GetKeyNode ID="6"
+                                ClearDigits="true"
+                                Timeout="4"
+                                TimeoutNode="5"
+                                MaxDigits="15"
+                                MaxDigitsNode="5"
+                                EndKey="#"
+                                MinDigits="5" />
+                    <InvokeNode ID="5"
+                                ClearDigits="true"
+                                Function="CheckInfoTableCode">
+                        <NodeResult Value="RecordFound"
+                                    TargetNode="2" />
+                        <NodeResult Value="RecordNotFound"
+                                    TargetNode="3" />
+                    </InvokeNode>
+                    <PlayNode ID="2"
+                              ClearDigits="true"
+                              TargetNode="Bye"
+                              IgnoreKeyPress="false" />
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
+    </UserControl.Resources>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <uc:CommonArea />
+            <Label>گره بعدی:</Label>
+            <uc:TargetSelector SelectedTarget="{Binding  NodeData.PlayNodes[2].TargetNode}" />
+            <uc:InfoTableSelector x:Name="infoTableSelector" Margin="0,3"
+                                  SelectedInfoTableID="{Binding NodeData.InvokeNodes[0].Arg[1].Value}" />
+            <RadioButton  Margin="0,3"
+                          IsChecked="{Binding NodeData.InvokeNodes[0].Arg[0].Value, Converter={conv:IfConverter}, ConverterParameter={conv:IfConverterParameter TrueValue=CallerID, FalseValue=ByCode}}">شناسايی از طريق Caller ID</RadioButton>
+            <RadioButton x:Name="codeRadioButton"
+                         IsChecked="{Binding NodeData.InvokeNodes[0].Arg[0].Value, Converter={conv:IfConverter}, ConverterParameter={conv:IfConverterParameter TrueValue=ByCode, FalseValue=CallerID}}"
+                         Margin="0,3">شناسايی از طريق کد</RadioButton>
+            <StackPanel Visibility="{Binding ElementName=codeRadioButton, Converter={StaticResource BooleanToVisibilityConverter1}, Path=IsChecked}">
+                <Label>پيام وارد کردن کد:</Label>
+                <uc:VoiceSelector ShowOptions="False"
+                                  SelectedVoice="{Binding NodeData.PlayNodes[1].Voice[0]}" />
+            </StackPanel>
+            <Label>پيام عدم وجود رکورد:</Label>
+            <uc:VoiceSelector ShowOptions="False"
+                              SelectedVoice="{Binding NodeData.PlayNodes[0].Voice[0]}" />
+        </StackPanel>
+        <GroupBox Header="پيام ها">
+            <DockPanel>
+                <CheckBox DockPanel.Dock="Bottom"
+                          IsChecked="{Binding NodeData.InvokeNodes[0].Arg[2].Value}"
+                          Margin="0,3">تکرار پيام خوانده شده</CheckBox>
+                <uc:VoiceList IsForInfoTable="True"
+                              ItemsSource="{Binding NodeData.PlayNodes[2].Voice}" />
+            </DockPanel>
+        </GroupBox>
+        <!--<Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <DataGrid Grid.Row="1"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="Auto"
+                                        Header="شناسه" />
+                    <DataGridTextColumn Width="*"
+                                        Header="اطلاعات" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>-->
+    </DockPanel>
+</UserControl>

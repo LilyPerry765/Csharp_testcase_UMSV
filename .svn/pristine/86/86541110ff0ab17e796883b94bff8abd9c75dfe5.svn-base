@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder;
+using UMSV;
+
+namespace Pendar._118
+{
+    public class Global : PluginGlobal
+    {
+        public override void SessionStart()
+        {
+            if (!User.IsInRole(Constants.Role_Panchist))
+                Folder.Console.Navigate(new SearchForm());
+        }
+
+        public override void SessionEnd()
+        {
+        }
+    }
+}

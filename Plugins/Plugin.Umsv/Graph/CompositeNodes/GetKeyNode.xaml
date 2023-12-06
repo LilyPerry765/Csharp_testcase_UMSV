@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.GetKeyNode"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+            xmlns:e="clr-namespace:Folder;assembly=Folder.Common"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             mc:Ignorable="d"
+             d:DesignHeight="318"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider  x:Key="Group"
+                          IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup Description="انتخاب مبتنی بر کليد ورودی"
+                           StartNode="GetKeyNodes[0]"
+                           xmlns="http://tempuri.org/VoiceGraph.xsd"
+                           Tag="GetKey">
+                    <GetKeyNode ID="0"
+                                Description="گرفتن ورودی"
+                                ClearDigits="true"
+                                Timeout="10"
+                                TimeoutNode="DisconnectCall"
+                                MinDigits="0">
+                        <NodeResult TargetNode="DisconnectCall" />
+                    </GetKeyNode>
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+    </UserControl.Resources>
+    <StackPanel>
+        <uc:CommonArea />
+        <Label>حداکثر زمان انتظار:</Label>
+        <e:NumericUpDown Width="70"
+                         HorizontalAlignment="Left"
+                         Value="{Binding NodeData.GetKeyNodes[0].Timeout}" />
+        <Label  DockPanel.Dock="Top">گره حداکثر زمان انتظار:</Label>
+        <uc:TargetSelector SelectedTarget="{Binding  NodeData.GetKeyNodes[0].TimeoutNode}" />
+        <Label>حداکثر تعداد کلیدهای ورودی:</Label>
+        <e:NumericUpDown Width="70"
+                         HorizontalAlignment="Left"
+                         Minimum="1"
+                         Maximum="100"
+                         Value="{Binding NodeData.GetKeyNodes[0].MaxDigits}" />
+        <Label  DockPanel.Dock="Top">گره حداکثر کلیدهای ورودی:</Label>
+        <uc:TargetSelector SelectedTarget="{Binding  NodeData.GetKeyNodes[0].MaxDigitsNode}" />
+        <Label>درصورت ورود کليد نادرست:</Label>
+        <uc:TargetSelector SelectedTarget="{Binding  NodeData.GetKeyNodes[0].NodeResult[0].TargetNode}" />
+    </StackPanel>
+</UserControl>

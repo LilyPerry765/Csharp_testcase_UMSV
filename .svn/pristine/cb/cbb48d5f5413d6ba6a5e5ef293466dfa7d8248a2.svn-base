@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace UMSV
+{
+    class Constants
+    {
+        public static Guid TeamsRole = new Guid("{3CED18BF-D71A-4A1E-BD8D-503ACC339BF9}");
+        public const string AllUsersFilterPhrase = "[تمامی کاربران زیرمجموعه]";
+    }
+}

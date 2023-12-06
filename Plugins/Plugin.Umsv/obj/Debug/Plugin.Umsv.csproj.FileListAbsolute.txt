@@ -1,0 +1,447 @@
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\ConfigForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorTeamsMonitoringForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorStatusControl.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorsMonitoringForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TotalCallReport.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchDateView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TemplateManager.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusSelector.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusVoiceDialog.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableDialog.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableSelector.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\MailBoxInputBox.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\PasswordBox.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TargetSelector.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceDialog.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceList.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceSelector.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\HorizontalRule.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\InformingRecordsPanel.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\SchedulePanel.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\AccountUserControl.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\BlackListForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DialogUserControl.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipAccountsForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipDialogsForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\SelectGraphView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Images\Styles.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\GetKeyNodeResultView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\InvokeNodeResultView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchCallerIDView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchTimeView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\NewGraphView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\TreeNodeHeader.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UmsVoicesForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\GatewayConfigForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardItem.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\SaveTemplateForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateDesignerForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateViewerForm.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\ConfigForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorTeamsMonitoringForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DashboardPanel.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorStatusControl.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorsMonitoringForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TotalCallReport.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchDateView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\AskNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\CodeStatusNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchDateNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\TransferNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TemplateManager.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\WebMethodNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FaxReceiveNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\DivertNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FollowUpNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\GetKeyNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InfoTableNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InvokeNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpGraphNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchCallerIDNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchTimeNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayFromMailboxNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayTextToSpeechNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordToMailBoxNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusDialog.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusSelector.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusVoiceDialog.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CommonArea.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableDialog.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableSelector.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\MailBoxInputBox.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\PasswordBox.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\SelectorGraph.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TargetSelector.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceDialog.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceList.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceSelector.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserDataNode.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\HorizontalRule.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\InformingRecordsPanel.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\SchedulePanel.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\AccountUserControl.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\BlackListForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DialogUserControl.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipAccountsForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipDialogsForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\SelectGraphView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\GetKeyNodeResultView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\InvokeNodeResultView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchCallerIDView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchTimeView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphsListView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\NewGraphView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallsListView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallView.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\TreeNodeHeader.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UmsVoicesForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\GatewayConfigForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardItem.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\SaveTemplateForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateDesignerForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateViewerForm.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv_MarkupCompile.cache
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv_MarkupCompile.lref
+D:\Folder\Plugin.Umsv.dll
+D:\Folder\Plugin.Umsv.pdb
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DashboardPanel.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\AskNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\CodeStatusNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchDateNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\TransferNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\WebMethodNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FaxReceiveNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\DivertNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FollowUpNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\GetKeyNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InfoTableNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InvokeNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpGraphNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchCallerIDNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchTimeNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayFromMailboxNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayTextToSpeechNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordToMailBoxNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusDialog.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CommonArea.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\SelectorGraph.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserDataNode.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphsListView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallsListView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallView.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.g.resources
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\UMSV.Properties.Resources.resources
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.csproj.GenerateResource.Cache
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.dll
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.pdb
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UserDataList.baml
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UserDataList.g.cs
+D:\Develop\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.csprojResolveAssemblyReference.cache
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.csprojResolveAssemblyReference.cache
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\ConfigForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorTeamsMonitoringForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorStatusControl.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorsMonitoringForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TotalCallReport.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchDateView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TemplateManager.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusSelector.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusVoiceDialog.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableDialog.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableSelector.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\MailBoxInputBox.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\PasswordBox.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TargetSelector.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceDialog.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceList.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceSelector.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\HorizontalRule.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\InformingRecordsPanel.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\SchedulePanel.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\AccountUserControl.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\BlackListForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DialogUserControl.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipAccountsForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipDialogsForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\SelectGraphView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Images\Styles.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\GetKeyNodeResultView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\InvokeNodeResultView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchCallerIDView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchTimeView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\NewGraphView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\TreeNodeHeader.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UmsVoicesForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\GatewayConfigForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardItem.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\SaveTemplateForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateDesignerForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateViewerForm.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UserDataList.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\ConfigForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorTeamsMonitoringForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DashboardPanel.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorStatusControl.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorsMonitoringForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TotalCallReport.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchDateView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\AskNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\CodeStatusNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchDateNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\TransferNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TemplateManager.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\WebMethodNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FaxReceiveNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\DivertNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FollowUpNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\GetKeyNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InfoTableNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InvokeNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpGraphNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchCallerIDNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchTimeNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayFromMailboxNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayTextToSpeechNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordToMailBoxNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusDialog.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusSelector.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusVoiceDialog.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CommonArea.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableDialog.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableSelector.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\MailBoxInputBox.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\PasswordBox.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\SelectorGraph.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TargetSelector.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceDialog.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceList.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceSelector.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserDataNode.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\HorizontalRule.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\InformingRecordsPanel.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\SchedulePanel.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\AccountUserControl.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\BlackListForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DialogUserControl.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipAccountsForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipDialogsForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\SelectGraphView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\GetKeyNodeResultView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\InvokeNodeResultView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchCallerIDView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchTimeView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphsListView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\NewGraphView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallsListView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallView.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\TreeNodeHeader.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UmsVoicesForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\GatewayConfigForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardItem.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\SaveTemplateForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateDesignerForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateViewerForm.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UserDataList.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\GeneratedInternalTypeHelper.g.cs
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv_MarkupCompile.cache
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv_MarkupCompile.lref
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DashboardPanel.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\AskNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\CodeStatusNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchDateNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\TransferNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\WebMethodNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FaxReceiveNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\DivertNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FollowUpNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\GetKeyNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InfoTableNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InvokeNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpGraphNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchCallerIDNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchTimeNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayFromMailboxNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayTextToSpeechNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordToMailBoxNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusDialog.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CommonArea.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\SelectorGraph.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserDataNode.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphsListView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallsListView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallView.baml
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.g.resources
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\UMSV.Properties.Resources.resources
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.csproj.GenerateResource.Cache
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.dll
+E:\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.pdb
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.csprojResolveAssemblyReference.cache
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\ConfigForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorTeamsMonitoringForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorStatusControl.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorsMonitoringForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TotalCallReport.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchDateView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TemplateManager.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusSelector.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusVoiceDialog.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableDialog.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableSelector.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\MailBoxInputBox.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\PasswordBox.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TargetSelector.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceDialog.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceList.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceSelector.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\HorizontalRule.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\InformingRecordsPanel.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\SchedulePanel.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\AccountUserControl.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\BlackListForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DialogUserControl.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipAccountsForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipDialogsForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\SelectGraphView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Images\Styles.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\GetKeyNodeResultView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\InvokeNodeResultView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchCallerIDView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchTimeView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\NewGraphView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\TreeNodeHeader.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UmsVoicesForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\GatewayConfigForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardItem.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\SaveTemplateForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateDesignerForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateViewerForm.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UserDataList.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\ConfigForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorTeamsMonitoringForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DashboardPanel.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorStatusControl.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\OperatorsMonitoringForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TotalCallReport.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchDateView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\AskNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\CodeStatusNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchDateNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\TransferNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TemplateManager.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\WebMethodNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FaxReceiveNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\DivertNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FollowUpNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\GetKeyNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InfoTableNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InvokeNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpGraphNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchCallerIDNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchTimeNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayFromMailboxNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayTextToSpeechNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordToMailBoxNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusDialog.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusSelector.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusVoiceDialog.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CommonArea.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableDialog.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\InfoTableSelector.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\MailBoxInputBox.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\PasswordBox.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\SelectorGraph.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\TargetSelector.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceDialog.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceList.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\VoiceSelector.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserDataNode.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\HorizontalRule.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\InformingRecordsPanel.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Controls\SchedulePanel.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\AccountUserControl.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\BlackListForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DialogUserControl.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipAccountsForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\MonitorSipDialogsForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\SelectGraphView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\GetKeyNodeResultView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\InvokeNodeResultView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchCallerIDView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\BasicNodes\MatchTimeView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphsListView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\NewGraphView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallsListView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallView.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\TreeNodeHeader.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UmsVoicesForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\GatewayConfigForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\TeamsDashboardItem.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\SaveTemplateForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateDesignerForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Stimul\Viewer\TemplateViewerForm.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\UserDataList.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\GeneratedInternalTypeHelper.g.cs
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv_MarkupCompile.cache
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv_MarkupCompile.lref
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Forms\DashboardPanel.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\AskNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\CodeStatusNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchDateNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\TransferNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\WebMethodNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FaxReceiveNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\DivertNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\FollowUpNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\GetKeyNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InfoTableNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\InvokeNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpGraphNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\JumpNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchCallerIDNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\MatchTimeNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayFromMailboxNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\PlayTextToSpeechNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\RecordToMailBoxNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CodeStatusDialog.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\CommonArea.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserControls\SelectorGraph.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\CompositeNodes\UserDataNode.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphsListView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\GraphView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallsListView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Graph\PhoneCallView.baml
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.g.resources
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\UMSV.Properties.Resources.resources
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.csproj.GenerateResource.Cache
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.dll
+E:\Project\Final Project\UMSV\Plugins\Plugin.Umsv\obj\Debug\Plugin.Umsv.pdb
+D:\Folder\Plugin.Umsv.dll.config

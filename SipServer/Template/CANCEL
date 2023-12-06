@@ -1,0 +1,10 @@
+CANCEL sip:{1}@[SipProxyAddress] SIP/2.0
+Via: {3}
+Max-Forwards: 10
+To: <sip:{1}@[SipProxyAddress]>
+From: {0}
+Call-ID: {2}
+CSeq: 1 CANCEL
+User-Agent: CallCenter
+Content-Length: 0
+

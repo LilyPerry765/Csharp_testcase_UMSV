@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 23.125, 15.25" name="Ums">
+  <DataContextMoniker Name="/UmsDataContext" />
+  <nestedChildShapes>
+    <classShape Id="efe8785f-fe67-443b-b00c-6174d9d8b896" absoluteBounds="6.75, 8.75, 2, 1.7708968098958309">
+      <DataClassMoniker Name="/UmsDataContext/Voice" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c482f69a-0dcd-4c48-8c31-fb32dc748f2f" absoluteBounds="6.7650000000000006, 9.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2a211799-7b60-44c2-8d17-196fe3c83090" absoluteBounds="0.75, 2.25, 2, 1.3862939453124996">
+      <DataClassMoniker Name="/UmsDataContext/CodeStatus" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6563040a-8e34-4320-ade4-a78c54d2ee26" absoluteBounds="0.76500000059604645, 2.7100000008940697, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="88ade9a8-ff8d-4826-8a35-d2cb177b0db2" absoluteBounds="3.5, 1, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/UmsDataContext/CodeStatusRecord" />
+      <nestedChildShapes>
+        <elementListCompartment Id="96b8d7cb-cac0-4831-8225-92592f98a961" absoluteBounds="3.5150000005960464, 1.4600000008940697, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a9df3705-270c-4b74-a08b-e2186de2c87e" absoluteBounds="3.5, 3.375, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/UmsDataContext/CodeStatusVoiceMessage" />
+      <nestedChildShapes>
+        <elementListCompartment Id="54e89a5e-ab2b-417d-b295-775a33937ef0" absoluteBounds="3.5150000005960464, 3.8350000008940697, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e173268f-da4b-4bbb-936f-656c6aa93a55" absoluteBounds="3.75, 5.875, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/UmsDataContext/InfoTable" />
+      <nestedChildShapes>
+        <elementListCompartment Id="08f6e478-1c14-4cc8-9325-4311f06e112f" absoluteBounds="3.7650000005960464, 6.33500000089407, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c01fc146-db2d-4183-8fb9-808da17a163a" absoluteBounds="6.5, 5.875, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/UmsDataContext/InfoTableRecord" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2ba07d5f-ae20-40b2-8259-d67f1b144523" absoluteBounds="6.5150000005960464, 6.33500000089407, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b8a45d26-65a1-4992-8317-9c5b698f10ae" absoluteBounds="3.5, 9.125, 2, 2.5401025390624987">
+      <DataClassMoniker Name="/UmsDataContext/MailboxMessage" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6c3f7e60-024d-4e0b-be6b-284d9cbb6e0a" absoluteBounds="3.5150000005960464, 9.58500000089407, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 2.41429768880208); (3.5 : 2.41429768880208)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/CodeStatus/CodeStatus_CodeStatusRecord" />
+      <nodes>
+        <classShapeMoniker Id="2a211799-7b60-44c2-8d17-196fe3c83090" />
+        <classShapeMoniker Id="88ade9a8-ff8d-4826-8a35-d2cb177b0db2" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.75 : 3.6362939453125); (1.75 : 4.29494516145833); (3.5 : 4.29494516145833)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/CodeStatus/CodeStatus_CodeStatusVoiceMessage" />
+      <nodes>
+        <classShapeMoniker Id="2a211799-7b60-44c2-8d17-196fe3c83090" />
+        <classShapeMoniker Id="a9df3705-270c-4b74-a08b-e2186de2c87e" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.75 : 6.56814697265625); (6.5 : 6.56814697265625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/InfoTable/InfoTable_InfoTableRecord" />
+      <nodes>
+        <classShapeMoniker Id="e173268f-da4b-4bbb-936f-656c6aa93a55" />
+        <classShapeMoniker Id="c01fc146-db2d-4183-8fb9-808da17a163a" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="0e1b4a2e-3d38-48e9-9551-c2c232c6f7e6" absoluteBounds="9.75, 7.75, 2, 1.9631982421875014">
+      <DataClassMoniker Name="/UmsDataContext/SpecialPhone" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5ee5023e-7e98-4216-9105-8d09b916cfe2" absoluteBounds="9.765, 8.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="38d7936b-6fd2-40b6-837b-156347135856" absoluteBounds="9.75, 10.75, 2, 2.3478011067708344">
+      <DataClassMoniker Name="/UmsDataContext/Session" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f952d4e0-297e-4826-8b7f-f2652fd23797" absoluteBounds="9.765, 11.21, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f52afe98-0c2f-4fbd-9807-b29f474eeb22" absoluteBounds="12.75, 0.75, 2, 3.6939111328124987">
+      <DataClassMoniker Name="/UmsDataContext/Call" />
+      <nestedChildShapes>
+        <elementListCompartment Id="aa1f5c22-b0ec-48b4-a585-f8946cfec861" absoluteBounds="12.765, 1.2100000000000009, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b7bc6313-e2d1-4977-b651-bfde97cad759" absoluteBounds="5.25, 13.25, 2, 1.7708968098958331">
+      <DataClassMoniker Name="/UmsDataContext/AddressBook" />
+      <nestedChildShapes>
+        <elementListCompartment Id="aed6b2a7-2b3a-48e0-86b8-25a4962abc8e" absoluteBounds="5.265, 13.71, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ca6dcbf6-1717-4e26-9caf-fe1957edcf14" absoluteBounds="0.5, 6.25, 2, 8.5014469401041666">
+      <DataClassMoniker Name="/UmsDataContext/Mailbox" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c221c8a6-b18e-41d1-80b2-6360994dfcd9" absoluteBounds="0.51499999999999968, 6.7100000000000009, 1.9700000000000002, 7.941446940104167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.5 : 10.3950512695312); (3.5 : 10.3950512695312)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/Mailbox/Mailbox_MailboxMessage" />
+      <nodes>
+        <classShapeMoniker Id="ca6dcbf6-1717-4e26-9caf-fe1957edcf14" />
+        <classShapeMoniker Id="b8a45d26-65a1-4992-8317-9c5b698f10ae" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="143a9ea5-03ad-45e7-ac3f-f50a57ebfddc" absoluteBounds="9.75, 1.375, 2, 2.3478011067708335">
+      <DataClassMoniker Name="/UmsDataContext/InformingRecord" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4e53a5ab-0aa5-4bb3-b68b-5199cb06a8bd" absoluteBounds="9.765, 1.835, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="841dd76b-7ed7-4cfb-a797-7f5df98ea140" absoluteBounds="6.375, 4, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/UmsDataContext/FacsimileTemplate" />
+      <nestedChildShapes>
+        <elementListCompartment Id="65aa186d-5aa1-412d-a85c-eb724eb5e668" absoluteBounds="6.39, 4.46, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1baebbd1-e7f6-46d5-8b78-8163e57249d8" absoluteBounds="12.375, 6.125, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/UmsDataContext/Poll" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2ee359e5-ccf9-470d-9167-3dc8636761ec" absoluteBounds="12.39, 6.585, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2f9cfa38-d480-43bd-8915-499c3b44dd6d" absoluteBounds="17.875, 6.25, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/UmsDataContext/PollAnswer" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5ae7c65f-c1b4-4c45-8747-5875901651be" absoluteBounds="17.89, 6.71, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="8aee0a84-8d4b-4f02-bd34-44f18b050f64" absoluteBounds="15.125, 6.25, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/UmsDataContext/PollQuestion" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f768789f-7327-4489-bf19-7ba968a3bcaa" absoluteBounds="15.14, 6.71, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(17.125 : 6.94314697265625); (17.875 : 6.94314697265625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/PollQuestion/PollQuestion_PollAnswer" />
+      <nodes>
+        <classShapeMoniker Id="8aee0a84-8d4b-4f02-bd34-44f18b050f64" />
+        <classShapeMoniker Id="2f9cfa38-d480-43bd-8915-499c3b44dd6d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(14.375 : 6.94314697265625); (15.125 : 6.94314697265625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/Poll/Poll_PollQuestion" />
+      <nodes>
+        <classShapeMoniker Id="1baebbd1-e7f6-46d5-8b78-8163e57249d8" />
+        <classShapeMoniker Id="8aee0a84-8d4b-4f02-bd34-44f18b050f64" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="f99ada7c-da87-4bc7-a471-6bf480e11bcb" absoluteBounds="12.375, 9, 2, 1.9631982421874987">
+      <DataClassMoniker Name="/UmsDataContext/Graph" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4b263d6e-0c8e-41f4-b629-949e87f09f89" absoluteBounds="12.39, 9.46, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="bc35ca61-cc33-4fc2-b4b4-a7bef46a2133" absoluteBounds="16.375, 9.625, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/UmsDataContext/UserData" />
+      <nestedChildShapes>
+        <elementListCompartment Id="8752e083-6c23-4f22-b70d-8fc1a57fe485" absoluteBounds="16.39, 10.085, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(14.375 : 10.2940991210937); (16.375 : 10.2940991210937)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/Graph/Graph_UserData" />
+      <nodes>
+        <classShapeMoniker Id="f99ada7c-da87-4bc7-a471-6bf480e11bcb" />
+        <classShapeMoniker Id="bc35ca61-cc33-4fc2-b4b4-a7bef46a2133" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="20730041-8b65-4391-ae41-a9c3e4553f0c" absoluteBounds="20.875, 6.25, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/UmsDataContext/PollInfo" />
+      <nestedChildShapes>
+        <elementListCompartment Id="517db44b-c0e5-4b60-bf2b-f27d4467340e" absoluteBounds="20.89, 6.7100000000000009, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(19.875 : 6.94314697265625); (20.875 : 6.94314697265625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/PollAnswer/PollAnswer_PollInfo" />
+      <nodes>
+        <classShapeMoniker Id="2f9cfa38-d480-43bd-8915-499c3b44dd6d" />
+        <classShapeMoniker Id="20730041-8b65-4391-ae41-a9c3e4553f0c" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(16.125 : 7.6362939453125); (16.125 : 8.02089730989583); (20.875 : 8.02089730989583)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/UmsDataContext/PollQuestion/PollQuestion_PollInfo" />
+      <nodes>
+        <classShapeMoniker Id="8aee0a84-8d4b-4f02-bd34-44f18b050f64" />
+        <classShapeMoniker Id="20730041-8b65-4391-ae41-a9c3e4553f0c" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="0b5b3d0d-7c4a-4068-b326-7530923c1b21" absoluteBounds="9.875, 4.375, 2, 1.3862939453125">
+      <DataClassMoniker Name="/UmsDataContext/Temp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a6efc1a2-b30e-4b61-9e87-247124f90b11" absoluteBounds="9.89, 4.835, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="90265fb2-7fd2-4aea-b759-76caefd042da" absoluteBounds="6.875, 0.625, 2, 3.1170068359375">
+      <DataClassMoniker Name="/UmsDataContext/Informing" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e264f46f-f6b7-492c-b4dc-039f15268cb2" absoluteBounds="6.89, 1.085, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(8.875 : 2.54890055338542); (9.75 : 2.54890055338542)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/UmsDataContext/Informing/Informing_InformingRecord" />
+      <nodes>
+        <classShapeMoniker Id="90265fb2-7fd2-4aea-b759-76caefd042da" />
+        <classShapeMoniker Id="143a9ea5-03ad-45e7-ac3f-f50a57ebfddc" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

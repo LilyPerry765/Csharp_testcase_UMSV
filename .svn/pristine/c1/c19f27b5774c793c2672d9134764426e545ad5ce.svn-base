@@ -1,0 +1,670 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Folder;
+using System.Timers;
+using Enterprise;
+using System.Data.Linq;
+using System.ComponentModel;
+using System.Windows.Threading;
+using UMSV;
+using System.Windows.Forms;
+using System.Globalization;
+using UMSV.Schema;
+using System.Threading;
+
+namespace Pendar._118
+{
+    /// <summary>
+    /// Interaction logic for SearchForm.xaml
+    /// </summary>
+    public partial class SearchForm : System.Windows.Controls.UserControl, IFolderForm, IDataGridForm
+    {
+        #region Field And Properties
+
+        List<City> cities = null;
+        List<Job> jobs = null;
+        bool Exiting = false;
+
+        private KeyboardHelpForm helpWindow = new KeyboardHelpForm();
+        private JobsHelpForm helpJobs = new JobsHelpForm();
+
+        private Voip118DataContext searchDataContext = new Voip118DataContext();
+        private SoftPhone SoftPhone = SoftPhone.CreateInstance();
+
+        TextBlock callerIDTextBlock = new TextBlock() {
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(5, 0, 5, 0),
+        };
+        TextBlock callTimeTextBlock = new TextBlock() {
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(5, 0, 5, 0),
+        };
+
+        private DispatcherTimer searchTimer = new DispatcherTimer();//Check delay in search-type
+        private DispatcherTimer callTimeTimer = new DispatcherTimer();//Calculate
+
+        private string searchOrderBy = OrderBy.OrderBy_Name;
+
+        private DateTime CallStartTime;
+
+        private bool IsOperator
+        {
+            get
+            {
+                return !User.IsInRole(Constants.Role_Panchist);
+            }
+        }
+        #endregion
+
+        #region Constructors
+        public SearchForm()
+        {
+            InitializeComponent();
+        }
+        #endregion
+
+        int incomingCallCity;
+        void SearchInUiThread(bool fullSearch)
+        {
+            try
+            {
+                Title_Column.Width = DataGridLength.SizeToCells;
+                Address_Column.Width = DataGridLength.SizeToCells;
+                Tel_Column.Width = DataGridLength.SizeToCells;
+
+                TokenForSearch token = new TokenForSearch() {
+                    Title = TokenTitle.Text,
+                    Address = TokenAddress.Text.Length > 1 ? TokenAddress.Text : string.Empty,
+                };
+
+                if (CityPanel.Visibility == Visibility.Visible)
+                    token.City = (int)CitiesComboBox.SelectedValue == 0 ? (int?)null : (int)CitiesComboBox.SelectedValue;
+
+                DateTime t1 = DateTime.Now;
+                Logger.WriteInfo("Search Starting...");
+                List<Phone> phoneResult;
+                int resultCount = IsOperator ? Config.Default.NormalResultCount : Config.Default.AdvancedResultCount;
+
+                if (TokenManager.IsNumeric(token.Title))
+                {
+                    phoneResult = searchDataContext.Phones.Where(p => ((!IsOperator) || (IsOperator && p.AllowSearchByPhone && !p.Hidden)) && p.PhoneNumber.StartsWith(token.Title) && p.Deleted == false)
+                        .Take(resultCount).ToList();
+                }
+                else
+                {
+                    token = TokenManager.SeperateJobAsToken(token);
+
+                    token.JobAbbreviationPrepared = TokenManager.PrepareString(token.JobAbbreviation);
+                    token.Job = searchDataContext.GetJobsByAbbreviation(token.JobAbbreviationPrepared);
+                    Logger.WriteInfo("Server searching with Job:'{0}' for Title:'{1}' in Address:'{2}'", token.JobAbbreviation, token.Title, token.Address);
+
+                    token.TitlePrepared = TokenManager.PrepareString(token.Title);
+                    token.AddressPrepared = TokenManager.PrepareString(token.Address);
+
+                    if (string.IsNullOrEmpty(token.TitlePrepared) && string.IsNullOrEmpty(token.JobAbbreviationPrepared))
+                        return;
+
+                    if (token.TitlePrepared.Split(' ').Any(t => t.Length == 1))
+                        return;
+
+                    phoneResult = searchDataContext.GetPhonesByToken(token, resultCount, IsOperator, fullSearch);
+
+                    JobColumn.Visibility = (!fullSearch || (fullSearch && token.Job.ID != 0)) ? Visibility.Collapsed : Visibility.Visible;
+                    CityColumn.Visibility = CitiesComboBox.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
+                }
+                DateTime t2 = DateTime.Now;
+
+                SearchInfo.Content = (token.Job != null ? token.Job.Name : "") +
+                    " (تعداد: " + phoneResult.Count + ")";
+
+                if (phoneResult != null)
+                    Logger.WriteInfo("Search Finished count:{0}, time:{1}", phoneResult.Count(), t2.Subtract(t1).TotalMilliseconds);
+                else
+                    Logger.WriteInfo("Search Finished Without Any Result!");
+
+                if (JobColumn.Visibility == System.Windows.Visibility.Visible)
+                    JobColumn.ItemsSource = jobs;
+
+                if (CityColumn.Visibility == System.Windows.Visibility.Visible)
+                    CityColumn.ItemsSource = cities;
+
+                ResultSearchDataGrid.ItemsSource = phoneResult.Where(r => FixTokenForSortingOnName(r.Name).StartsWith(FixTokenForSortingOnName(TokenTitle.Text))).Union(phoneResult.Where(r => !FixTokenForSortingOnName(r.Name).StartsWith(FixTokenForSortingOnName(TokenTitle.Text)))).ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Search-Start Failed:{0}", ex.Message);
+            }
+        }
+
+        void call_Timer_Tick(object sender, EventArgs e)
+        {
+            var time = DateTime.Now.Subtract(CallStartTime);
+            callTimeTextBlock.Text = string.Format(", Call Time: {0:00}:{1:00}", time.Minutes, time.Seconds);
+        }
+
+        void Tokens_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            searchTimer.Stop();
+            searchTimer.Start();
+        }
+
+        void searchTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                searchTimer.Stop();
+                if (TokenTitle.Text.Length > 1)
+                    SearchInUiThread(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex, "searchTimer_Tick");
+            }
+        }
+
+        string FixTokenForSortingOnName(string token)
+        {
+            return token.Split('-').Last().Replace(" ", "").Replace("-", "");
+        }
+
+        #region IFolderForm Members
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            Folder.Console.AddStatusBarElement(callerIDTextBlock);
+            Folder.Console.AddStatusBarElement(callTimeTextBlock);
+            callTimeTextBlock.Text = "00:00:00";
+            callerIDTextBlock.Text = "-";
+
+            searchTimer.Interval = TimeSpan.FromMilliseconds(Constants.StartSearchDelay);
+            searchTimer.Tick += new EventHandler(searchTimer_Tick);
+
+            callTimeTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            callTimeTimer.Tick += new EventHandler(call_Timer_Tick);
+
+            using (Voip118DataContext dc = new Voip118DataContext())
+            {
+                cities = dc.Cities.OrderBy(c => c.Name).ToList();
+                if (cities.Count == 0)
+                    CityPanel.Visibility = System.Windows.Visibility.Collapsed;
+                else
+                {
+                    cities.Insert(0, new City() {
+                        ID = 0,
+                        Name = "[ همه شهرها ]"
+                    });
+
+                    CitiesComboBox.ItemsSource = cities;
+                    CitiesComboBox.SelectedValue = Config.Default.DefaultCityID;
+                }
+                jobs = dc.Jobs.ToList();
+            }
+            TokenTitle.Focus();
+            helper.Closing += helper_Closing;
+            helper.Selected += helper_Selected;
+            Folder.Console.GlobalKeyDown = HandleKeyDown;
+
+            if (IsOperator)
+            {
+                SoftPhone.UnRegistered += Default_UnRegistered;
+                SoftPhone.IncommingCall += SoftPhone_IncommingCall;
+                SoftPhone.CallDisconnected += SoftPhone_CallDisconnected;
+                SoftPhone.CallRejected += SoftPhone_CallDisconnected;
+                SoftPhone.CallAnswered += SoftPhone_CallAnswered;
+                SoftPhone.Start(User.Current.Username, User.Current.Password);
+            }
+            //System.Threading.ThreadPool.QueueUserWorkItem(delegate 
+            //{
+            //    SoftPhone.Hold();
+            //    SoftPhone.UnHold();
+            //    Thread.Sleep(4000);
+            //    SoftPhone.Hold();
+            //    SoftPhone.UnHold();
+            //    Thread.Sleep(4000);
+            //    Dispatcher.Invoke((Action)(() =>
+            //        {
+            //            SoftPhone.Hold();
+            //            SoftPhone.UnHold();
+            //        }));
+            //});
+        }
+
+        void Default_UnRegistered(object sender, EventArgs e)
+        {
+            Folder.Console.LogOff();
+        }
+
+        void helper_Selected(object sender, SelectedEventArgs e)
+        {
+            TokenTitle.Clear();
+            TokenTitle.Focus();
+        }
+
+        void helper_Closing(object sender, Folder.FormClosingEventArgs e)
+        {
+            Folder.Console.RemoveStatusBarElement(callerIDTextBlock);
+            Folder.Console.RemoveStatusBarElement(callTimeTextBlock);
+            Folder.Console.GlobalKeyDown = null;
+
+            searchTimer.Stop();
+            callTimeTimer.Stop();
+
+            if (IsOperator)
+                SoftPhone.UnRegister();
+        }
+
+        #endregion
+
+        #region Sip Methods
+
+        void SoftPhone_IncommingCall(object sender, UMSV.IncommingCallEventArgs e)
+        {
+            Dispatcher.Invoke((Action)(() => {
+                try
+                {
+                    string visibleCallerID = SoftPhone.CallerID.Length > 4 ? SoftPhone.CallerID.Substring(0, SoftPhone.CallerID.Length - 4) : SoftPhone.CallerID;
+                    callerIDTextBlock.Text = "CallerID: " + visibleCallerID + "XXXX";
+                    ResultSearchDataGrid.ItemsSource = null;
+                    searchTimer.Stop();
+
+                    if (CitiesComboBox.Visibility == Visibility.Visible)
+                    {
+                        string prefix = string.Empty;
+
+                        if (string.IsNullOrEmpty(e.Dialog.CallerID) || e.Dialog.CallerID.Length < 7)
+                        {
+                            Logger.WriteWarning("Invalid CallerID: '{0}', CallID: {1}", e.Dialog.CallerID, e.Dialog.Call.DialogID);
+                        }
+                        else if (e.Dialog.CallerID.Length == 7)
+                        {
+                            prefix = Config.Default.DefaultCityCode + e.Dialog.CallerID.Substring(0, 3);
+                        }
+                        else
+                        {
+                            if (e.Dialog.CallerID.StartsWith("0"))
+                                e.Dialog.CallerID = e.Dialog.CallerID.Substring(1);
+
+                            prefix = e.Dialog.CallerID.Substring(0, 6);
+                        }
+
+                        CitiesComboBox.SelectedValue = searchDataContext.GetCityCodeByCallerID(prefix);
+                    }
+                    incomingCallCity = (int)CitiesComboBox.SelectedValue;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write(ex);
+                }
+            }));
+        }
+
+        void SoftPhone_CallAnswered(object sender, EventArgs e)
+        {
+            Logger.WriteDebug("Call Answerd in 118");
+
+            Dispatcher.Invoke((Action)(() => {
+                TokenTitle.Text = "";
+                TokenTitle.Focus();
+                TokenAddress.Text = "";
+                SearchInfo.Content = "";
+            }));
+
+            searchTimer.Stop();
+            CallStartTime = DateTime.Now;
+            callTimeTimer.Start();
+        }
+
+        void SoftPhone_CallDisconnected(object sender, EventArgs e)
+        {
+            Logger.WriteDebug("SoftPhone_CallDisconnected");
+            Dispatcher.Invoke((Action)(() => {
+                callTimeTimer.Stop();
+                callTimeTextBlock.Text = string.Empty;
+                callerIDTextBlock.Text = string.Empty;
+
+                if (Exiting)
+                    Folder.Console.LogOff();
+            }));
+        }
+
+        #endregion
+
+        void SetInBlackList(string callerID)
+        {
+            if (string.IsNullOrEmpty(callerID) || callerID.Length < 7)
+                return;
+
+            using (UmsDataContext dc = new UmsDataContext())
+            {
+                SpecialPhone blackNumber = new SpecialPhone() {
+                    Comment = "118 Annoying",
+                    Number = callerID,
+                    Type = (int)SpecialPhoneType.BlackList,
+                    UserID = User.Current.ID,
+                    RegisterTime = DateTime.Now,
+                };
+                dc.SpecialPhones.InsertOnSubmit(blackNumber);
+                dc.SubmitChanges();
+            }
+        }
+
+        void ResultDataGrid_Sorting()
+        {
+            switch (searchOrderBy)
+            {
+                case OrderBy.OrderBy_Name:
+                    searchOrderBy = OrderBy.OrderBy_Address;
+                    break;
+
+                case OrderBy.OrderBy_Address:
+                    searchOrderBy = OrderBy.OrderBy_Tel;
+                    break;
+
+                case OrderBy.OrderBy_Tel:
+                    searchOrderBy = OrderBy.OrderBy_Name;
+                    break;
+
+                default:
+                    break;
+            }
+
+            ICollectionView dgView = CollectionViewSource.GetDefaultView(ResultSearchDataGrid.ItemsSource);
+            if (dgView != null)
+            {
+                dgView.SortDescriptions.Clear();//Remove last Sorting
+                dgView.SortDescriptions.Add(new SortDescription(searchOrderBy, ListSortDirection.Ascending));//Set New Sorting
+            }
+        }
+
+        void CityNames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            searchTimer.Stop();
+            searchTimer.Start();
+        }
+
+        void PlayNumbers(string phones)
+        {
+            try
+            {
+                Logger.WriteDebug("PlayNumbers {0}", phones);
+
+                if (SoftPhone.AccountStatus == SipAccountStatus.Hold)
+                    SoftPhone.AccountStatus = SipAccountStatus.Talking;
+
+                if (SoftPhone.AccountStatus == SipAccountStatus.Talking)
+                {
+                    for (int index = 0; index < 3; index++)
+                    {
+                        bool result = VoipServiceClient.Default.SetDialogExtension(SoftPhone.DialogID, phones);
+                        if (result)
+                            result = VoipServiceClient.Default.SetDialogDivertPartnerExtension(SoftPhone.DialogID, phones);
+
+                        if (result)
+                        {
+                            SoftPhone.DisconnectCall();
+                            ResultSearchDataGrid.ItemsSource = null;
+                            return;
+                        }
+
+                        Logger.WriteWarning("PlayNumbers '{0}' failed", phones);
+                    }
+
+                    Folder.Console.ShowStatusMessage("شماره تلفن توسط سیستم خوانده نشد.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+        }
+
+        void ChangeSorting()
+        {
+            switch (searchOrderBy)
+            {
+                case OrderBy.OrderBy_Name:
+                    searchOrderBy = OrderBy.OrderBy_Address;
+                    break;
+                case OrderBy.OrderBy_Address:
+                    searchOrderBy = OrderBy.OrderBy_Tel;
+                    break;
+                case OrderBy.OrderBy_Tel:
+                    searchOrderBy = OrderBy.OrderBy_Name;
+                    break;
+                default:
+                    break;
+            }
+
+            if (ResultSearchDataGrid.Items.SortDescriptions.Count == 0)
+            {
+                ResultSearchDataGrid.Columns[0].SortDirection = ListSortDirection.Ascending;
+                searchOrderBy = OrderBy.OrderBy_Name;
+            }
+            else
+            {
+                foreach (DataGridColumn dgCol in ResultSearchDataGrid.Columns)
+                {
+                    if (dgCol.SortDirection != null)
+                    {
+                        dgCol.SortDirection = null;
+                        if (dgCol.DisplayIndex == ResultSearchDataGrid.Columns.Count - 1)
+                        {
+                            ResultSearchDataGrid.Columns[0].SortDirection = ListSortDirection.Ascending;
+                            searchOrderBy = OrderBy.OrderBy_Name;
+                        }
+                        else
+                        {
+                            ResultSearchDataGrid.Columns[dgCol.DisplayIndex + 1].SortDirection = ListSortDirection.Ascending;
+                            if (dgCol.DisplayIndex == 0)
+                                searchOrderBy = OrderBy.OrderBy_Address;
+                            if (dgCol.DisplayIndex == 1)
+                                searchOrderBy = OrderBy.OrderBy_Tel;
+                            if (dgCol.DisplayIndex == 2)
+                                searchOrderBy = OrderBy.OrderBy_Name;
+
+                        }
+                        break;
+                    }
+                }
+            }
+
+
+            ResultSearchDataGrid.Items.SortDescriptions.Clear();
+            ResultSearchDataGrid.Items.SortDescriptions.Add(new SortDescription(searchOrderBy, ListSortDirection.Ascending));
+            ResultSearchDataGrid.Items.Refresh();
+        }
+
+        public System.Windows.Controls.DataGrid DataGrid
+        {
+            get
+            {
+                return this.ResultSearchDataGrid;
+            }
+        }
+
+        void HandleKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            Key key = KeyInterop.KeyFromVirtualKey((int)e.KeyCode);
+            HandleKeyboard(key);
+        }
+
+        void UserControl_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            HandleKeyboard(e.Key);
+        }
+
+        bool CtrlPressed
+        {
+            get
+            {
+                return Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+            }
+        }
+
+        void HandleKeyboard(System.Windows.Input.Key key)
+        {
+            switch (key)
+            {
+                #region Key.F1
+                case Key.F1:
+                    SoftPhone.DisconnectCall();
+                    break;
+                #endregion
+
+                #region Key.F2
+                case Key.F2:
+                    SoftPhone.ChangeHold();
+                    break;
+                #endregion
+
+                #region Key.F3
+                case Key.F3:
+                    if (Folder.MessageBox.ShowQuestion("از ثبت این کاربر به عنوان مزاحم مطمئن هستید؟") == MessageBoxResult.Yes)
+                    {
+                        SetInBlackList(SoftPhone.CallerID);
+                        SoftPhone.DisconnectCall();
+                    }
+                    break;
+                #endregion
+
+                #region Key.F4
+                case Key.F4:
+                    if (CtrlPressed)
+                    {
+                        var volumeMixerForm = new Folder.Audio.VolumeMixerForm();
+                        Folder.Console.Navigate(volumeMixerForm, "تنظیمات صدا");
+                    }
+                    else
+                        PlayNumbers(Constants.Result_NoNumber);
+                    break;
+                #endregion
+
+                #region Key.F6
+                case Key.F6:
+                    if (helpJobs.IsVisible)
+                        helpJobs.Hide();
+                    else
+                        helpJobs.Show();
+                    break;
+                #endregion
+
+                #region Key.F7
+                case Key.F7:
+                    if (CtrlPressed)
+                        ChangeSorting();
+                    else
+                        SearchInUiThread(true);
+                    break;
+                #endregion
+
+                #region Key.F8
+                case Key.F8:
+                    {
+                        var selectedPhones = ResultSearchDataGrid.SelectedItems.Cast<Phone>();
+                        string phones = string.Join(",Va,", selectedPhones.Select(p => p.PhoneNumber).ToArray());
+                        phones = phones.Replace("-", ",Ela,");
+
+                        if (phones != string.Empty)
+                            PlayNumbers("PleaseNote," + phones + ",Repeat," + phones);
+                        else
+                            Folder.Console.ShowStatusMessage("شماره ای جهت اعلام انتخاب نشده است.");
+                    }
+                    break;
+                #endregion
+
+                #region Key.F9
+                case Key.F9:
+                    if (helpWindow.IsVisible)
+                        helpWindow.Hide();
+                    else
+                        helpWindow.Show();
+                    break;
+                #endregion
+
+                #region Key.F10
+                case Key.F10:
+                    Exiting = true;
+                    Logger.WriteDebug("F10, SoftPhone.UnRegister ...");
+                    SoftPhone.UnRegister();
+                    break;
+                #endregion
+
+                #region Key.Down, Key.Up
+                case Key.PageDown:
+                case Key.PageUp:
+                case Key.Up:
+                case Key.Down:
+                    if (ResultSearchDataGrid.ItemsSource != null)
+                    {
+                        if (CitiesComboBox.IsFocused)
+                            return;
+
+                        searchTimer.Stop();
+                        var list = (List<Phone>)ResultSearchDataGrid.ItemsSource;
+                        if (!ResultSearchDataGrid.IsFocused && ResultSearchDataGrid.SelectedItem == null && list.Count > 0)
+                        {
+                            ResultSearchDataGrid.Focus();
+                            ResultSearchDataGrid.SelectedItem = list.First();
+                            ResultSearchDataGrid.CurrentCell = new DataGridCellInfo(list.First(), Title_Column);
+                            //e.Handled = true;
+                        }
+                    }
+                    break;
+                #endregion
+
+                #region Key.Enter
+                case Key.Enter://Clear Token and Focuse on Title-Box
+                    TokenAddress.Text = "";
+                    SearchInfo.Content = "";
+                    TokenTitle.Text = "";
+                    TokenTitle.Focus();
+                    ResultSearchDataGrid.ItemsSource = null;
+                    searchOrderBy = OrderBy.OrderBy_Tel;
+                    ResultDataGrid_Sorting();
+                    break;
+                #endregion
+
+                #region Key.Escape
+                case Key.Escape:
+                    helpJobs.Hide();
+                    helpWindow.Hide();
+                    ResultSearchDataGrid.SelectedItem = null;
+                    TokenTitle.Focus();
+                    break;
+                #endregion
+
+                #region Shift, Ctrl, Alt
+                case Key.LeftShift:
+                case Key.RightShift:
+                case Key.LeftAlt:
+                case Key.RightAlt:
+                case Key.LeftCtrl:
+                case Key.RightCtrl:
+                    break;
+                #endregion
+
+                #region Default
+                default:
+                    if (CitiesComboBox.IsFocused)
+                        return;
+
+                    ResultSearchDataGrid.SelectedItem = null;
+                    if (!TokenAddress.IsFocused && !TokenTitle.IsFocused)
+                        TokenTitle.Focus();
+                    break;
+                #endregion
+            }
+        }
+    }
+}

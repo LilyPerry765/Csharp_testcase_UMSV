@@ -1,0 +1,132 @@
+﻿<Window x:Class="Plugin.Mailbox.Views.PublicMailboxEditView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        FlowDirection="RightToLeft"
+        FontFamily="Tahoma"
+        Title="صندوق صوتی عمومی"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Height="262"
+        Width="494"
+        mc:Ignorable="d"
+        xmlns:a="clr-namespace:Plugin.Mailbox.Assets"
+        xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+        xmlns:f="clr-namespace:Folder;assembly=Folder.Common"
+        f:DialogResultHelper.DialogResult="{Binding DialogResult}"
+        xmlns:c="clr-namespace:Plugin.Mailbox.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+    <DockPanel>
+        <StackPanel Orientation="Horizontal"
+                    FlowDirection="LeftToRight"
+                    DockPanel.Dock="Bottom">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin"
+                            Value="3" />
+                    <Setter Property="Width"
+                            Value="75" />
+                </Style>
+            </StackPanel.Resources>
+            <Button IsCancel="True">انصراف</Button>
+            <Button Command="{Binding SaveCommand}"
+                    IsDefault="True">تاييد</Button>
+        </StackPanel>
+        <TabControl Margin="5"
+                    DataContext="{Binding Mailbox}">
+            <TabItem Header="مشخصات صندوق">
+                <DockPanel>
+                    <Image DockPanel.Dock="Right"
+                           Opacity=".8"
+                           Height="110"
+                           VerticalAlignment="Top"
+                           Margin="5,20"
+                           Source="{a:ImageSource MailBox128.png}" />
+                    <Grid HorizontalAlignment="Left"
+                          Margin="5"
+                          Name="grid1"
+                          VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Content="شماره صندوق:"
+                               Grid.Column="0"
+                               HorizontalAlignment="Left"
+                               Margin="3"
+                               VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Height="23"
+                                 HorizontalAlignment="Left"
+                                 Margin="3"
+                                 Name="boxNoTextBox"
+                                 IsReadOnlyCaretVisible="False"
+                                 IsReadOnly="{Binding DataContext.IsNew, Converter={x:Static conv:NotConverter.Instance}, RelativeSource={RelativeSource AncestorType=Window}}"
+                                 Text="{Binding Path=BoxNo, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                                 VerticalAlignment="Center"
+                                 Width="120" />
+                        <Label Content="حداکثر تعداد پيام‏هاي جديد:"
+                               Grid.Column="0"
+                               Grid.Row="1"
+                               HorizontalAlignment="Left"
+                               Margin="3"
+                               VerticalAlignment="Center" />
+                        <f:NumericUpDown Grid.Column="1"
+                                         Grid.Row="1"
+                                         Height="23"
+                                         HorizontalAlignment="Left"
+                                         Margin="3"
+                                         Name="maxNewMessageTextBox"
+                                         Value="{Binding Path=MaxNewMessage, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                                         VerticalAlignment="Center"
+                                         Width="120"
+                                         Maximum="100000" />
+                        <Label Content="حداکثر زمان نگهداری پیام جدید (روز):"
+                               Grid.Column="0"
+                               Grid.Row="2"
+                               HorizontalAlignment="Left"
+                               Margin="3"
+                               VerticalAlignment="Center" />
+                        <f:NumericUpDown Grid.Column="1"
+                                         Grid.Row="2"
+                                         Height="23"
+                                         HorizontalAlignment="Left"
+                                         Margin="3"
+                                         Name="messageNewExpirePeriodTextBox"
+                                         Value="{Binding Path=MessageNewExpirePeriod, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                                         VerticalAlignment="Center"
+                                         Width="120"
+                                         Maximum="100000" />
+                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2"
+                                Orientation="Horizontal">
+                        <Label Margin="5">دامنه کدهای رهگیری، از</Label>
+                        <f:NumericUpDown HorizontalAlignment="Left"
+                                         Height="23"
+                                         Margin="3"
+                                         Name="followupCodeStartTextBox"
+                                         Value="{Binding Path=FollowupCodeStart, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                                         VerticalAlignment="Center"
+                                         Maximum="10000000"
+                                         Width="80" />
+                        <Label>تا</Label>
+                        <f:NumericUpDown HorizontalAlignment="Left"
+                                         Height="23"
+                                         Margin="3"
+                                         Maximum="10000000"
+                                         Name="followupCodeEndTextBox"
+                                         Value="{Binding Path=FollowupCodeEnd, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}"
+                                         VerticalAlignment="Center"
+                                         Width="80" />
+                    </StackPanel>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

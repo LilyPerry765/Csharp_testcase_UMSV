@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.DiscoveryDocumentReference" url="http://10.10.110.239:5555/CRM_WBS.asmx?disco" filename="CRM_WBS.disco" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://10.10.110.239:5555/CRM_WBS.asmx?wsdl" filename="CRM_WBS.wsdl" />
+  </Results>
+</DiscoveryClientResultsFile>

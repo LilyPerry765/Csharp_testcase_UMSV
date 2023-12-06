@@ -1,0 +1,95 @@
+<ReportSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://tempuri.org/ReportSchema.xsd">
+  <Report ID="1" CallType="ToClient" FromTimeState="OneWeekAgo" ToTimeState="Today" Type="DailyActivity" Help="در این گزارش مجموع زمان مکالمات یک اپراتور رو در روزهائی که حضور داشته است مشاهده خواهید کرد" Title="گزارش کارکرد روزانه اپراتور">
+    <Column PropertyName="Date" Title="تاریخ" />
+    <Column PropertyName="TalkTime" Title="مجموع زمان مکالمه" />
+    <Column PropertyName="AvailableTime" Title="مجموع زمان حضور" />
+    <Column PropertyName="AverageTalkTime" Title="میانگین زمان مکالمه" />
+    <Column PropertyName="CallsCount" Title="تعداد مکالمات" />
+  </Report>
+  <Report ID="2" CallType="ToClient" FromTimeState="OneWeekAgo" ToTimeState="Today" Type="OperatorsActivityCompare" Title="گزارش مقایسه عملکرد اپراتور">
+    <Column PropertyName="Operator" Title="اپراتور" />
+    <Column PropertyName="OperatorName" Title="نام اپراتور" />
+    <Column PropertyName="CallsCount" Title="تعداد مکالمات" />
+  </Report>
+  <Report ID="3" CallType="ToClient" FromTimeState="OneWeekAgo" ToTimeState="Today" IsChart="true" ChartType="Bar" Type="OperatorsActivityCompare" Title="نمودار مقایسه عملکرد اپراتور" />
+  <Report ID="4" CallType="ToClient" FromTimeState="Today" Type="TalkSummaryReport" Title="گزارش آماری عملکرد اپراتورها">
+    <Column PropertyName="Operator" Title="اپراتور" />
+    <Column PropertyName="OperatorName" Title="نام اپراتور" />
+    <Column PropertyName="Group" Title="گروه" />
+    <Column PropertyName="Count" Title="تعداد تماس" />
+    <Column PropertyName="AnswerCount" Title="تعداد مکالمات" />
+    <Column PropertyName="NoAnswerCount" Title="تعداد تماسهای بدون پاسخ" />
+    <Column PropertyName="RejectedCount" Title="تعداد تماسهای رد شده" />
+  </Report>
+  <Report ID="5" CallType="ToClient" FromTimeState="OneWeekAgo" Type="OperatorAvailability" Title="ساعت حضور اپراتور در هر روز">
+    <Column PropertyName="Date" Title="تاریخ" />
+    <Column PropertyName="StartTime" Title="ساعت ورود" />
+    <Column PropertyName="EndTime" Title="ساعت خروج" />
+    <Column PropertyName="AvailableTime" Title="زمان حضور" />
+  </Report>
+  <Report ID="6" CallType="ToClient" IsChart="true" FromTimeState="OneWeekAgo" ChartType="Column" yProperty="AvailableTime" Type="OperatorAvailability" Title="نمودار ساعت حضور اپراتور در هر روز" />
+  <Report ID="7" CallType="ToClient" Type="OperatorTalksInHour" FromTimeState="OneWeekAgo" Title="میانگین تعداد پاسخگوئی در ساعت اپراتور">
+    <Column PropertyName="Date" Title="تاریخ" />
+    <Column PropertyName="Count" Title="تعداد تماس در ساعت" />
+  </Report>
+  <Report ID="8" CallType="ToClient" ToTimeState="Hidden" FromTimeState="Today" Type="OperatorsCountInHour" Title="میانگین تعداد اپراتورهای فعال در هر ساعت">
+    <Column PropertyName="Hour" Title="ساعت" />
+    <Column PropertyName="Count" Title="تعداد" />
+  </Report>
+  <Report ID="9" CallType="ToClient" IsChart="true" ChartType="Column" ToTimeState="Hidden" FromTimeState="Today" Type="OperatorsCountInHour" Title="نمودار میانگین تعداد اپراتورهای فعال در هر ساعت" />
+  <Report ID="10" CallType="FromGateway" FromTimeState="Yesterday" ToTimeState="Today" OperatorVisible="false" Type="ChannelsDailyTraffic" Title="گزارش روزانه ترافیک کانالها">
+    <Column PropertyName="Hour" Title="ساعت" />
+    <Column PropertyName="Duration" Title="مجموع زمان اشغالی کانالها (دقیقه)" />
+    <Column PropertyName="Count" Title="میانگین تعداد کانال اشغالی" />
+    <Column PropertyName="CallsCount" Title="تعداد تماسها" />
+  </Report>
+  <Report ID="11" CallType="FromGateway" FromTimeState="Yesterday" ToTimeState="Hidden" IsChart="true" yProperty="Count" ChartType="Line" Type="ChannelsDailyTraffic" Title="نمودار ترافیک روزانه کانالها" />
+  <Report ID="12" CallType="FromGateway" FromTimeState="Yesterday" ToTimeState="Hidden" IsChart="true" yProperty="CallsCount" ChartType="Line" Type="ChannelsDailyTraffic" Title="نمودار ساعتی تعداد تماس روزانه" />
+  <Report ID="13" CallType="ToClient" FromTimeState="FirstDayOfLastMonth" ToTimeState="FirstDayOfMonth" Type="TalkSummaryReport" Title="کارکرد ماهانه اپراتورها">
+    <Column PropertyName="Operator" Title="اپراتور" />
+    <Column PropertyName="OperatorName" Title="نام اپراتور" />
+    <Column PropertyName="Count" Title="تعداد تماس" />
+    <Column PropertyName="AnswerCount" Title="تعداد مکالمات" />
+    <Column PropertyName="NoAnswerCount" Title="تعداد تماسهای بدون پاسخ" />
+    <Column PropertyName="RejectedCount" Title="تعداد تماسهای رد شده" />
+  </Report>
+  <Report ID="14" CallType="ToClient" FromTimeState="OneWeekAgo" ToTimeState="Today" Type="TalkSummaryReport" Title="کارکرد هفتگی اپراتورها">
+    <Column PropertyName="Operator" Title="اپراتور" />
+    <Column PropertyName="OperatorName" Title="نام اپراتور" />
+    <Column PropertyName="Count" Title="تعداد تماس" />
+    <Column PropertyName="AnswerCount" Title="تعداد مکالمات" />
+    <Column PropertyName="NoAnswerCount" Title="تعداد تماسهای بدون پاسخ" />
+    <Column PropertyName="RejectedCount" Title="تعداد تماسهای رد شده" />
+  </Report>
+  <Report ID="15" CallType="ToClient" FromTimeState="Yesterday" ToTimeState="Today" Type="TalksInHour" Title="میانگین تعداد پاسخگوئی در ساعت">
+    <Column PropertyName="Operator" Title="اپراتور" />
+    <Column PropertyName="OperatorName" Title="نام اپراتور" />
+    <Column PropertyName="Count" Title="تعداد تماس در ساعت" />
+  </Report>
+  <Report ID="16" IsChart="true" CallType="ToClient" FromTimeState="Yesterday" ToTimeState="Today" ChartType="Bar" Type="TalksInHour" Title="نمودار میانگین تعداد پاسخگوئی در ساعت" />
+  <Report ID="17" CallType="ToClient" FromTimeState="FirstDayOfLastMonth" ToTimeState="FirstDayOfMonth" Type="DailyActivity" Title="گزارش کارکرد روزانه یک ماه اخیر اپراتور">
+    <Column PropertyName="Date" Title="تاریخ" />
+    <Column PropertyName="TalkTime" Title="مجموع زمان مکالمه" />
+    <Column PropertyName="AvailableTime" Title="مجموع زمان حضور" />
+    <Column PropertyName="AverageTalkTime" Title="میانگین زمان مکالمه" />
+    <Column PropertyName="CallsCount" Title="تعداد مکالمات" />
+  </Report>
+  <Report ID="18" CallType="ToClient" ChartType="Column" IsChart="true" FromTimeState="OneWeekAgo" ToTimeState="Today" Type="DailyActivity" Title="نمودار مکالمه روزانه اپراتور" />
+  <Report ID="19" CallType="ToClient" ChartType="Column" IsChart="true" FromTimeState="OneWeekAgo" ToTimeState="Today" Type="DailyActivity" Title="نمودار تعداد تماس روزانه اپراتور" />
+  
+  <Report ID="20" OperatorVisible="false" CallerIDVisible="true" CallType="FromGateway" FromTimeState="OneWeekAgo" ToTimeState="Today" Type="CallsFromPrefix" Title="تعداد تماسهای روزانه پیش شماره">
+    <Column PropertyName="Date" Title="تاریخ" />
+    <Column PropertyName="CallsCount" Title="تعداد تماسها" />
+  </Report>
+  <!--<Report ID="20" CallType="FromGateway" OperatorVisible="false" ToTimeState="FirstDayOfMonth" FromTimeState="FirstDayOfLastMonth" Title="آمار ترافیک کلی سیستم" Type="TrafficOveral">
+    <Column PropertyName="Calls" Title="تعداد کل تماسها" />
+    <Column PropertyName="Talks" Title="تعداد مکالمات با اپراتورها" />
+    <Column PropertyName="SourceDcCount" Title="تعداد قطع از مبدا" />
+    <Column PropertyName="TalkAverage" Title="متوسط مدت زمان مکالمه" />
+    <Column PropertyName="" Title="متوسط زمان انتظار" />
+    <Column PropertyName="" Title="حداکثر زمان انتظار" />
+    <Column PropertyName="" Title="حداکثر طول صف انتظار" />
+    <Column PropertyName="" Title="تعداد مکالمات کوتاه" />
+    <Column PropertyName="" Title="تعداد مکالمات بلند" />
+  </Report>-->
+</ReportSchema>

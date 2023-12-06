@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.DivertNode"
+             FlowDirection="RightToLeft"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+            xmlns:e="clr-namespace:Folder;assembly=Folder.Common"
+             FontFamily="Tahoma"
+             mc:Ignorable="d"
+             d:DesignWidth="360">
+    <UserControl.Resources>
+        <XmlDataProvider   x:Key="Group"
+                           IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup  Description="دایورت"
+                            Tag="Divert"
+                            StartNode="DivertNodes[0]"
+                            xmlns="http://tempuri.org/VoiceGraph.xsd">
+                    <DivertNode ID="0"
+                                ClearDigits="true"
+                                Timeout="30"
+                                TimeoutNode="Bye"
+                                MaxTalkTimeNode="Bye"
+                                DeleteFromStart="0"
+                                DeleteFromEnd="0"
+                                ClearAllSource="false"
+                                TargetPhone=""
+                                ProxyMode="true"
+                                TargetNode="DisconnectCall"
+                                RecordVoice="false"
+                                BusyNode="Bye"
+                                SubscriberAbsentNode="Bye"
+                                UnallocatedNumberNode="Bye"
+                                FullQueueNode="Bye"
+                                FailureNode="Bye"
+                                ForwardAnswer="true" />
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin"
+                    Value="0,3" />
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        <uc:CommonArea />
+        <Label>شماره مقصد:</Label>
+        <TextBox FlowDirection="LeftToRight"
+                 Text="{Binding NodeData.DivertNodes[0].DynamicTargetPhone, UpdateSourceTrigger=PropertyChanged}" TextChanged="DynamicTargetPhone_TextChanged" />
+        <Label>شماره اپراتوری مقصد:</Label>
+        <TextBox FlowDirection="LeftToRight"
+                 Text="{Binding NodeData.DivertNodes[0].TargetPhone, UpdateSourceTrigger=PropertyChanged}" TextChanged="TargetPhone_TextChanged" />
+        <Label>تیم اپراتوری مقصد:</Label>
+        <ComboBox Name="operatorsList" HorizontalAlignment="Left" FlowDirection="RightToLeft" MinWidth="195" SelectedValuePath="ID" DisplayMemberPath="Name" 
+                  DataContext="{Binding NodeData.DivertNodes[0]}"
+                 SelectedValue="{Binding TargetTeam, Converter={conv:GuidConverter}}" SelectionChanged="TargetTeam_SelectionChanged" />
+        <Label>حداکثر زمان انتظار:</Label>
+        <e:NumericUpDown Value="{Binding NodeData.DivertNodes[0].Timeout}"
+                         HorizontalAlignment="Left"
+                         Width="70" />
+        <Label>حداکثر زمان مکالمه:</Label>
+        <e:NumericUpDown Value="{Binding NodeData.DivertNodes[0].MaxTalkTime}"
+                         HorizontalAlignment="Left"
+                         Width="70" />
+        <Label>موزيک انتظار:</Label>
+        <uc:VoiceSelector SelectedVoiceID="{Binding NodeData.DivertNodes[0].WaitSound}"
+                          ShowOptions="False" />
+        <Label>پيام انتظار:</Label>
+        <uc:VoiceSelector SelectedVoiceID="{Binding NodeData.DivertNodes[0].WaitMessage}"
+                          ShowOptions="False" />
+        <Expander Header="عملیات بعد از دایورت" Padding="10">
+            <StackPanel>
+                <Label>گره بعد از مکالمه:</Label>
+                <uc:TargetSelector SelectedTarget="{Binding NodeData.DivertNodes[0].TargetNode}"
+                           Margin="0,0,0,5" />
+                <Label>گره سپری شدن حداکثر زمان مکالمه:</Label>
+                <uc:TargetSelector SelectedTarget="{Binding NodeData.DivertNodes[0].MaxTalkTimeNode}"
+                           Margin="0,0,0,5" />
+                <Label>گره خطای سپری شدن زمان مجاز:</Label>
+                <uc:TargetSelector SelectedTarget="{Binding NodeData.DivertNodes[0].TimeoutNode}"
+                           Margin="0,0,0,5" />
+                <Label>گره عدم برقراری ارتباط:</Label>
+                <uc:TargetSelector SelectedTarget="{Binding NodeData.DivertNodes[0].FailureNode}"
+                           Margin="0,0,0,5" />
+                <Label>گره در صورت اشغالی مقصد:</Label>
+                <uc:TargetSelector SelectedTarget="{Binding NodeData.DivertNodes[0].BusyNode}"
+                           Margin="0,0,0,5" />
+                <Label>گره خاموش بودن موبایل مقصد:</Label>
+                <uc:TargetSelector SelectedTarget="{Binding NodeData.DivertNodes[0].SubscriberAbsentNode}"
+                           Margin="0,0,0,5" />
+                <Label>گره شماره مقصد نامعتبر:</Label>
+                <uc:TargetSelector SelectedTarget="{Binding NodeData.DivertNodes[0].UnallocatedNumberNode}"
+                           Margin="0,0,0,5" />
+                <Label>گره در صورت پر بودن صف:</Label>
+                <uc:TargetSelector SelectedTarget="{Binding NodeData.DivertNodes[0].FullQueueNode}"
+                           Margin="0,0,0,5" />
+            </StackPanel>
+        </Expander>
+        <Label>حداکثر نفرات منتظر در صف (0 = نامحدود)</Label>
+        <e:NumericUpDown Value="{Binding NodeData.DivertNodes[0].QueueSize}"
+                         HorizontalAlignment="Left"
+                         Width="70" />
+        <Label>ضریب حداکثر نفرات منتظر به کاربران آنلاین (0 = نامحدود)</Label>
+        <e:NumericUpDown Value="{Binding NodeData.DivertNodes[0].QueueSizePerOnlineUsers}"
+                         DecimalPlaces="1"
+                         HorizontalAlignment="Left"
+                         Width="70" />
+        <CheckBox IsChecked="{Binding  NodeData.DivertNodes[0].RecordVoice}">ضبط مکالمه</CheckBox>
+        <Expander Header="تغییر شماره مقصد" Padding="10">
+            <StackPanel>
+                <Label>پيشوند:</Label>
+                <TextBox Width="70"
+                 Text="{Binding NodeData.DivertNodes[0].CalleePrefix, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalAlignment="Left" />
+                <Label>پسوند:</Label>
+                <TextBox Width="70"
+                 Text="{Binding NodeData.DivertNodes[0].CalleePostfix, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalAlignment="Left" />
+                <Label>تعداد ارقام حذفی از ابتدای شماره:</Label>
+                <e:NumericUpDown Value="{Binding NodeData.DivertNodes[0].CalleeDeleteFromStart}"
+                         HorizontalAlignment="Left"
+                         Width="70" />
+                <Label>تعداد ارقام حذفی از انتهای شماره:</Label>
+                <e:NumericUpDown Value="{Binding NodeData.DivertNodes[0].CalleeDeleteFromEnd}"
+                         HorizontalAlignment="Left"
+                         Width="70" />
+            </StackPanel>
+        </Expander>
+        <Expander Header="تغییر شماره مبداء" Padding="10">
+            <StackPanel>
+                <CheckBox IsChecked="{Binding  NodeData.DivertNodes[0].ClearAllSource}">پاک کردن شماره مبداء</CheckBox>
+                <Label>پيشوند:</Label>
+                <TextBox Width="70"
+                 Text="{Binding NodeData.DivertNodes[0].CallerPrefix, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalAlignment="Left" />
+                <Label>پسوند:</Label>
+                <TextBox Width="70"
+                 Text="{Binding NodeData.DivertNodes[0].CallerPostfix, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalAlignment="Left" />
+                <Label>تعداد ارقام حذفی از ابتدای شماره:</Label>
+                <e:NumericUpDown Value="{Binding NodeData.DivertNodes[0].CallerDeleteFromStart}"
+                         HorizontalAlignment="Left"
+                         Width="70" />
+                <Label>تعداد ارقام حذفی از انتهای شماره:</Label>
+                <e:NumericUpDown Value="{Binding NodeData.DivertNodes[0].CallerDeleteFromEnd}"
+                         HorizontalAlignment="Left"
+                         Width="70" />
+            </StackPanel>
+        </Expander>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,629 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using Enterprise;
+
+namespace UMSV
+{
+    public class MailboxAddin : IGraphAddin
+    {
+        private int getMailboxTryTime = 0;
+        private Mailbox mailBox;
+        private UmsDataContext dc = new UmsDataContext();
+        private MailboxMessage currentMessage;
+        private MailboxMessage currentArchiveMessage;
+        private int messagesCount;
+        private int messageArchiveCount;
+        private string firstPassword = "";
+
+        public ISipDialog Dialog
+        {
+            get;
+            set;
+        }
+
+        public void SetAutoDequeueFullMailbox()
+        {
+            mailBox.AutoDequeueFullMailbox = true;
+            dc.SubmitChanges();
+        }
+
+        public void SetPlayCallerIDBeforeMessage()
+        {
+            mailBox.PlayCallerIDBeforeMessage = true;
+            dc.SubmitChanges();
+        }
+
+        public void SetAutoArchive()
+        {
+            mailBox.AutoArchive = true;
+            dc.SubmitChanges();
+        }
+
+        public enum GetMailboxNoResult
+        {
+            Invalid,
+            Valid,
+            MaxTry
+        }
+        public enum CheckMailboxPasswordResult : byte
+        {
+            Valid,
+            Invalid,
+            MaxTry
+        }
+        public enum CheckMailboxOwnerCallerIDResult
+        {
+            Exist,
+            NotExist
+        }
+        public enum CheckMailBoxForRecordResult
+        {
+            FullMailBox,
+            NotActive,
+            Expired,
+            Active
+        }
+        public enum CheckMailboxOwnerPhoneNumberResult
+        {
+            Equal,
+            Invalid,
+            NotEqual
+        }
+        public enum CheckExistMessage
+        {
+            Exist,
+            NotExist
+        }
+        public enum ChangePasswordResult
+        {
+            Successful,
+            Error
+        }
+        public enum PagingStartTimeResult
+        {
+            Valid,
+            Invalid
+        }
+        public enum ApplyPagingTimeResult
+        {
+            OK,
+            NOTOK
+        }
+
+        public byte CheckMailboxMode()
+        {
+            Logger.WriteView("CheckMailboxMode ...");
+            return (byte)UMSV.Model.Config.Default.MailboxDefaultMode;
+        }
+
+        public byte[] CustomerWelcomeMessage
+        {
+            get
+            {
+                if (mailBox.WelcomeMessages == null)
+                {
+
+                    var voice = dc.Voices.FirstOrDefault(p => p.Name == "LeaveMessage");
+                    if (voice != null && voice.Data != null)
+                        return voice.Data.ToArray();
+                }
+                else
+                {
+                    return mailBox.WelcomeMessages.ToArray();
+                }
+
+                return null;
+
+            }
+        }
+
+        public string BoxNo
+        {
+            get
+            {
+                return mailBox.BoxNo;
+            }
+        }
+
+        public byte[] PlayCurrentMessage
+        {
+            get
+            {
+                if (mailBox.AutoArchive.HasValue && mailBox.AutoArchive.Value)
+                {
+                    using (UmsDataContext context = new UmsDataContext())
+                    {
+                        MailboxMessage message = context.MailboxMessages.Single(t => t.ID == currentMessage.ID);
+                        message.Type = (byte)MailboxMessageType.Archive;
+                        context.SubmitChanges();
+                    }
+                }
+
+                return currentMessage.Data.ToArray();
+            }
+        }
+        public byte[] IsAskMessage
+        {
+            get
+            {
+
+                if (currentMessage.Type == (byte)MailboxMessageType.Ask)
+                    return Voice.GetByName("Press7ToAnswer");
+                else
+                    return null;
+            }
+        }
+        public DateTime CurrentMessageDate
+        {
+            get
+            {
+                return currentMessage.ReceiveTime;
+            }
+        }
+        public string CurrentMessagePhoneNumber
+        {
+            get
+            {
+                return currentMessage.Sender;
+            }
+        }
+        public TimeSpan CurrentMessageTime
+        {
+            get
+            {
+                return currentMessage.ReceiveTime.TimeOfDay;
+            }
+        }
+
+        public int ArchiveMessageCount
+        {
+            get
+            {
+                return dc.MailboxMessages.Count<MailboxMessage>(p => p.BoxNo == mailBox.BoxNo && (p.Type == (byte)MailboxMessageType.Archive));
+            }
+        }
+
+        public byte[] PlayCurrentArchiveMessage
+        {
+            get
+            {
+                return currentArchiveMessage.Data.ToArray();
+            }
+        }
+
+        public DateTime ArchiveMessageDate
+        {
+            get
+            {
+                return currentArchiveMessage.ReceiveTime;
+            }
+        }
+
+        public string ArchiveMessagePhoneNumber
+        {
+            get
+            {
+                return currentArchiveMessage.Sender;
+            }
+        }
+
+        public TimeSpan ArchiveMessageTime
+        {
+            get
+            {
+                return currentArchiveMessage.ReceiveTime.TimeOfDay;
+            }
+        }
+
+        private string Keys
+        {
+            get
+            {
+                return Dialog.Keys.Trim('*').Trim('#');
+            }
+        }
+
+        public GetMailboxNoResult GetMailboxNo()
+        {
+            if (getMailboxTryTime < UMSV.Model.Config.Default.InvalidBoxMaxTry)
+            {
+                getMailboxTryTime++;
+                mailBox = dc.Mailboxes.FirstOrDefault(p => p.BoxNo == Keys);
+                if (mailBox != null)
+                    return GetMailboxNoResult.Valid;
+                else
+                    return GetMailboxNoResult.Invalid;
+            }
+            else
+                return GetMailboxNoResult.MaxTry;
+        }
+
+        public CheckMailboxOwnerPhoneNumberResult CheckMailboxOwnerPhoneNumber()
+        {
+            mailBox = dc.Mailboxes.FirstOrDefault(p => p.BoxNo == Keys);
+            if (mailBox == null)
+                return CheckMailboxOwnerPhoneNumberResult.Invalid;
+            else if (mailBox.CallerID == Dialog.CallerID)
+                return CheckMailboxOwnerPhoneNumberResult.Equal;
+            else
+                return CheckMailboxOwnerPhoneNumberResult.NotEqual;
+        }
+
+        public CheckMailboxPasswordResult CheckMailboxPassword()
+        {
+            if (getMailboxTryTime < UMSV.Model.Config.Default.InvalidBoxMaxTry)
+            {
+                getMailboxTryTime++;
+                if (mailBox.Password == Keys)
+                    return CheckMailboxPasswordResult.Valid;
+                else
+                    return CheckMailboxPasswordResult.Invalid;
+            }
+            else
+                return CheckMailboxPasswordResult.MaxTry;
+        }
+
+        public CheckMailboxOwnerCallerIDResult CheckMailboxOwnerCallerID()
+        {
+            Logger.Write(LogType.Info, "ورود به متد CheckMailboxOwnerCallerID");
+            try
+            {
+                mailBox = dc.Mailboxes.FirstOrDefault(p => p.BoxNo == Dialog.CallerID);
+                if (mailBox != null)
+                    return CheckMailboxOwnerCallerIDResult.Exist;
+                else
+                    return CheckMailboxOwnerCallerIDResult.NotExist;
+            }
+            catch (Exception ex)
+            {
+
+                Logger.Write(ex);
+            }
+            return CheckMailboxOwnerCallerIDResult.NotExist;
+        }
+
+        public CheckMailBoxForRecordResult CheckMailBoxForRecord()
+        {
+            if (mailBox == null)
+                mailBox = dc.Mailboxes.FirstOrDefault(p => p.BoxNo == Keys);
+
+            if (mailBox == null)
+                mailBox = dc.Mailboxes.FirstOrDefault(p => p.BoxNo == Dialog.Extension);
+
+            if (mailBox == null)
+                return CheckMailBoxForRecordResult.NotActive;
+
+            if (mailBox.ExpirationDate.HasValue && mailBox.ExpirationDate < DateTime.Now)
+                return CheckMailBoxForRecordResult.Expired;
+
+            else if (!mailBox.AutoDequeueFullMailbox && mailBox.MaxNewMessage <= mailBox.MailboxMessages.Count(p => p.BoxNo == mailBox.BoxNo && (p.Type == (byte)MailboxMessageType.New || p.Type == (byte)MailboxMessageType.Ask)))
+                return CheckMailBoxForRecordResult.FullMailBox;
+
+            else if (mailBox.ActivationDate.HasValue && mailBox.ActivationDate > DateTime.Now)
+                return CheckMailBoxForRecordResult.NotActive;
+
+            return CheckMailBoxForRecordResult.Active;
+        }
+
+        private void RemoveBeepFromRecordedMessage(byte[] buffer)
+        {
+            decimal ms = 0;//Config.Default.RemoveBeepFromRecordedMessage;
+
+            int size = buffer.Length - ((8 * (int)1.024 * (int)ms));
+            Array.Resize<byte>(ref buffer, size);
+        }
+
+        public enum CalleeIDResult
+        {
+            Play,
+            Record
+        }
+
+        public CalleeIDResult CheckCalleeID()
+        {
+            if (!String.IsNullOrEmpty(Dialog.CalleeID))
+            {
+                mailBox = dc.Mailboxes.FirstOrDefault(p => p.BoxNo == Dialog.CalleeID);
+                return CalleeIDResult.Record;
+            }
+            else
+                return CalleeIDResult.Play;
+        }
+
+        public CalleeIDResult CheckCallerID()
+        {
+            if (!String.IsNullOrEmpty(Dialog.CallerID))
+            {
+                mailBox = dc.Mailboxes.FirstOrDefault(p => p.BoxNo == Dialog.CallerID);
+                return CalleeIDResult.Record;
+            }
+            else
+                return CalleeIDResult.Play;
+        }
+
+        public void RecordAndSaveMessage()
+        {
+            byte[] buffer = Dialog.RecordedVoice;
+            if (buffer != null && buffer.Length > 0)
+            {
+                Logger.WriteDebug("RecordAndSaveMessage voice size:{0}", buffer.Length);
+                //RemoveBeepFromRecordedMessage(buffer);
+                int messages = dc.MailboxMessages.Where(p => p.BoxNo == mailBox.BoxNo && p.Type == (byte)MailboxMessageType.New).ToList().Count;//messageAdapter.GetMessagesCount(currentMailbox.BoxNo, @MailboxMessageType.New);
+
+                if (mailBox.MaxNewMessage.HasValue && messages >= mailBox.MaxNewMessage && mailBox.AutoDequeueFullMailbox)
+                    dc.MailboxMessageDeleteFirstMessage(mailBox.BoxNo, (byte)MailboxMessageType.New);
+
+                MailboxMessage mailboxMessage = new MailboxMessage()
+                {
+                    ReceiveTime = DateTime.Now,
+                    Sender = Dialog.CallerID,
+                    Data = buffer,
+                    BoxNo = mailBox.BoxNo,
+                    Type = 1,
+                    ExpireDate = dc.CalculateExpireDate(mailBox.BoxNo, 1)
+                };
+
+                dc.MailboxMessages.InsertOnSubmit(mailboxMessage);
+                dc.SubmitChanges();
+
+                //if (mailBox.EmailNewMessages.HasValue && mailBox.EmailNewMessages.Value && !string.IsNullOrEmpty(mailBox.Email))
+                //{
+                //    Folder.PersianDateTime pDate = new Folder.PersianDateTime(DateTime.Now);
+                //    string body = Config.Default.Email.BodyFormat.Replace("[Sender]", Dialog.CallerID).Replace("[Date]", pDate.ToString()).Replace("[BoxNo]", mailBox.BoxNo);
+
+                //    System.Net.Mail.SmtpClient client = default(System.Net.Mail.SmtpClient);
+                //    {
+                //        client = new System.Net.Mail.SmtpClient(Config.Default.Email.Server, Config.Default.Email.Port);
+                //        client.Credentials = new System.Net.NetworkCredential(Config.Default.Email.Username, Config.Default.Email.Password);
+                //        client.Send(Config.Default.Email.Sender, mailBox.Email, Config.Default.Email.Subject, body);
+                //    }
+                //}
+            }
+        }
+
+        public void RecordQuestionAnswer()
+        {
+            byte[] buffer = Dialog.RecordedVoice;
+            if (buffer != null)
+            {
+                RemoveBeepFromRecordedMessage(buffer);
+                int messages = dc.MailboxMessages.Where(p => p.BoxNo == mailBox.BoxNo && p.Type == (byte)MailboxMessageType.New).ToList().Count;//messageAdapter.GetMessagesCount(currentMailbox.BoxNo, @MailboxMessageType.New);
+
+                if (mailBox.MaxNewMessage.HasValue && messages >= mailBox.MaxNewMessage && mailBox.AutoDequeueFullMailbox)
+                {
+                    dc.MailboxMessageDeleteFirstMessage(mailBox.BoxNo, (byte)MailboxMessageType.New);
+                }
+
+                MailboxMessage mailboxMessage = new MailboxMessage()
+                {
+                    ReceiveTime = DateTime.Now,
+                    Sender = Dialog.CallerID,
+                    Data = buffer,
+                    BoxNo = mailBox.BoxNo,
+                    Type = 4,
+                    ExpireDate = dc.CalculateExpireDate(mailBox.BoxNo, 1)
+                };
+
+                dc.MailboxMessages.InsertOnSubmit(mailboxMessage);
+                dc.SubmitChanges();
+            }
+        }
+
+        public void RecordCustomWelcomeMessage()
+        {
+            Logger.Write(LogType.Info, "ورود به متد ضبط پیام خوش آمد گویی");
+
+            byte[] buffer = Dialog.RecordedVoice;
+
+            if (buffer != null)
+            {
+                RemoveBeepFromRecordedMessage(buffer);
+
+                Logger.Write(LogType.Info, "پیام خوش آمد گویی خالی نبوده است");
+
+                Mailbox box = dc.Mailboxes.FirstOrDefault(p => p.BoxNo == mailBox.BoxNo);
+                box.WelcomeMessages = buffer;
+                dc.SubmitChanges();
+                Logger.Write(LogType.Info, "پیام خوش آمد گویی با موفقیت ذخیره گردید");
+            }
+        }
+
+        public void RecordAnswer()
+        {
+            Logger.Write(LogType.Info, "ورود به متد ضبط پاسخ");
+            byte[] buffer = Dialog.RecordedVoice;
+            if (buffer != null)
+            {
+                Logger.Write(LogType.Info, "ضبط پاسخ خالی نبوده است");
+                MailboxMessage message = dc.MailboxMessages.FirstOrDefault(p => p.ID == currentMessage.ID);
+                message.Data = buffer;
+                message.Type = (byte)MailboxMessageType.Answer;
+                message.ReceiveTime = DateTime.Now;
+                dc.SubmitChanges();
+                Logger.Write(LogType.Info, "پاسخ با موفقیت ذخیره گردید");
+            }
+        }
+
+        public int NewMessageCount
+        {
+            get
+            {
+                return dc.MailboxMessages.Count<MailboxMessage>(p => p.BoxNo == mailBox.BoxNo && (p.Type == (byte)MailboxMessageType.New || p.Type == (byte)MailboxMessageType.Ask));
+            }
+        }
+
+        public PagingStartTimeResult GetPagingStartTime()
+        {
+            return PagingStartTimeResult.Valid;
+        }
+
+        public ApplyPagingTimeResult ApplyPagingTime()
+        {
+            return ApplyPagingTimeResult.OK;
+        }
+
+        public void GetNewPassword()
+        {
+            firstPassword = Keys;
+        }
+
+        public ChangePasswordResult ConfirmPassword()
+        {
+            if (firstPassword == Keys)
+            {
+                mailBox.Password = firstPassword;
+                dc.SubmitChanges();
+                return ChangePasswordResult.Successful;
+            }
+            else
+                return ChangePasswordResult.Error;
+
+        }
+
+        public MailboxMessageType CheckMessageType()
+        {
+            Logger.WriteInfo("CheckMessageType is Started.and message type is {0}", (MailboxMessageType)currentMessage.Type);
+            return (MailboxMessageType)currentMessage.Type;
+        }
+
+        public CheckExistMessage CheckMessagesCount()
+        {
+            messagesCount = dc.MailboxMessages.Count(p => p.BoxNo == mailBox.BoxNo && (p.Type == (byte)MailboxMessageType.New || p.Type == (byte)MailboxMessageType.Ask));
+            if (messagesCount > 0)
+            {
+                currentMessage = (from p in dc.MailboxMessages
+                                  where p.BoxNo == mailBox.BoxNo && (p.Type == (byte)MailboxMessageType.New || p.Type == (byte)MailboxMessageType.Ask)
+                                  orderby p.ID descending
+                                  select p).FirstOrDefault();
+
+                return CheckExistMessage.Exist;
+            }
+            else
+                return CheckExistMessage.NotExist;
+        }
+
+        public CheckExistMessage CheckArchiveMessageCount()
+        {
+            messageArchiveCount = dc.MailboxMessages.Count(q => q.BoxNo == this.mailBox.BoxNo && q.Type == (byte)MailboxMessageType.Archive);
+
+            if (ArchiveMessageCount > 0)
+            {
+                currentArchiveMessage = (from p in dc.MailboxMessages
+                                         where p.BoxNo == mailBox.BoxNo && (p.Type == (byte)MailboxMessageType.Archive)
+                                         orderby p.ID descending
+                                         select p).FirstOrDefault();
+
+                return CheckExistMessage.Exist;
+            }
+            else
+                return CheckExistMessage.NotExist;
+
+
+        }
+
+        public void DeleteMessage()
+        {
+            if (currentMessage != null)
+            {
+                dc.MailboxMessages.DeleteOnSubmit(currentMessage);
+                dc.SubmitChanges();
+            }
+        }
+        public void ReturnToDefaultWelcomeMessage()
+        {
+            if (mailBox != null)
+            {
+                mailBox.WelcomeMessages = null;
+                dc.SubmitChanges();
+            }
+        }
+        public CheckExistMessage PreviousMessage()
+        {
+            currentMessage = (from p in dc.MailboxMessages
+                              where p.BoxNo == mailBox.BoxNo && p.ID < currentMessage.ID && (p.Type == (byte)MailboxMessageType.New || p.Type == (byte)MailboxMessageType.Ask)
+                              orderby p.ID descending
+                              select p).FirstOrDefault();
+
+            if (currentMessage != null)
+                return CheckExistMessage.Exist;
+            else
+                return CheckExistMessage.NotExist;
+        }
+        public CheckExistMessage NextMessage()
+        {
+
+            currentMessage = dc.MailboxMessages.FirstOrDefault(p => p.BoxNo == mailBox.BoxNo && p.ID > currentMessage.ID && (p.Type == (byte)MailboxMessageType.New || p.Type == (byte)MailboxMessageType.Ask));
+            if (currentMessage != null)
+                return CheckExistMessage.Exist;
+            else
+                return CheckExistMessage.NotExist;
+
+        }
+        public void MessageArchive()
+        {
+            Logger.WriteInfo("MessageArchive is Started.");
+            if (currentMessage != null)
+            {
+                Logger.WriteInfo("MessageArchive - currentMessage is not null.");
+                int countOfMessageArchive = dc.MailboxMessages.Count(p => p.BoxNo == mailBox.BoxNo && p.Type == (byte)UMSV.MailboxMessageType.Archive);
+                if (!mailBox.MaxArchiveMessage.HasValue || (mailBox.MaxArchiveMessage.HasValue && mailBox.MaxArchiveMessage < countOfMessageArchive))
+                {
+                    Logger.WriteInfo("MessageArchive - Messages is not full.");
+                    currentMessage.Type = (byte)MailboxMessageType.Archive;
+                    dc.SubmitChanges();
+                }
+            }
+        }
+        public bool HasArchiveMessage()
+        {
+            messageArchiveCount = dc.MailboxMessages.Count(p => p.BoxNo == mailBox.BoxNo && p.Type == (byte)MailboxMessageType.Archive);
+            if (messageArchiveCount > 0)
+            {
+                currentArchiveMessage = (from p in dc.MailboxMessages
+                                         where p.BoxNo == mailBox.BoxNo && p.Type == (byte)MailboxMessageType.Archive
+                                         orderby p.ID descending
+                                         select p).FirstOrDefault();
+                return true;
+            }
+            else
+                return false;
+        }
+
+
+        public CheckExistMessage PreviousArchiveMessage()
+        {
+            currentArchiveMessage = (from p in dc.MailboxMessages
+                                     where p.BoxNo == mailBox.BoxNo && p.ID < currentArchiveMessage.ID && p.Type == (byte)MailboxMessageType.Archive
+                                     orderby p.ID descending
+                                     select p).FirstOrDefault();
+
+            if (currentArchiveMessage != null)
+                return CheckExistMessage.Exist;
+            else
+                return CheckExistMessage.NotExist;
+        }
+
+        public CheckExistMessage NextArchiveMessage()
+        {
+
+            currentArchiveMessage = dc.MailboxMessages.FirstOrDefault(p => p.BoxNo == mailBox.BoxNo && p.ID > currentArchiveMessage.ID && p.Type == (byte)MailboxMessageType.Archive);
+            if (currentArchiveMessage != null)
+                return CheckExistMessage.Exist;
+            else
+                return CheckExistMessage.NotExist;
+
+        }
+
+        public void DeleteArchiveMessage()
+        {
+            if (currentArchiveMessage != null)
+            {
+                dc.MailboxMessages.DeleteOnSubmit(currentArchiveMessage);
+                dc.SubmitChanges();
+            }
+        }
+    }
+}

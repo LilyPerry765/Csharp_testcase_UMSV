@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="UMSV.SmsSendListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:acb="clr-namespace:Folder.Commands;assembly=Folder.Common"
+             FontFamily="Tahoma"
+             FlowDirection="RightToLeft"
+             mc:Ignorable="d"
+             d:DesignHeight="99"
+             d:DesignWidth="300">
+    <DataGrid AutoGenerateColumns="False"
+              IsReadOnly="True"
+              SelectionUnit="FullRow"
+              EnableRowVirtualization="True"
+              SelectedItem="{Binding SelectedMessage}"
+              ItemsSource="{Binding Messages}"
+              CanUserAddRows="False"
+              CanUserDeleteRows="True"
+              acb:CommandBehavior.Event="MouseDoubleClick"
+              acb:CommandBehavior.Command="{Binding EditCommand}"
+              RowDetailsVisibilityMode="VisibleWhenSelected">
+        <DataGrid.Columns>
+            <DataGridCheckBoxColumn x:Name="enabledColumn"
+                                    Binding="{Binding Path=Enabled}"
+                                    Header="فعال"
+                                    Width="SizeToHeader" />
+            <DataGridTextColumn Binding="{Binding Path=Subject}"
+                                Width="*"
+                                Header="موضوع" />
+        </DataGrid.Columns>
+        <DataGrid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="جديد"
+                          Command="{Binding AddCommand}"
+                          Icon="\Images\new.png" Width="16" />
+                <MenuItem Header="ويرايش"
+                          Command="{Binding EditCommand}" />
+                <Separator />
+                <MenuItem Header="شماره های تماس"
+                          Icon="\Images\phone16.png" Width="16" Height="16"
+                          Command="{Binding ShowNumbersCommand}" />
+                <MenuItem Header="زمانبندی"
+                          Icon="\Images\calendar16.png" Width="16" Height="16"
+                          Command="{Binding ShowScheduleCommand}" />
+                <Separator />
+                <MenuItem Header="حذف"
+                          Icon="\Images\delete16.png" Width="16" Height="16"
+                          Command="{Binding DeleteCommand}" />
+            </ContextMenu>
+        </DataGrid.ContextMenu>
+    </DataGrid>
+</UserControl>

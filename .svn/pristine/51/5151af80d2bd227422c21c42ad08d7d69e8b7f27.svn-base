@@ -1,0 +1,51 @@
+﻿>>>>>>>>>>>> Info:
+
+
+Karaj: Nasrabadi
+10.19.7.10
+
+Karaj: Kalak
+10.19.23.10
+
+
+Isfahan:
+10.31.2.53
+
+user: pendar
+pass: 1234
+
+VPN: 10.143.218.201 (User: pendar Pass: Pendar!@#  )
+
+
+
+
+
+
+>>>>>>>>>>>>> TODO:
+Search result in Data
+8+7
+
+
+
+
+Arak
+192.168.10.118
+Pass: pend@r100
+
+
+10.45.20.8
+1234
+
+
+
+
+
+>>>>>>>>>>>>>> Changes:
+1- User: <Profile AutoAnswer="true" />
+2- UserProfile Schema in Folder
+
+
+3- Select Va voice
+4- DELETE FROM [Umsv].[dbo].[Voice]
+  where VoiceGroup = 2 AND Description IS NULL AND LEN(Name) < 5
+5- Update 118 Addins and Graph

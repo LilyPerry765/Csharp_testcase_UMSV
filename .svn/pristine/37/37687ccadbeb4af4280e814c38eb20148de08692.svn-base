@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="Pendar._118.SearchForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"  FlowDirection="RightToLeft" FontFamily="Tahoma" PreviewKeyDown="UserControl_PreviewKeyDown"
+             d:DesignHeight="300" d:DesignWidth="700">
+    <DockPanel>
+        <WrapPanel DockPanel.Dock="Top" Margin="10,0,0,0" >
+            <TextBlock Text="عنوان:" VerticalAlignment="Center"/>
+            <TextBox Margin="5" Name="TokenTitle" TextChanged="Tokens_TextChanged" Width="100" />
+            <TextBlock Text="آدرس:" VerticalAlignment="Center"/>
+            <TextBox Margin="5" Name="TokenAddress" TextChanged="Tokens_TextChanged" Width="100" />
+            <WrapPanel Name="CityPanel" VerticalAlignment="Center">
+                <TextBlock Text="شهر:" Margin="5" />
+                <ComboBox Background="Transparent" Margin="3" x:Name="CitiesComboBox" DisplayMemberPath="Name" SelectedValuePath="ID" SelectionChanged="CityNames_SelectionChanged" HorizontalAlignment="Left" MaxDropDownHeight="600" />
+            </WrapPanel>
+            <Label Name="SearchInfo" Margin="3" VerticalAlignment="Center" />
+        </WrapPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <DataGrid x:Name="ResultSearchDataGrid" IsReadOnly="True" Background="Gray" Grid.Row="0" SelectionUnit="FullRow">
+                <DataGrid.AlternatingRowBackground>
+                    <SolidColorBrush Color="LightGray"/>
+                </DataGrid.AlternatingRowBackground>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Margin" Value="0 4 0 4" />
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="lightblue"/>
+                                <Setter Property="Foreground" Value="black"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="green" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridComboBoxColumn x:Name="JobColumn" Header="شغل" SelectedValueBinding="{Binding JobID}" DisplayMemberPath="Name" SelectedValuePath="ID" Visibility="Collapsed" />
+                    <DataGridComboBoxColumn x:Name="CityColumn" Header="شهر" SelectedValueBinding="{Binding CityID}" DisplayMemberPath="Name" SelectedValuePath="ID" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="Title_Column" Header="عنوان" Binding="{Binding Name}"/>
+                    <DataGridTextColumn x:Name="Tel_Column" Header="تلفن"  Binding="{Binding PhoneNumber}"/>
+                    <DataGridTextColumn x:Name="Address_Column" Header="آدرس" Binding="{Binding Address}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,251 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Enterprise;
+
+namespace Pendar._118
+{
+    public static class TokenManager
+    {
+        public static TokenForSearch SeperateJobAsToken(TokenForSearch token)
+        {
+            token.Job = null;
+            if (token.Title == null)
+            {
+                token.JobAbbreviation = string.Empty;
+                token.Title = string.Empty;
+                return token;
+            }
+            var TokenDashSplited = token.Title.Split('-').ToArray();
+            if (TokenDashSplited.Count() > 1)
+            {
+                token.JobAbbreviation = TokenDashSplited[0];
+                token.Title = token.Title.Remove(0, TokenDashSplited[0].Length + 1);//May have some -
+            }
+            else
+            {
+                token.JobAbbreviation = string.Empty;
+                token.Title = token.Title;
+            }
+            return token;
+        }
+
+        public static bool IsNumeric(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return false;
+            foreach (Char chr in token)
+            {
+                if (!Char.IsNumber(chr))
+                    return false;
+            }
+            return true;
+        }
+
+        public static string PrepareString(string token)
+        {
+            try
+            {
+                token = token.Trim();
+
+                StringBuilder preparedToken = new StringBuilder();
+                foreach (char chr in token)
+                {
+                    char rchar;
+                    if ((chr == 'آ') || (chr == 'ا') || (chr == 'ﺎ') || (chr == 'ﺍ') || (chr == 'ﺁ'))
+                    {
+                        rchar = 'A';
+                    }
+                    else if ((chr == 'ع') || (chr == 'ﻋ') || (chr == 'ﻌ') || (chr == 'ﻉ') || (chr == 'ﻊ'))
+                    {
+                        rchar = 'B';
+                    }
+                    else if (((chr == 'ب') || (chr == 'ﺑ')) || (chr == 'ﺏ'))
+                    {
+                        rchar = 'C';
+                    }
+                    else if (((chr == 'پ') || (chr == 'ﭘ')) || (chr == 'ﭖ'))
+                    {
+                        rchar = 'D';
+                    }
+                    else if ((chr == 'ت') || (chr == 'ﺕ') || (chr == 'ﺗ'))
+                    {
+                        rchar = 'E';
+                    }
+                    else if ((chr == 'ث') || (chr == 'ﺛ') || (chr == 'ﺙ'))
+                    {
+                        rchar = 'F';
+                    }
+                    else if (((chr == 'ج') || (chr == 'ﺟ')) || (chr == 'ﺝ'))
+                    {
+                        rchar = 'G';
+                    }
+                    else if ((chr == 'چ') || (chr == 'ﭼ'))
+                    {
+
+                        rchar = 'H';
+                    }
+                    else if (((chr == 'ح') || (chr == 'ﺣ')) || (chr == 'ﺡ'))
+                    {
+
+                        rchar = 'I';
+                    }
+                    else if (((chr == 'خ') || (chr == 'ﺧ')) || (chr == 'ﺥ'))
+                    {
+
+                        rchar = 'J';
+                    }
+                    else if (chr == 'د')
+                    {
+
+                        rchar = 'K';
+                    }
+                    else if ((chr == 'ذ'))
+                    {
+
+                        rchar = 'L';
+                    }
+                    else if (chr == 'ر')
+                    {
+
+                        rchar = 'M';
+                    }
+                    else if (chr == 'ز')
+                    {
+
+                        rchar = 'N';
+                    }
+                    else if (chr == 'ژ')
+                    {
+
+                        rchar = 'O';
+                    }
+                    else if (((chr == 'س') || (chr == 'ﺳ')) || (chr == 'ﺱ'))
+                    {
+
+                        rchar = 'P';
+                    }
+                    else if (((chr == 'ش') || (chr == 'ﺷ')) || (chr == 'ﺵ'))
+                    {
+
+                        rchar = 'Q';
+                    }
+                    else if (((chr == 'ص') || (chr == 'ﺻ')) || (chr == 'ﺹ'))
+                    {
+
+                        rchar = 'R';
+                    }
+                    else if (((chr == 'ض') || (chr == 'ﺿ')) || (chr == 'ﺽ'))
+                    {
+
+                        rchar = 'S';
+                    }
+                    else if (chr == 'ط')
+                    {
+
+                        rchar = 'T';
+                    }
+                    else if (chr == 'ظ')
+                    {
+
+                        rchar = 'U';
+                    }
+                    else if ((chr == 'غ') || (chr == 'ﻏ') || (chr == 'ﻐ') || (chr == 'ﻍ') || (chr == 'ﻎ'))
+                    {
+
+                        rchar = 'V';
+                    }
+                    else if (((chr == 'ف') || (chr == 'ﻓ')) || (chr == 'ﻑ'))
+                    {
+
+                        rchar = 'W';
+                    }
+                    else if (((chr == 'ق') || (chr == 'ﻗ')) || (chr == 'ﻕ'))
+                    {
+
+                        rchar = 'X';
+                    }
+                    else if ((chr == 'ک') || (chr == 'ﮐ') || (chr == 'ﮎ') || (chr == 'ك'))
+                    {
+
+                        rchar = 'Y';
+                    }
+                    else if ((chr == 'گ') || (chr == 'ﮒ') || (chr == 'ﮔ'))
+                    {
+
+                        rchar = 'Z';
+                    }
+                    else if ((chr == 'ل') || (chr == 'ﻟ') || (chr == 'ﻝ'))
+                    {
+                        rchar = '1';
+                    }
+                    else if (chr == 'ﻻ')
+                    {
+                        rchar = '2';
+                    }
+                    else if ((chr == 'م') || (chr == 'ﻣ') || (chr == 'ﻡ'))
+                    {
+
+                        rchar = '3';
+                    }
+                    else if ((chr == 'ن') || (chr == 'ﻧ') || (chr == 'ﻥ'))
+                    {
+
+                        rchar = '4';
+                    }
+                    else if (chr == 'و')
+                    {
+
+                        rchar = '5';
+                    }
+                    else if ((chr == 'ه') || (chr == 'ﻬ') || (chr == 'ﻩ') || (chr == 'ﻫ'))
+                    {
+                        rchar = '6';
+                    }
+                    else if ((chr == 'ی') || (chr == 'ي') || (chr == 'ﯾ') || (chr == 'ﯼ') || (chr == 'ﯽ') || (chr == 'ﺋ') || (chr == 'ئ'))
+                    {
+                        rchar = '7';
+                    }
+                    else if ((chr >= '0' && chr <= '9') || (chr >= '۰' && chr <= '۹'))
+                    {
+                        preparedToken.Append('0');
+                        rchar = chr;
+                    }
+                    else if ((chr == ' ') || (chr == '-'))
+                    {
+                        rchar = ' ';
+                    }
+                    else
+                        continue;
+                    preparedToken.Append(rchar);
+                }
+
+                return preparedToken.ToString();
+
+            }
+
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return "error";
+            }
+        }
+
+        public static string MakeFullTextToken(string token)
+        {
+            if (token.Trim() == string.Empty || token == null)
+            {
+                token = "";
+                return token;
+            }
+            
+            token = token.TrimEnd();
+
+            string searchToken;
+            searchToken = token.Replace(" ", "*\" and \"");
+            searchToken = "\"" + searchToken + "*\"";
+            return searchToken;
+        }
+    }
+}

@@ -1,0 +1,110 @@
+﻿<UserControl 
+             x:Class="UMSV.PhoneCallsListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:acb="clr-namespace:Folder.Commands;assembly=Folder.Common"
+             xmlns:c="clr-namespace:UMSV"
+             FontFamily="Tahoma"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="504"
+             FlowDirection="RightToLeft">
+    <Grid>
+        <DataGrid 
+            AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  SelectionUnit="FullRow"
+                  EnableRowVirtualization="True"
+                  SelectionMode="Single"
+                  SelectedItem="{Binding SelectedPhoneCall}"
+                  ItemsSource="{Binding PhoneCalls}"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="True"
+                  acb:CommandBehavior.Event="MouseDoubleClick"
+                  acb:CommandBehavior.Command="{Binding EditCommand}"
+                  RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn x:Name="enabledColumn"
+                                        Binding="{Binding Path=Enabled}"
+                                        Header="فعال"
+                                        Width="SizeToHeader" />
+                <DataGridTextColumn Binding="{Binding Path=Subject}"
+                                    Width="Auto"
+                                    Header="عنوان" />
+                <DataGridTextColumn Binding="{Binding Graph,Converter={x:Static c:GraphIDToGraphNameConverter.Instance}}"
+                                    Width="Auto"
+                                    Header="عنوان درختواره"/>
+                <DataGridTextColumn Header="دفعات تلاش"
+                                    Binding="{Binding RetryCount}"
+                                    IsReadOnly="True"
+                                    Width="Auto" />
+                <DataGridTextColumn Header="حداکثر تماس همزمان"
+                                    Visibility="Hidden"
+                                    Binding="{Binding MaxConcurrentCalls}"
+                                    Width="Auto" />
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="جديد"
+                              Command="{Binding AddCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\Add16.png"
+                                   Width="16"
+                                   Height="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="ويرايش"
+                              Command="{Binding EditCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\edit.png"
+                                   Width="16"
+                                   Height="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="شماره های تماس"
+                              Command="{Binding ShowNumbersCommand}" >
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\phone16.png" Width="16" Height="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="زمانبندی"
+                              Command="{Binding ShowScheduleCommand}" >
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\calendar16.png" Width="16" Height="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="درختواره"
+                              Command="{Binding ShowGraphCommand}" >
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\tree16.png" Width="16" Height="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="حذف"
+                              Command="{Binding DeleteCommand}" >
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\delete16.png" Width="16" Height="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="شروع همه ارسال ها"
+                              Command="{Binding StartAllCommand}" >
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\play16.png" Width="16" Height="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="توقف همه ارسال ها"
+                              Command="{Binding StopAllCommand}" >
+                        <MenuItem.Icon>
+                            <Image Source="..\Images\stop16.png" Width="16" Height="16" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+    </Grid>
+</UserControl>

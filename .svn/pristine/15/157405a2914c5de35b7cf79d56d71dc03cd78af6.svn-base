@@ -1,0 +1,534 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Folder;
+using Enterprise;
+using System.Windows.Threading;
+using System.ComponentModel;
+using System.Data;
+
+namespace Pendar._118.Form
+{
+    /// <summary>
+    /// Interaction logic for PanchistForm.xaml
+    /// </summary>
+    public partial class PanchistForm : UserControl, IFolderForm
+    {
+        private Voip118DataContext searchDataContext = new Voip118DataContext();
+        private DispatcherTimer searchTimer = new DispatcherTimer();//Check delay in search-type
+        private string searchOrderBy = OrderBy.OrderBy_Name;
+        List<City> cities=null;
+        IEnumerable<newJob> jobs = null;
+        IEnumerable<Phone> newPhones = null;
+        List<Phone> phoneResult;
+
+        //Flages for checking the New & Edit record
+        bool isNew = false;
+        bool isNewAdded = false;
+        bool isEdited = false;
+        bool isDelInCell = false;
+        /////////////////////////
+        DataGridRow dgRow;//Get Current row
+
+        public PanchistForm()
+        {
+            InitializeComponent();
+        }
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            FillCities();
+            FillJobs();
+            searchTimer.Interval = TimeSpan.FromMilliseconds(Constants.StartSearchDelay);
+            searchTimer.Tick += new EventHandler(searchTimer_Tick);
+            newPhones = searchDataContext.Phones.Where(p => p.ID == -1);
+            ResultDataGrid.ItemsSource = newPhones;
+            using (Voip118DataContext dc = new Voip118DataContext())
+            {
+                cities = dc.Cities.OrderBy(c => c.Name).ToList();
+                if (cities.Count == 0)
+                    CityPanel.Visibility = System.Windows.Visibility.Collapsed;
+                else
+                {
+                    cities.Insert(0, new City()
+                    {
+                        ID = 0,
+                        Name = "[ همه شهرها ]"
+                    });
+
+                    CitiesComboBox.ItemsSource = cities;
+                    CitiesComboBox.SelectedValue = Config.Default.DefaultCityID;
+                }
+            }
+            TokenTitle.Focus();
+            Folder.Console.GlobalKeyDown = HandleKeyDown;
+        }
+        void HandleKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            Key key = KeyInterop.KeyFromVirtualKey((int)e.KeyCode);
+            HandleKeyboard(key);
+        }
+
+        private void FillCities()
+        {
+            cities = searchDataContext.Cities.OrderBy(c=>c.Name).ToList();
+            if (cities.Count == 0)
+                CityColumn.Visibility = Visibility.Collapsed;
+            else
+            {
+                CityColumn.Visibility = Visibility.Visible;
+                cities.Insert(0, new City() {
+                ID = 0,
+                Name = "[ همه شهرها ]"});
+                CityColumn.ItemsSource = cities;
+            }
+        }
+        private void FillJobs()
+        {
+            jobs = from job in searchDataContext.Jobs
+                   select new newJob
+                   {
+                       Name = job.Abbreviation + "   " + job.Name,
+                       ID = job.ID
+                   };
+            if (jobs.Count() == 0)
+                JobColumn.Visibility = Visibility.Collapsed;
+            else
+            {
+                JobColumn.Visibility = Visibility.Visible;
+                JobColumn.ItemsSource = jobs;
+            }
+        }
+
+        public bool Save(bool isNewItem)
+        {
+            Logger.WriteInfo("-----> Save: {0}", searchDataContext.GetChangeSet().Inserts.Count());
+            
+            try
+            {
+                if (!isNewItem)
+                {
+                    foreach (var item in searchDataContext.GetChangeSet().Updates)
+                    {
+                        FillFields(item as Phone);
+                    }
+                }
+                else
+                {
+                    Phone newPhone;
+                    if (searchDataContext.GetChangeSet().Inserts.Count() > 0)
+                    {
+                        newPhone = searchDataContext.GetChangeSet().Inserts[0] as Phone;
+                        FillFields(newPhone);
+                    }
+                    else
+                    {
+                        newPhone = new Phone();
+                        FillFields(newPhone);
+                        searchDataContext.Phones.InsertOnSubmit(newPhone);
+                    }
+                }
+                searchDataContext.SubmitChanges();
+                TypeCounter();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError(ex.Message);
+                Folder.MessageBox.ShowWarning("اطلاعات درج شده کامل نمی باشد");
+                return false;
+            }
+        }
+        private void FillFields(Phone newPhone)
+        {
+            newPhone.PhoneNumber = (ResultDataGrid.Columns[0].GetCellContent(dgRow) as TextBlock).Text;
+            if ((ResultDataGrid.Columns[1].GetCellContent(dgRow) as ComboBox).SelectedValue == null)
+                newPhone.CityID = null;
+            else
+                newPhone.CityID = int.Parse((ResultDataGrid.Columns[1].GetCellContent(dgRow) as ComboBox).SelectedValue.ToString());
+            newPhone.JobID = int.Parse((ResultDataGrid.Columns[2].GetCellContent(dgRow) as ComboBox).SelectedValue.ToString());
+            newPhone.Name = (ResultDataGrid.Columns[3].GetCellContent(dgRow) as TextBlock).Text;
+            newPhone.Address = (ResultDataGrid.Columns[4].GetCellContent(dgRow) as TextBlock).Text;
+            newPhone.AllowSearchByPhone = (ResultDataGrid.Columns[5].GetCellContent(dgRow) as CheckBox).IsChecked.Value;
+            newPhone.Hidden = (ResultDataGrid.Columns[6].GetCellContent(dgRow) as CheckBox).IsChecked.Value;
+            newPhone.Descriptions = (ResultDataGrid.Columns[7].GetCellContent(dgRow) as TextBlock).Text;
+            
+            string preparedName = TokenManager.PrepareString(newPhone.Name);
+            string preparedAddress = TokenManager.PrepareString(newPhone.Address);
+            if (!string.IsNullOrEmpty(preparedName))
+                newPhone.NamePrepared = preparedName.Replace(" ", "");
+            else
+                newPhone.NamePrepared = string.Empty;
+            if (!string.IsNullOrEmpty(preparedAddress))
+                newPhone.AddressPrepared = preparedAddress.Replace(" ", "");
+            else
+                newPhone.AddressPrepared = string.Empty;
+
+            var now = new FolderDataContext().GetDate().Value;
+            newPhone.ModifiedDate = now;
+            newPhone.Deleted = false;
+            newPhone.Modifier = int.Parse(Folder.User.Current.Username);
+            newPhone.PhysicalSetupDate = now;
+            if (newPhone.JobID == null)
+                newPhone.JobID = 0;
+        }
+
+        private void ResultDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            Logger.WriteInfo("----> Cell Edit Ending");
+            if (e.Column.SortMemberPath == "PhoneNumber")
+            {
+                string editedText = (e.EditingElement as TextBox).Text;
+                int countOldPhone = searchDataContext.Phones.Where(p => p.PhoneNumber == editedText && p.Deleted == false).Count();
+                int newCount = newPhones.Where(p => p.PhoneNumber == editedText).Count();
+                if ((countOldPhone - 1> 0 && e.Row.GetIndex()<newPhones.Count()) ||
+                    (countOldPhone>0 && e.Row.GetIndex()>= newPhones.Count())
+                    )
+                    (e.EditingElement.Parent as DataGridCell).Background = Brushes.Yellow;
+                else
+                    (e.EditingElement.Parent as DataGridCell).Background = Brushes.Transparent;
+            }
+            Logger.WriteInfo("CellEditEnding: {0}", searchDataContext.GetChangeSet().Inserts.Count());
+            isDelInCell = false;
+        }
+
+        private void ResultDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Logger.WriteInfo("----> Selection Change");
+            
+            if (isNew && isNewAdded)
+            {
+                Logger.WriteInfo("SelectionChanged: {0}", searchDataContext.GetChangeSet().Inserts.Count());
+                Save(true);
+                isNew = false;
+                isNewAdded = false;
+            }
+            else if (isEdited)
+            {
+                isEdited = false;
+                Save(false);
+            }
+        }
+        void Tokens_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            searchTimer.Stop();
+            searchTimer.Start();
+        }
+        void CityNames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            searchTimer.Stop();
+            searchTimer.Start();
+        }
+        void searchTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                Logger.WriteInfo("S1: {0}", DateTime.Now);
+                searchTimer.Stop();
+                if (TokenTitle.Text.Length > 1)
+                    SearchInUiThread(false);
+                Logger.WriteInfo("S2: {0}", DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex, "searchTimer_Tick");
+            }
+        }
+
+        void SearchInUiThread(bool fullSearch)
+        {
+            try
+            {
+                Title_Column.Width = DataGridLength.SizeToCells;
+                Address_Column.Width = DataGridLength.SizeToCells;
+                Tel_Column.Width = DataGridLength.SizeToCells;
+
+                TokenForSearch token = new TokenForSearch()
+                {
+                    Title = TokenTitle.Text,
+                    Address = TokenAddress.Text.Length > 1 ? TokenAddress.Text : string.Empty,
+                };
+
+                if (CityPanel.Visibility == Visibility.Visible)
+                    token.City = (int)CitiesComboBox.SelectedValue == 0 ? (int?)null : (int)CitiesComboBox.SelectedValue;
+
+                DateTime t1 = DateTime.Now;
+                Logger.WriteInfo("Search Starting...");
+                
+                // Date And Time
+                DateTime startDate=new DateTime();
+                DateTime endDate = new DateTime();
+                if (DateChk.IsChecked == true)
+                {
+                    startDate = FromDate.SelectedDate == null
+                        ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)
+                        : new DateTime(FromDate.SelectedDate.Value.Date.Year, FromDate.SelectedDate.Value.Date.Month, FromDate.SelectedDate.Value.Date.Day);
+                    endDate = ToDate.SelectedDate == null
+                        ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)
+                        : new DateTime(ToDate.SelectedDate.Value.Date.Year, ToDate.SelectedDate.Value.Date.Month, ToDate.SelectedDate.Value.Date.Day);
+                    if (startDate == endDate)
+                        endDate = endDate.AddDays(1);
+                }
+                ///////////////////////////
+                if (TokenManager.IsNumeric(token.Title))
+                {
+                    if (DateChk.IsChecked == true)
+                        phoneResult = searchDataContext.Phones.Where(p => p.PhoneNumber.StartsWith(token.Title) &&
+                                                        p.ModifiedDate >= startDate && p.ModifiedDate <= endDate && 
+                                                        p.Deleted==false).Take(1000).Union(searchDataContext.Phones.Where(p => p.ID == -1)).ToList();
+                    else
+                        phoneResult = searchDataContext.Phones.Where(p => p.PhoneNumber.StartsWith(token.Title) && p.Deleted==false).Take(1000).Union(searchDataContext.Phones.Where(p => p.ID == -1)).ToList();
+
+                }
+                else
+                {
+                    token = TokenManager.SeperateJobAsToken(token);
+
+                    token.JobAbbreviationPrepared = TokenManager.PrepareString(token.JobAbbreviation);
+                    token.Job = searchDataContext.GetJobsByAbbreviation(token.JobAbbreviationPrepared);
+                    Logger.WriteInfo("Server searching with Job:'{0}' for Title:'{1}' in Address:'{2}'", token.JobAbbreviation, token.Title, token.Address);
+
+                    token.TitlePrepared = TokenManager.PrepareString(token.Title);
+                    token.AddressPrepared = TokenManager.PrepareString(token.Address);
+
+
+                    if (DateChk.IsChecked == true)
+                    {
+                        if ((string.IsNullOrEmpty(token.TitlePrepared) && string.IsNullOrEmpty(token.JobAbbreviationPrepared)) ||
+                                (token.TitlePrepared.Split(' ').Any(t => t.Length == 1)))
+                            phoneResult = searchDataContext.Phones.Where(p => p.ModifiedDate >= startDate && p.ModifiedDate <= endDate && p.Deleted == false).Take(1000).ToList();
+                        else
+                        {
+                            phoneResult = searchDataContext.GetPhonesByTokenAndDate(token, 1000, fullSearch,startDate,endDate);
+                        }
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(token.TitlePrepared) && string.IsNullOrEmpty(token.JobAbbreviationPrepared))
+                            return;
+                        if (token.TitlePrepared.Split(' ').Any(t => t.Length == 1))
+                            return;
+                        phoneResult = searchDataContext.GetPhonesByToken(token, 1000, false, fullSearch);
+                    }
+                    JobColumn.Visibility = jobs != null ? Visibility.Visible : Visibility.Collapsed;
+                    CityColumn.Visibility = cities != null  ? Visibility.Visible : Visibility.Collapsed;
+                }
+                DateTime t2 = DateTime.Now;
+
+                SearchInfo.Content = (token.Job != null ? token.Job.Name : "") +
+                    string.Format("(تعداد: {0})",phoneResult.Count());
+
+                if (phoneResult != null)
+                    Logger.WriteInfo("Search Finished count:{0}, time:{1}", phoneResult.Count(), t2.Subtract(t1).TotalMilliseconds);
+                else
+                    Logger.WriteInfo("Search Finished Without Any Result!");
+
+                if (JobColumn.Visibility == System.Windows.Visibility.Visible)
+                    JobColumn.ItemsSource = jobs;
+
+                if (CityColumn.Visibility == System.Windows.Visibility.Visible)
+                    CityColumn.ItemsSource = cities;
+
+                ResultDataGrid.ItemsSource = phoneResult.Where(r => FixTokenForSortingOnName(r.Name).StartsWith(FixTokenForSortingOnName(TokenTitle.Text))).Union(phoneResult.Where(r => !FixTokenForSortingOnName(r.Name).StartsWith(FixTokenForSortingOnName(TokenTitle.Text)))).ToList();
+                TypeCounter();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Search-Start Failed:{0}", ex.Message);
+            }
+        }
+        string FixTokenForSortingOnName(string token)
+        {
+            return token.Split('-').Last().Replace(" ", "").Replace("-", "");
+        }
+        void HandleKeyboard(System.Windows.Input.Key key)
+        {
+            switch (key)
+            {
+                #region Key.F4
+                case Key.F4:
+                    break;
+                #endregion
+
+
+                #region Key.Down, Key.Up
+                case Key.PageDown:
+                case Key.PageUp:
+                case Key.Up:
+                case Key.Down:
+                    if (ResultDataGrid.ItemsSource != null)
+                    {
+                        if (CitiesComboBox.IsFocused)
+                            return;
+
+                        searchTimer.Stop();
+                        var list = (List<Phone>)ResultDataGrid.ItemsSource;
+                        if (!ResultDataGrid.IsFocused && ResultDataGrid.SelectedItem == null && list.Count > 0)
+                        {
+                            ResultDataGrid.Focus();
+                            ResultDataGrid.SelectedItem = list.First();
+                            ResultDataGrid.CurrentCell = new DataGridCellInfo(list.First(), Title_Column);
+                        }
+                    }
+                    break;
+                #endregion
+
+                #region Key.ESC
+                case Key.Escape://Clear Token and Focuse on Title-Box
+                    TokenAddress.Text = "";
+                    SearchInfo.Content = "";
+                    TokenTitle.Text = "";
+                    TokenTitle.Focus();
+                    ResultDataGrid.ItemsSource = null;
+                    searchOrderBy = OrderBy.OrderBy_Tel;
+                    ResultDataGrid_Sorting();
+                    isNew = false;
+                    isNewAdded = false;
+                    break;
+                #endregion
+            }
+        }
+        void ResultDataGrid_Sorting()
+        {
+            switch (searchOrderBy)
+            {
+                case OrderBy.OrderBy_Name:
+                    searchOrderBy = OrderBy.OrderBy_Address;
+                    break;
+
+                case OrderBy.OrderBy_Address:
+                    searchOrderBy = OrderBy.OrderBy_Tel;
+                    break;
+
+                case OrderBy.OrderBy_Tel:
+                    searchOrderBy = OrderBy.OrderBy_Name;
+                    break;
+
+                default:
+                    break;
+            }
+
+            ICollectionView dgView = CollectionViewSource.GetDefaultView(ResultDataGrid.ItemsSource);
+            if (dgView != null)
+            {
+                dgView.SortDescriptions.Clear();//Remove last Sorting
+                dgView.SortDescriptions.Add(new SortDescription(searchOrderBy, ListSortDirection.Ascending));//Set New Sorting
+            }
+        }
+
+        private void DateChk_Checked(object sender, RoutedEventArgs e)
+        {
+            SearchInUiThread(false);
+        }
+        void UserControl_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            HandleKeyboard(e.Key);
+        }
+        private void TypeCounter()
+        {
+            int counter;
+            // Date And Time
+            DateTime startDate=new DateTime();
+            DateTime endDate = new DateTime();
+            startDate = FromDate.SelectedDate == null
+                ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)
+                : new DateTime(FromDate.SelectedDate.Value.Date.Year, FromDate.SelectedDate.Value.Date.Month, FromDate.SelectedDate.Value.Date.Day);
+            endDate = ToDate.SelectedDate == null
+                ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)
+                : new DateTime(ToDate.SelectedDate.Value.Date.Year, ToDate.SelectedDate.Value.Date.Month, ToDate.SelectedDate.Value.Date.Day);
+            if (startDate == endDate)
+                endDate = endDate.AddDays(1);
+            counter = searchDataContext.Phones.Where(p => p.Modifier == int.Parse(Folder.User.Current.Username) && p.ModifiedDate >= startDate && p.ModifiedDate <= endDate).Count();
+            TypeCounterlbl.Content=string.Format("تعداد عملیات: {0}",counter);
+            ///////////////////////////
+        }
+        private void ResultDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                
+                if (e.Key == Key.Delete)
+                {
+                    var grid = (DataGrid)sender;
+
+                    if (grid.SelectedItems.Count > 0 && !isDelInCell)
+                    {
+                        foreach (var row in grid.SelectedItems)
+                        {
+                            Phone delPhone = row as Phone;
+                            delPhone.Deleted = true;
+                            delPhone.Modifier = int.Parse(Folder.User.Current.Username);
+                        }
+                        searchDataContext.SubmitChanges();
+                        e.Handled = true;
+                        SearchInUiThread(false);
+                        TypeCounter();
+                    }
+                }
+                Logger.WriteInfo("PrevKeyDown: {0}", searchDataContext.GetChangeSet().Inserts.Count());
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void ResultDataGrid_KeyDown(object sender, KeyEventArgs e)
+        {
+            System.Console.WriteLine("never gets here for some reason");
+        }
+
+        private void ResultDataGrid_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
+        {
+            Logger.WriteInfo("----> Initialize New");
+            isNew = true;
+            isEdited = false;
+            Logger.WriteInfo("InitNewItem: {0}", searchDataContext.GetChangeSet().Inserts.Count());
+        }
+
+        private void ResultDataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            isDelInCell = false;
+            dgRow = e.Row;
+            e.Row.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+            if (isNew)
+                isNewAdded = true;
+            else
+                isEdited = true;
+        }
+
+        private void ResultDataGrid_Unselected(object sender, RoutedEventArgs e)
+        {
+            Logger.WriteInfo("----> Row Unselected");
+        }
+
+        private void ResultDataGrid_CurrentCellChanged(object sender, EventArgs e)
+        {
+            Logger.WriteInfo("----> Current Cell Changed: {0}", searchDataContext.GetChangeSet().Inserts.Count());
+        }
+
+        private void ResultDataGrid_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Logger.WriteInfo("----> DataContextChanged");
+        }
+
+        private void DateChk_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SearchInUiThread(false);
+        }
+
+        private void ResultDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            isDelInCell = true;
+        }
+    }
+}

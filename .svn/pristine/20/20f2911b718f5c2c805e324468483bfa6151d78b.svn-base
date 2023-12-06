@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Folder;
+using System.Reflection;
+
+namespace UMSV
+{
+    /// <summary>
+    /// Interaction logic for ReportsList.xaml
+    /// </summary>
+    public partial class ReportsList : UserControl, IFolderForm
+    {
+        public ReportsList()
+        {
+            InitializeComponent();
+        }
+
+        #region IFolderForm Members
+
+        public void Initialize(FolderFormHelper helper)
+        {
+            string reportXml = Utility.LoadEmbededTextFile("UMSV.Report.xml", Encoding.UTF8);
+            ReportSchema reports = ReportSchemaUtility.Deserialize<ReportSchema>(reportXml);
+
+            foreach (var report in reports.Reports)
+            {
+                ReportIcon icon = new ReportIcon();
+                icon.DataContext = report;
+                icon.Click += new EventHandler(icon_Click);
+                panel.Children.Add(icon);
+            }
+
+            var suuUser = User.Current.SubUsers; // To reload sub users
+        }
+
+        void icon_Click(object sender, EventArgs e)
+        {
+            var report = (sender as UserControl).DataContext as ReportSchemaReport;
+            report.Initialize();
+            UserControl reportForm = null;
+            if (report.IsChart)
+                reportForm = new ChartReport();
+            else
+                reportForm = new GridReport();
+
+            reportForm.DataContext = report;
+            Folder.Console.Navigate(reportForm, report.Title);
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.UserControls.CommonArea"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+             mc:Ignorable="d"
+             FontFamily="Tahoma"
+             FlowDirection="RightToLeft"
+             d:DesignHeight="136"
+             d:DesignWidth="300">
+    <StackPanel>
+        <Label>نام گره:</Label>
+        <TextBox Height="23"
+                 x:Name="nodeNameTextBox"
+                 Text="{Binding NodeData.Description, UpdateSourceTrigger= PropertyChanged}" />
+        <Label>نوع گره:</Label>
+        <Border BorderBrush="{Binding BorderBrush,ElementName=nodeNameTextBox}"
+                Background="{Binding Background,ElementName=nodeNameTextBox}"
+                BorderThickness="{Binding BorderThickness,ElementName=nodeNameTextBox}"
+                Height="{Binding Height,ElementName=nodeNameTextBox}">
+            <StackPanel Orientation="Horizontal">
+                <!--<ContentPresenter Content="{Binding TreeNode.NodeInfo.Image}"
+                                  Margin="5,0"
+                                  Width="16" />-->
+                <TextBlock VerticalAlignment="Center"
+                           Padding="5"
+                           Text="{Binding TreeNode.NodeInitInfo.Title}" />
+            </StackPanel>
+        </Border>
+        <ContentPresenter Margin="0,5,0,0"
+                          Content="{Binding TreeNode.ExtendedUI}" />
+    </StackPanel>
+</UserControl>

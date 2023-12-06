@@ -1,0 +1,622 @@
+﻿/* NAVIGATION */
+.nav-items
+{
+    padding: 6px 6px 4px 6px;
+    border-bottom: solid 1px #fff;
+    border-top: solid 1px buttonface;
+}
+.nav-pages
+{
+    width: 100%;
+    float: right;
+}
+.nav-pages .text
+{
+    display: block;
+    float: right;
+    width: 45px;
+    font-size: 12px;
+}
+.nav-pages .cur-button, .nav-pages a
+{
+    color: Black;
+    display: block;
+    float: right;
+    margin-left: 1px;
+    padding: 0 4px;
+    font-size: 12px;
+    background: #E5E3D3;
+    border: solid 1px #D1CDAB;
+}
+.nav-pages a:hover, .nav-pages .cur-button
+{
+    color: #B23F33;
+    background: #FCFCF7;
+    border: solid 1px #B23F33;
+    text-decoration: none;
+}
+
+/* TABLE */
+table .datalist, table .datalist-green
+{
+    width: 100%;
+    float: right;
+    border-width: 0px;
+    table-layout: auto;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    margin-bottom: 10px;
+}
+input, option, textarea, select
+{
+    font-family: Tahoma;
+    font-size: 9pt;
+    border: solid 1px #c1c1c1;
+}
+.checkbox-input, .checkbox-input input
+{
+    border-width: 0;
+    border-style: none;
+}
+.image-input
+{
+    border: solid 1px #c1c1c1;
+    cursor: hand;
+}
+.datalist th
+{
+    height: 25px;
+    color: white;
+    background-image: url( '/images/table-header-bg.gif' );
+    font-weight: normal;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+.datalist-green th
+{
+    height: 25px;
+    color: white;
+    background-image: url( '/images/table-header-green-bg.gif' );
+    font-weight: normal;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+.datalist td, .datalist-green td
+{
+    height: 25px;
+    color: black;
+}
+.datalist-green .even
+{
+    background-color: #DFFFDF;
+}
+.datalist-green .odd
+{
+    background-color: #FFFFFF;
+}
+.datalist .even
+{
+    background-color: #EFF3FB;
+}
+.datalist .odd
+{
+    background-color: #FFFFFF;
+}
+.two-line
+{
+    line-height: 1.7;
+}
+
+
+.cell-id
+{
+    width: 35px;
+}
+.cell-title
+{
+    width: 360px;
+}
+.cell-number
+{
+    width: 80px;
+}
+.cell-edit
+{
+    width: 50px;
+}
+.cell-date
+{
+    width: 100px;
+}
+.cell-name
+{
+    width: 150px;
+}
+.cell-even
+{
+    background-color: #DAF2D7;
+}
+.cell-odd
+{
+    background-color: #FAFBDD;
+}
+
+.cell-extension-even
+{
+    border: 1px;
+    text-align: right;
+    color: Teal;
+    border-bottom-style: dotted;
+    border-bottom-color: Teal;
+    background-color: #E7F4D9;
+}
+.cell-extension-odd
+{
+    text-align: right;
+    border: 1px;
+    color: Teal;
+    border-bottom-style: dotted;
+    border-bottom-color: Teal;
+    background-color: #F7F5DD;
+}
+
+
+.form-table
+{
+    width: auto;
+}
+.form-table th
+{
+    font-weight: normal;
+}
+.form-table .titles
+{
+    width: 160px;
+    background-color: #f6f6f6;
+    vertical-align: top;
+    padding: 5px;
+}
+
+.form-table .insert-row
+{
+    background-color: #FFF0FF;
+}
+.form-table .edit-row
+{
+    background-color: #FFFFCC;
+}
+.form-table .small-text *
+{
+    font-size: 8pt;
+}
+.form-table .controls
+{
+    width: auto;
+}
+.form-table .controls input
+{
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+.controls .size-1
+{
+    width: 600px;
+}
+.controls .size-2
+{
+    width: 450px;
+}
+.controls .size-3
+{
+    width: 300px;
+}
+.controls .size-4
+{
+    width: 150px;
+}
+.controls .size-5
+{
+    width: 100px;
+}
+.controls .button
+{
+    padding-right: 7px;
+    padding-left: 7px;
+    height: 25px;
+    border: outset 1px #c1c1c1;
+    background-color: #e7e7e7;
+}
+.controls .button-left
+{
+    vertical-align: middle;
+    float: left;
+    padding-right: 7px;
+    padding-left: 7px;
+    height: 25px;
+    border: outset 1px #c1c1c1;
+    background-color: #e7e7e7;
+}
+.controls .buttonLink
+{
+    height: 25px;
+    border: 0px;
+    background-color: transparent;
+    border-width: 0px;
+}
+/* Message */
+.message
+{
+    width: 765px;
+    float: right;
+    text-align: right;
+    margin-top: 10px;
+    border: 1px solid #c1c1c1;
+    background-color: #fff;
+}
+.message img
+{
+    float: right;
+    padding: 10px 10px 10px 0;
+}
+.message .text
+{
+    float: right;
+    padding: 27px 10px 10px 10px;
+}
+.error
+{
+    color: Red;
+}
+.success
+{
+    color: Green;
+}
+
+/* News */
+
+.title
+{
+    width: 745px;
+    margin-bottom: 10px;
+    float: right;
+    text-align: right;
+}
+
+
+.treeview
+{
+    width: 745px;
+    float: right;
+    text-align: right;
+    border-width: 0px;
+    table-layout: auto;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    margin-bottom: 10px;
+}
+
+td .treeview-root
+{
+    display: block;
+    width: 725px;
+    height: 25px;
+    color: white;
+    background-image: url( '/images/table-header-bg.gif' );
+    font-weight: normal;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+span.treeview-root
+{
+    color: White;
+}
+td .treeview-node
+{
+    width: 725px;
+    height: 25px;
+    color: black;
+}
+
+/* LOGIN */
+#login-table
+{
+    width: 100%;
+    height: 100%;
+}
+#login-table *
+{
+    font-size: 8pt;
+}
+#login-table .form-table
+{
+    width: 250px;
+}
+#login-table .titles
+{
+    width: 100px;
+}
+#login-table .controls
+{
+    width: 150px;
+}
+
+#login-fieldset
+{
+    width: 275px;
+    font-size: 9pt;
+}
+#login-table .button
+{
+    padding: 2px;
+}
+
+
+
+/* File Selection */
+.image-thumbnail
+{
+    vertical-align: middle;
+}
+
+.file-del
+{
+    margin-right: 15px;
+    margin-top: 2px;
+    vertical-align: middle;
+    float: left;
+}
+
+.file-container
+{
+    height: 20px;
+    float: right;
+    margin-left: 6px;
+    margin-top: 5px;
+    background-color: #E8E8E8;
+    padding: 7px;
+    border: solid 1px #c1c1c1;
+}
+
+.image-del
+{
+    margin-right: 3px;
+    vertical-align: middle;
+}
+
+.image-container
+{
+    height: 75px;
+    float: right;
+    margin-left: 6px;
+    margin-top: 5px;
+    background-color: #E8E8E8;
+    padding: 3px;
+}
+
+.fieldset1
+{
+    width: 97%;
+    position: relative;
+    border: 1px solid #AABFEA;
+    padding: 20px 3px 10px 10px;
+    margin: 20px 2px 20px 10px;
+    background-color: #EEF2FB;
+}
+.fieldset1 legend
+{
+    position: absolute;
+    top: -15px;
+    right: 15px;
+    min-width: 100px;
+    text-align: center;
+    border: 1px solid #336699;
+    margin-right: 25px;
+    padding: 4px 15px 8px 15px;
+    background-color: #AABFEA;
+}
+
+.fieldset2
+{
+    width: 97%;
+    position: relative;
+    border: 1px solid #D8B18B;
+    padding: 20px 3px 10px 10px;
+    margin: 10px 2px 20px 10px;
+    background-color: #FFFFD9;
+}
+.fieldset2 legend
+{
+    position: absolute;
+    top: -15px;
+    right: 15px;
+    min-width: 100px;
+    text-align: center;
+    border: 1px solid #663300;
+    margin-right: 25px;
+    padding: 4px 15px 8px 15px;
+    background-color: #D8B18B;
+}
+
+.fieldset-green
+{
+    width: 97%;
+    max-width: 750px;
+    position: relative;
+    border: 1px solid #339933;
+    padding: 10px 10px 10px 10px;
+    margin: 10px 10px 20px 10px;
+    background-color: #F5FCF9;
+}
+.fieldset-green legend
+{
+    position: absolute;
+    top: -15px;
+    right: 15px;
+    min-width: 100px;
+    text-align: center;
+    border: 1px solid #339933;
+    margin-right: 25px;
+    padding: 4px 15px 8px 15px;
+    background-color: #B1E4B1;
+}
+
+.fieldsetform
+{
+    width: 100%;
+    max-width: 750px;
+    position: relative;
+    padding: 10px 10px 10px 10px;
+    margin: 25px 2px 2px 2px;
+    background-color: Window;
+}
+.fieldsetform legend
+{
+    position: absolute;
+    top: -15px;
+    right: 15px;
+    min-width: 100px;
+    text-align: center;
+    margin-right: 25px;
+    padding: 4px 15px 8px 15px;
+    background-color: Menu;
+}
+
+.package
+{
+    box-shadow: -1px 2px 3px #336699;
+    padding: 5px;
+    margin: 5px 5px 10px 5px;
+    display: block;
+    background-color: #D7DDE8;
+    border: 1px solid #336699;
+    color: #3360A0;
+    font-family: B Titr, B Farnaz, B Homa;
+    font-size: 14px;
+    font-weight: bold;
+}
+.listbox
+{
+    box-shadow: -1px 2px 3px #663300;
+    width: 100%;
+    float: right;
+    text-align: right;
+    padding: 0px 5px;
+    text-indent: 5px;
+    border-collapse: separate;
+    border: 1px solid #c1c1c1;
+    background-color: #fffccc;
+    vertical-align: middle;
+}
+.listbox, input[type="radio"]
+{
+    vertical-align: middle;
+}
+
+.question
+{
+    padding: 5px;
+    margin: 30px 0 5px 0;
+    background-color: #F4FFFF;
+    color: #003366;
+    font-weight: bold;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #003366;
+}
+#CalendarTable
+{
+    border: 1px solid #666666;
+    background-color: White;
+    font-family: Tahoma;
+    font-size: 9px;
+}
+#CalendarTable td
+{
+    padding: 3px;
+}
+#CalendarTable #WeekDayNames
+{
+    background-color: #666666;
+    color: #FFFFFF;
+    margin: 1px;
+    padding: 1px;
+}
+#WeekDayNames td
+{
+    margin: 3px;
+}
+
+#calendar_header
+{
+    background-color: #CCCCCC;
+    color: #000000;
+    margin: 1px;
+}
+.report h-frame
+{
+    box-shadow: -1px 3px 5px #663300;
+    padding: 10px 1px 2px 1px;
+    width: 100%;
+    margin: 15px 1px 2px 1px;
+    display: table;
+    background-color: #EEFFEE;
+    border: 2px solid #663300;
+    color: #663300;
+}
+.report h1
+{
+    box-shadow: -1px 2px 2px #663300;
+    padding: 15px 0px 10px 0px;
+    width: 100%;
+    margin: 15px 0px 10px 0px;
+    display: block;
+    background-color: #FFFFCC;
+    border: 1px solid #663300;
+    color: #663300;
+    font-weight: bold;
+    font-family: B Titr;
+}
+.report h2
+{
+    padding: 5px 0px 5px 0px;
+    width: 100%;
+    margin: 5px 0px 5px 0px;
+    display: inline-block;
+    background-color: #3366FF;
+    color: #FFFFFF;
+    text-align: center;
+    font-family: B Titr;
+}
+.report h3
+{
+    color: #663300;
+    text-align: right;
+    font-family: B Nazanin;
+}
+.report h4
+{
+    background-color: #66CCFF;
+    text-align: right;
+}
+.h1-2
+{
+    vertical-align: middle;
+    font-family: B mitra;
+    font-size: smaller;
+    font-weight: bold;
+}
+.h1-3
+{
+    vertical-align: middle;
+    font-family: B mitra;
+    font-size: medium;
+    font-weight: bold;
+    color: Navy;
+}
+div .Row35
+{
+    height: 35px;
+    background: red;
+}
+

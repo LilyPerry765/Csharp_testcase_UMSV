@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="Plugin.Mailbox.Controls.MessageSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="clr-namespace:Folder.Audio;assembly=Folder.Audio"
+            xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             FlowDirection="RightToLeft">
+    <StackPanel>
+        <s:SoundControl x:Name="soundControl" VoiceChanged="soundControl_VoiceChanged"/>
+    </StackPanel>
+</UserControl>

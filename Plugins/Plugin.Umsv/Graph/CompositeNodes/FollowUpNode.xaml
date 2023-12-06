@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="Pendar.Ums.CompositeNodes.FollowUpNode"
+             FlowDirection="RightToLeft"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:uc="clr-namespace:Pendar.Ums.CompositeNodes.UserControls"
+             xmlns:conv="clr-namespace:Folder.Converter;assembly=Folder.Common"
+             mc:Ignorable="d"
+             d:DesignHeight="401"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider   x:Key="Group"
+                           IsAsynchronous="False">
+            <x:XData>
+                <NodeGroup  Description="پیگیری"
+                            StartNode="PlayNodes[0]"
+                            LastNode="JumpNodes[0]"
+                            xmlns="http://tempuri.org/VoiceGraph.xsd"
+                            Tag="FollowUp">
+                    <InvokeNode ID="3"
+                                ClearDigits="true"
+                                Function="CheckFollowupCode">
+                        <Arg Name="boxNo" />
+                        <NodeResult Value="Answered"
+                                    TargetNode="5" />
+                        <NodeResult Value="InvalidCode"
+                                    TargetNode="6" />
+                        <NodeResult Value="NoAnswerYet"
+                                    TargetNode="7" />
+                        <NodeResult Value="MaxTry"
+                                    TargetNode="4" />
+                    </InvokeNode>
+                    <PlayNode ID="1"
+                              ClearDigits="true"
+                              TargetNode="2"
+                              IgnoreKeyPress="false">
+                        <Voice Name="GiveYourFollowupCode"
+                               Type="0" />
+                    </PlayNode>
+                    <PlayNode ID="6"
+                              ClearDigits="true"
+                              TargetNode="1"
+                              IgnoreKeyPress="false">
+                        <Voice Name="InvalidFollowupCode"
+                               Type="0" />
+                    </PlayNode>
+                    <JumpNode ID="4"
+                              ClearDigits="true"
+                              TargetNode="Bye" />
+                    <PlayNode ID="7"
+                              ClearDigits="true"
+                              TargetNode="4"
+                              IgnoreKeyPress="false">
+                        <Voice Name="NoAnswerYet"
+                               Type="0" />
+                    </PlayNode>
+                    <PlayNode ID="5"
+                              ClearDigits="true"
+                              TargetNode="4"
+                              IgnoreKeyPress="false">
+                        <Voice Name="[PlayAnswerMessage]"
+                               Type="0" />
+                    </PlayNode>
+                    <GetKeyNode ID="2"
+                                ClearDigits="false"
+                                Timeout="3"
+                                TimeoutNode="3"
+                                EndKey="*"
+                                MinDigits="0" />
+                </NodeGroup>
+            </x:XData>
+        </XmlDataProvider>
+    </UserControl.Resources>
+    <StackPanel>
+        <uc:CommonArea />
+        <Label>گره بعدی:</Label>
+        <uc:TargetSelector SelectedTarget="{Binding NodeData.JumpNodes[0].TargetNode}"
+                           Margin="0,0,0,5" />
+        <uc:VoiceSelector SelectedVoice="{Binding NodeData.PlayNodes[0].Voice[0]}" />
+        <uc:MailBoxInputBox x:Name="boxNoInputBox"
+                            HorizontalAlignment="Left"
+                            Width="100"
+                            Text="{Binding NodeData.InvokeNodes[0].Arg[0].Value, UpdateSourceTrigger=PropertyChanged}" />
+    </StackPanel>
+</UserControl>

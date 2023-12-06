@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="UMSV.BasicNodes.MatchDateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:f="clr-namespace:Folder;assembly=Folder.Common"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Orientation="Horizontal">
+        <WrapPanel>
+            <Label>از تاریخ</Label>
+            <f:PersianDateBox DisplayMode="Date"
+                                Width="73" HorizontalContentAlignment="Center"
+                                Date="{Binding StartDate,UpdateSourceTrigger=PropertyChanged}" />
+        </WrapPanel>
+        <WrapPanel>
+            <Label>تا تاریخ</Label>
+            <f:PersianDateBox DisplayMode="Date"
+                                Width="73" HorizontalContentAlignment="Center"
+                                Date="{Binding EndDate,UpdateSourceTrigger=PropertyChanged}" />
+        </WrapPanel>
+    </StackPanel>
+</UserControl>

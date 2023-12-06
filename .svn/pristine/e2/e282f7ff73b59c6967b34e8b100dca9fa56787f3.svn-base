@@ -1,0 +1,111 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/MainMaster.Master"
+    AutoEventWireup="true" CodeBehind="InformingReport.aspx.cs" Inherits="UMS.Informing.WebInterface.WebForms.InformingReport" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadPlaceHolder" runat="server">
+    <link href="/Content/body.css" rel="stylesheet" type="text/css" />
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="BodyPlaceHolder" runat="server">
+    <div id="container">
+        <div id="body-items">
+            <table class="custom_background">
+                <asp:ListView ID="DetailsListView1" runat="server" 
+                    DataKeyNames="ID" OnItemCommand="DetailsListView1_ItemCommand">
+                    <LayoutTemplate>
+                        <tr>
+                            <td class="controls right">
+                                <fieldset style="padding: 2px; width: 950px;">
+                                    <legend>لیست ارسال پیام</legend>
+                                    <table class="datalist" style="width: 100%; font-size: 8pt;">
+                                        <tr>
+                                            <th class="center" style="width: 40px">
+                                                شناسه
+                                            </th>
+                                            <th class="center" style="width: 40px">
+                                                فعال
+                                            </th>
+                                            <th class="cell-date   right">
+                                                عنوان
+                                            </th>
+                                            <th class="cell-date   right" style="width: 150px">
+                                                عنوان درختواره
+                                            </th>
+                                            <th class="cell-text   right">
+                                                دفعات تلاش
+                                            </th>
+                                            <th class="cell-text   right">
+                                                تاریخ ارسال
+                                            </th>
+                                            <th class="cell-text   right">
+                                                از ساعت
+                                            </th>
+                                            <th class="cell-text   right">
+                                                تا ساعت
+                                            </th>
+                                            <th class="cell-text   right">
+                                                عملیات
+                                            </th>
+                                        </tr>
+                                        <asp:PlaceHolder ID="itemPlaceHolder" runat="server" />
+                                    </table>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </LayoutTemplate>
+                    <ItemTemplate>
+                        <tr class='<%# (Container.DataItemIndex % 2 == 0) ? "even" : "odd" %>'>
+                            <td class="right">
+                                <%# Eval("Id") %>
+                            </td>
+                            <td class="right">
+                                <%# (bool)Eval("Enabled") ? "فعال" : "غیرفعال"%>
+                            </td>
+                            <td class="right">
+                                <%# Eval("Subject")%>
+                            </td>
+                            <td class="right">
+                                <%# Eval("GraphName") %>
+                            </td>
+                            <td class="hidden">
+                                <%# Eval("GraphId") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("RetryCount") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallDate") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallFromTime") %>
+                            </td>
+                            <td class="right">
+                                <%# Eval("CallToTime") %>
+                            </td>
+                            <td class="right">
+                                <asp:LinkButton ID="ExportButton" runat="server" CommandName="Export"><img alt="استخراج" src="/images/eye.png" /></asp:LinkButton>
+                            </td>
+                        </tr>
+                    </ItemTemplate>
+                </asp:ListView>
+            </table>
+        </div>
+    </div>
+    <script src="../scripts/calendar/calendar.js" type="text/javascript"></script>
+    <script src="../scripts/calendar/calendar2.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function popItUp(ticketid, rowindex) {
+            try {
+                window.open('TicketForm.aspx?ticketid=' + ticketid);
+                var gridView = document.getElementById("SearchResultGridView");
+                gridView.rows[rowindex + 1].style.color = "Black";
+            }
+            catch (error) {
+                window.status = error.Message;
+            }
+        }
+
+        $('.readonly:checkbox').click(function (e) {
+            e.preventDefault();
+        });
+    </script>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="FooterPlaceHolder" runat="server" />

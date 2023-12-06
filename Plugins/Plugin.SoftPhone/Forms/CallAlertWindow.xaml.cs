@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using UMSV.Schema;
+using Enterprise;
+using Folder;
+
+namespace UMSV
+{
+    /// <summary>
+    /// Interaction logic for CallAlertWindow.xaml
+    /// </summary>
+    public partial class CallAlertWindow : Window
+    {
+        private static CallAlertWindow Default = new CallAlertWindow();
+
+        public static event EventHandler Rejected;
+        public static event EventHandler Accepted;
+
+        private CallAlertWindow()
+        {
+            InitializeComponent();
+        }
+
+        public static void ShowCallAlert()
+        {
+            Default.Dispatcher.Invoke((Action)(() =>
+            {
+                var autoAnswer = User.Current.GetProfileValue<bool>(Constants.UserProfileKey_AutoAnswer, false);
+                Default.AcceptButton.Focus();
+                Default.RejectButton.Visibility = autoAnswer ? Visibility.Collapsed : Visibility.Visible;
+                Default.AcceptButton.Visibility = autoAnswer ? Visibility.Collapsed : Visibility.Visible;
+                Default.Show();
+            }));
+        }
+
+        public static void HideCallAlert()
+        {
+            Default.Dispatcher.Invoke((Action)(() =>
+            {
+                Default.AcceptButton.Focus();
+                Default.Hide();
+            }), System.Windows.Threading.DispatcherPriority.Send);
+        }
+
+        private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (Default.AcceptButton.Visibility == Visibility.Collapsed)
+                HideCallAlert();
+        }
+
+        private void RejectButton_Click(object sender, RoutedEventArgs e)
+        {
+            HideCallAlert();
+            if (Rejected != null)
+                Rejected(this, EventArgs.Empty);
+        }
+
+        private void AcceptButton_Click(object sender, RoutedEventArgs e)
+        {
+            HideCallAlert();
+            if (Accepted != null)
+                Accepted(this, EventArgs.Empty);
+        }
+    }
+}

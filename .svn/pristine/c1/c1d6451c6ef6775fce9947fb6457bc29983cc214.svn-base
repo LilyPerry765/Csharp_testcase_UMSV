@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Folder;
+using Enterprise;
+
+namespace UMSV
+{
+    public class Global : PluginGlobal
+    {
+        public static Global Default;
+
+        public Global()
+        {
+            Default = this;
+        }
+
+        public override void SessionStart()
+        {
+            Ozeki.VoIP.SDK.Protection.LicenseManager.Instance.SetLicense("OZSDK-PEN128CALL-120710-EB3DC53A", "TUNDOjEyOCxNUEw6MTI4LEc3Mjk6dHJ1ZSxNU0xDOjEyOCxNRkM6MTI4LFVQOjIwMTMuMDcuMTAsUDoyMTk5LjAxLjAxfHhndWhNUDh1Z3ZFVUl1Y2tYcFhDeXgrMCtEa0l3aWx2WHVrZ3JlWjJTOVpDNmFoWXozTnNObjFTY1VnOHhSOFA1OWkyY3FGalVuOUFzZVp5dnRXRmJRPT0=");
+            Logger.WriteImportant("License was set successfully...");
+        }
+
+        public override void SessionEnd()
+        {
+
+        }
+    }
+}

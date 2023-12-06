@@ -1,0 +1,100 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Enterprise;
+using System.Data.SqlClient;
+using System.Data.Linq;
+using System.Data;
+
+namespace Pendar._118
+{
+    partial class Voip118DataContext
+    {
+        public List<Phone> GetPhonesByToken(TokenForSearch token, int resultCount, bool isOperator, bool fullSearch)
+        {
+            IQueryable<Phone> result = Phones;
+
+            if (!fullSearch || (fullSearch && token.Job.ID != 0))
+                result = result.Where(a => a.JobID == token.Job.ID); // Job
+
+            if (fullSearch && !string.IsNullOrEmpty(token.TitlePrepared)) // Title
+            {
+                foreach (var titlePart in token.TitlePrepared.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    string value = titlePart;
+                    result = result.Where(a => a.NamePrepared.Contains(value));
+                }
+            }
+            else
+                result = result.Where(a => a.NamePrepared.StartsWith(token.TitlePrepared.Replace(" ", string.Empty)));
+
+            result = result.Where(a => string.IsNullOrEmpty(token.AddressPrepared) || a.AddressPrepared.Contains(token.AddressPrepared.Replace(" ", ""))); // Address
+
+            if (token.City.HasValue)
+                result = result.Where(a => a.CityID == null || token.City == a.CityID); // City
+
+            if (isOperator)
+                result = result.Where(a => !a.Hidden);
+            result = result.Where(re => re.Deleted == false);
+            if (resultCount == 0) return result.OrderBy(phone => phone.Name).ToList();
+            return result.OrderBy(phone => phone.Name).Take(resultCount).ToList();
+        }
+
+        public List<Phone> GetPhonesByTokenAndDate(TokenForSearch token, int resultCount, bool fullSearch,DateTime startDate,DateTime endDate)
+        {
+            IQueryable<Phone> result = Phones;
+
+            if (!fullSearch || (fullSearch && token.Job.ID != 0))
+                result = result.Where(a => a.JobID == token.Job.ID); // Job
+
+            if (fullSearch && !string.IsNullOrEmpty(token.TitlePrepared)) // Title
+            {
+                foreach (var titlePart in token.TitlePrepared.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    string value = titlePart;
+                    result = result.Where(a => a.NamePrepared.Contains(value) && a.ModifiedDate>=startDate && a.ModifiedDate<=endDate);
+                }
+            }
+            else
+                result = result.Where(a => a.NamePrepared.StartsWith(token.TitlePrepared.Replace(" ", string.Empty)) && a.ModifiedDate >= startDate && a.ModifiedDate <= endDate);
+
+            result = result.Where(a => string.IsNullOrEmpty(token.AddressPrepared) || a.AddressPrepared.Contains(token.AddressPrepared.Replace(" ", ""))); // Address
+
+            if (token.City.HasValue)
+                result = result.Where(a => a.CityID == null || token.City == a.CityID); // City
+            result = result.Where(re => re.Deleted == false);
+
+            if (resultCount == 0) return result.OrderBy(phone => phone.Name).ToList();
+            return result.OrderBy(phone => phone.Name).Take(resultCount).ToList();
+        }
+
+
+        private Phone Prepare(Phone phone, bool isOperator)
+        {
+            if (!isOperator)
+                return phone;
+
+            phone.Name = phone.Name.Split('.').First();
+            phone.Address = phone.Address.Split('.').First();
+
+            return phone;
+        }
+
+        public Job GetJobsByAbbreviation(string JobAbb)
+        {
+            if (string.IsNullOrWhiteSpace(JobAbb))
+                return Jobs.FirstOrDefault(j => j.ID == 0);
+            else
+                return Jobs.FirstOrDefault(a => a.pAbbrevation.Trim() == JobAbb.Trim());
+        }
+
+        public int GetCityCodeByCallerID(string prefix)
+        {
+            var number = PrefixNumbers.FirstOrDefault(a => a.Prefix == prefix);
+            if (number == null)
+                return Config.Default.DefaultCityID.Value;
+            return number.City.ID;
+        }
+    }
+}
